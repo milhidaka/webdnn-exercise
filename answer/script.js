@@ -8,7 +8,7 @@ var webdnn_input_view, webdnn_output_view;
 var dnn_calculating = false;
 
 async function initialize() {
-  webdnn_runner = await WebDNN.load('./webdnn_graph_descriptor', {backendOrder: 'webgl'});
+  webdnn_runner = await WebDNN.load('./webdnn_graph_descriptor');
   webdnn_input_view = webdnn_runner.getInputViews()[0];
   webdnn_output_view = webdnn_runner.getOutputViews()[0];
   console.log('loaded webdnn model');
