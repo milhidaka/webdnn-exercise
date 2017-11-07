@@ -3,11 +3,11 @@
 
 演習を最後まで進めると、次のような画面が得られます。画面上の黒い領域にマウスで数字を描くと、それがどの数字なのかを認識して表示します。
 
-![Screenshot of complete application]({{ site.url }}/images/complete_screenshot.png)
+![Screenshot of complete application]({{ site.baseurl }}/images/complete_screenshot.png)
 
 動作するデモが[ここ](https://milhidaka.github.io/webdnn-exercise/answer/)から見られます。
 
-WebDNNのリポジトリ: https://github.com/mil-tokyo/webdnn
+WebDNNのリポジトリ: [https://github.com/mil-tokyo/webdnn](https://github.com/mil-tokyo/webdnn)
 
 ## 対象読者
 この演習では、深層学習(Deep Learning)自体の説明は行いません。Pythonの基本的な文法およびKerasまたはChainerで簡単な画像識別モデルを学習させる方法についての知識があることを仮定しています。JavaScriptについても知識があると望ましいですが、なくてもかまいません。
@@ -143,7 +143,7 @@ python -m http.server
 ## Webブラウザでアクセス
 作成したページにWebブラウザでアクセスします。
 
-http://localhost:8000/
+[http://localhost:8000/](http://localhost:8000/)
 
 黒いボックス上でマウスをクリック・ドラッグすることで数字(0~9)を描きます。正しい識別結果がボックスの下に表示されれば成功です。
 
@@ -157,6 +157,6 @@ GET http://localhost:8000/webdnn_graph_descriptor/graph_webassembly.json 404 (Fi
 ```
 
 # Safariについて
-WebDNNはMac OS標準のWebブラウザSafariにも対応していますが、本演習の手順では他のブラウザと同様に動作させることができません。本演習ではWebDNNの計算バックエンドとしてWebGLを使用していますが、このバックエンドはSafariと互換性がないためです。SafariではWebGPUまたはWebAssemblyバックエンドが使用できます。WebGPUバックエンドはブラウザの設定が必要(→ https://mil-tokyo.github.io/webdnn/docs/tips/enable_webgpu_macos.html )です。WebAssemblyバックエンドはブラウザの設定は不要ですが、環境構築に若干時間がかかります。
+WebDNNはMac OS標準のWebブラウザSafariにも対応していますが、本演習の手順では他のブラウザと同様に動作させることができません。本演習ではWebDNNの計算バックエンドとしてWebGLを使用していますが、このバックエンドはSafariと互換性がないためです。SafariではWebGPUまたはWebAssemblyバックエンドが使用できます。WebGPUバックエンドはブラウザの設定が必要(→ [https://mil-tokyo.github.io/webdnn/docs/tips/enable_webgpu_macos.html](https://mil-tokyo.github.io/webdnn/docs/tips/enable_webgpu_macos.html) )です。WebAssemblyバックエンドはブラウザの設定は不要ですが、環境構築に若干時間がかかります。
 
 Safariで演習を行う場合、`convert_keras.py`で作成されたディレクトリ`webdnn_graph_descriptor`に、リポジトリ直下にある`webdnn_graph_descriptor_for_all_backend`の中身を上書きしてください。全てのバックエンドに対応したgraph descriptorが同梱されているため、WebGPU(有効な場合)およびWebAssemblyを利用してSafariでのWebDNN実行が可能となります。
