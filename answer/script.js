@@ -26,7 +26,8 @@ async function calculate() {
   // https://mil-tokyo.github.io/webdnn/docs/api_reference/descriptor-runner/modules/webdnn_image.html
   webdnn_input_view.set(await WebDNN.Image.getImageArray(canvas_draw, {
     dstH: 28, dstW: 28,
-    order: WebDNN.Image.Order.HWC,
+    order: WebDNN.Image.Order.HWC, // for Keras
+    // order: WebDNN.Image.Order.CHW, // for Chainer (but the same as HWC because channel=1 in MNIST)
     color: WebDNN.Image.Color.GREY,
     bias: [0, 0, 0],
     scale: [255, 255, 255]
