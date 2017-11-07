@@ -113,8 +113,8 @@ Webブラウザ上で数値計算を高速に行うために利用出来る規�
 
 `webdnn_graph_descriptor`ディレクトリが作成され、中に`graph_webgl_16384.json`などのファイルが出来ます。これがgraph descriptorで、あとでWebブラウザから読み込むことになります。
 
-# HTML/JavaScriptの実装
 <a name="html_javascript"></a>
+# HTML/JavaScriptの実装
 
 ## WebDNN JavaScriptのコピー
 先ほど生成したgraph descriptorをWebブラウザ上で読み込んで動作させるためのJavaScriptライブラリを、以前cloneしたWebDNNリポジトリからコピーします。
@@ -138,9 +138,9 @@ Webアプリケーション本体の実装を行います。HTMLでページの�
 
 `script`タグで、先ほどコピーした`webdnn.js`を読み込みます。
 ```html
-  <meta charset="utf-8">
-  <!-- FIXME: load webdnn.js -->
-  <script src="paint.js"></script>
+<meta charset="utf-8">
+<!-- FIXME: load webdnn.js -->
+<script src="paint.js"></script>
 ```
 
 ### `script.js`
