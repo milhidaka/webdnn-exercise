@@ -157,11 +157,11 @@ webdnn_output_view = /* FIXME */;
 
   1. 先ほど生成したgraph descriptorの読み込み
 
-`WebDNN.load(directory)`[マニュアル](https://mil-tokyo.github.io/webdnn/docs/api_reference/descriptor-runner/modules/webdnn.html#load)により、graph descriptorを読み込みます。これにより、runnerと呼ばれるオブジェクトが生成されます。runnerは、モデルの実行を制御する中心的なオブジェクトです。`directory`引数は、graph descriptorが存在するディレクトリ名です。なお、`WebDNN.load()`は非同期関数のため、`await`キーワードで結果を取り出します([参考](https://developer.mozilla.org/ja/docs/Web/JavaScript/Reference/Operators/await))。結果として、FIXMEに挿入すべきコードは`await WebDNN.load('./webdnn_graph_descriptor');`となります。
+`WebDNN.load(directory)`([マニュアル](https://mil-tokyo.github.io/webdnn/docs/api_reference/descriptor-runner/modules/webdnn.html#load))により、graph descriptorを読み込みます。これにより、runnerと呼ばれるオブジェクトが生成されます。runnerは、モデルの実行を制御する中心的なオブジェクトです。`directory`引数は、graph descriptorが存在するディレクトリ名です。なお、`WebDNN.load()`は非同期関数のため、`await`キーワードで結果を取り出します([参考](https://developer.mozilla.org/ja/docs/Web/JavaScript/Reference/Operators/await))。結果として、FIXMEに挿入すべきコードは`await WebDNN.load('./webdnn_graph_descriptor');`となります。
 
   2. 入出力ビューの取得
 
-runnerから、モデルの入出力データを操作するためのviewと呼ばれるオブジェクトを取得します。これには、`getInputViews()`および`getOutputViews()`メソッドを用います[マニュアル](https://mil-tokyo.github.io/webdnn/docs/api_reference/descriptor-runner/classes/webdnn.descriptorrunner.html#getinputviews) 。WebDNNではモデルが複数の入出力変数を持てるようになっており、1変数あたり1つのviewが割り当てられています。今回のモデルでは入出力それぞれ先頭の1つのviewだけが有効なため、`getInputViews()[0]`のように先頭のviewを取り出して変数に格納しておきます。結果として、FIXMEに挿入すべきコードはそれぞれ`webdnn_runner.getInputViews()[0];`、`webdnn_runner.getOutputViews()[0];`となります。
+runnerから、モデルの入出力データを操作するためのviewと呼ばれるオブジェクトを取得します。これには、`getInputViews()`および`getOutputViews()`メソッドを用います([マニュアル](https://mil-tokyo.github.io/webdnn/docs/api_reference/descriptor-runner/classes/webdnn.descriptorrunner.html#getinputviews))。WebDNNではモデルが複数の入出力変数を持てるようになっており、1変数あたり1つのviewが割り当てられています。今回のモデルでは入出力それぞれ先頭の1つのviewだけが有効なため、`getInputViews()[0]`のように先頭のviewを取り出して変数に格納しておきます。結果として、FIXMEに挿入すべきコードはそれぞれ`webdnn_runner.getInputViews()[0];`、`webdnn_runner.getOutputViews()[0];`となります。
 
 #### `calculate`関数の編集
 
