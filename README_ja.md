@@ -1,10 +1,36 @@
 # WebDNNの基本的な使い方の演習
 この記事は、Webブラウザ上でDeep Neural Networkを実行できるフレームワークWebDNNの基本的な使い方を演習を通して解説するものです。
 
+演習を最後まで進めると、次のような画面が得られます。画面上の黒い領域にマウスで数字を描くと、それがどの数字なのかを認識して表示します。
+
+![Screenshot of complete application](https://raw.githubusercontent.com/milhidaka/webdnn-exercise/master/images/complete_screenshot.png)
+
+動作するデモが[ここ](http://example.com)から見られます。
+
 WebDNNのリポジトリ: https://github.com/mil-tokyo/webdnn
 
+以下の流れで演習が進みます。
+1. 環境構築
+2. WebDNNのインストール
+3. DNNモデルの学習
+4. DNNモデルの変換
+5. JavaScriptの実装
+6. 動作確認
+
+いくつかのコードでは、WebDNNに関する処理が穴埋め問題になっており、テキストエディタで編集しながら進めます。
+
+Python 3.6がインストール可能なGUI環境であれば、ほとんどの環境で演習を行えます。深層学習フレームワークは、Keras・Chainerに対応します。NVIDIA GPUは不要です。
+
 # 環境構築
-python環境は、python 3.6, numpy, Keras 2.0が使えればOKです。
+`webdnn-exercise`リポジトリをまだダウンロードしていない場合は、次のコマンドで行います。
+
+```
+git clone https://github.com/milhidaka/webdnn-exercise
+```
+
+以下、カレントディレクトリが`webdnn-exercise`になっているものとします。
+
+Python環境は、Python 3.6, numpy, Keras 2.0 or Chainer 2.0が使えればOKです。Python 3.5以下では文法エラーとなり動作しませんので注意してください。
 
 anacondaで仮想環境を構築する場合は、以下のコマンドで行えます。
 
@@ -35,22 +61,43 @@ cd ..
 
 (執筆時点commit 519bf7c)
 
-# モデルの学習
-これ以降、`exercise`ディレクトリで作業します。`answer`ディレクトリに同じファイル構成で答えと計算済み出力ファイルが入っています。
+# DNNモデルの学習
+これ以降、`exercise`ディレクトリで作業します。`answer`ディレクトリに同じファイル構成で答えと計算済み出力ファイルが入っていますので、うまくいかない場合は参照してください。
 
-まず、Webブラウザ上で動かしたいモデルを学習します。この演習では、MNISTデータセットを用いた文字認識Convolutional Neural NetworkをKerasを用いて学習します。
+```
+cd exercise
+```
+
+まず、Webブラウザ上で動かしたいモデルを学習します。この演習では、MNISTデータセットを用いた文字認識Convolutional Neural NetworkをKerasまたはChainerを用いて学習します。MNISTデータセットは0から9の手書き数字を識別するためのデータセットです。
+
+## Kerasを利用する場合
+次のコマンドでモデルを学習します。この時点では、WebDNNに依存する処理はまだ含まれていません。
 
 ```
 python train_model_keras.py
 ```
 
-TODO: モデルの入出力についての説明
+モデルが学習され、`keras_model.h5`ファイルが生成されます。
 
-モデルが学習され、`keras_model.h5`ファイルが生成されます。この時点では、WebDNNに依存する処理はまだ含まれていません。
+学習されるモデルの入力は、28px * 28px、1チャンネルの画像です。値域は0から1(0から255ではない)で、前景が1で背景が0です。出力は、各クラス（数字）に対応するsoftmax確率を表す10次元のベクトルです。
 
-# モデルの変換
-WebDNNを用いて、Kerasモデルを、Webブラウザで読み込める形式(WebDNNではgraph descriptorと呼ぶ)に変換します。
+## Chainerを利用する場合
+次のコマンドでモデルを学習します。この時点では、WebDNNに依存する処理はまだ含まれていません。
 
+```
+python train_model_chainer.py
+```
+
+モデルが学習され、`chainer_output/chainer_model.npz`ファイルが生成されます。
+
+学習されるモデルの入力は、28px * 28px、1チャンネルの画像です。値域は0から1(0から255ではない)で、前景が1で背景が0です。出力は、各クラス（数字）に対応するsoftmax確率を表す10次元のベクトルです。
+
+TODO; `L.Classifier`の扱い
+
+# DNNモデルの変換
+WebDNNを用いて、Keras・Chainerモデルを、Webブラウザで読み込める形式(WebDNNではgraph descriptorと呼ぶ)に変換します。
+
+## Kerasを利用する場合
 ```
 python ../webdnn/bin/convert_keras.py --backend webgl --input_shape '(1,28,28,1)' keras_model.h5
 ```
@@ -61,7 +108,15 @@ TODO: input shape
 
 `webdnn_graph_descriptor`ディレクトリが作成され、中に`graph_webgl_16384.json`などのファイルが出来ます。これがgraph descriptorで、あとでWebブラウザから読み込むことになります。
 
-# WebDNN JavaScriptのコピー
+## Chainerを利用する場合
+```
+python convert_model_chainer.py
+```
+
+`webdnn_graph_descriptor`ディレクトリが作成され、中に`graph_webgl_16384.json`などのファイルが出来ます。これがgraph descriptorで、あとでWebブラウザから読み込むことになります。
+
+# JavaScriptの実装
+## WebDNN JavaScriptのコピー
 TODO
 ```
 cp ../webdnn/dist/webdnn.js webdnn.js
@@ -69,7 +124,7 @@ cp ../webdnn/dist/webdnn.js webdnn.js
 
 (もし`convert_keras.py`で`--encoding eightbit`を指定してモデルを圧縮した場合は、`../webdnn/lib/inflate.min.js`も必要)
 
-# JavaScriptの実装
+## JavaScriptの実装
 TODO
 
 # 動作確認
