@@ -4,22 +4,28 @@ var webdnn_runner = null;
 var webdnn_input_view, webdnn_output_view;
 
 // This function is called when the page is loaded
+// この関数は、ページがロードされた時に実行されます
 async function initialize() {
   console.log('Beginning of initialize()');
   // Load WebDNN model
-  webdnn_runner = /* FIXME: uncomment -> await WebDNN.load('./webdnn_graph_descriptor'); */
+  // WebDNNモデルをロードします
+  webdnn_runner = /* FIXME */;
   // Get view object for input / output variable of the model
   // There can be multiple variables for input / output, but there is only one for this model
-  webdnn_input_view = /* FIXME: uncomment -> webdnn_runner.getInputViews()[0]; */
-  webdnn_output_view = /* FIXME: uncomment -> webdnn_runner.getOutputViews()[0]; */
+  // モデルの入出力変数に対するビューを取得します
+  // 入出力に対して複数の変数を持つことができますが、このモデルでは1つだけです
+  webdnn_input_view = /* FIXME */;
+  webdnn_output_view = /* FIXME */;
   console.log('End of initialize()');
 }
 
 // This function is called when the input image is updated
+// この関数は、入力画像が更新された時に実行されます
 async function calculate() {
   console.log('Beginning of calculate()');
 
   // set input data by scaling and flattening the image in canvas
+  // canvas上の画像をscaling, flatteningして入力データとして設定します
   // https://mil-tokyo.github.io/webdnn/docs/api_reference/descriptor-runner/modules/webdnn_image.html
   var canvas_draw = document.getElementById('draw'); // canvas object that contains input image
   webdnn_input_view.set(await WebDNN.Image.getImageArray(canvas_draw, {
@@ -27,24 +33,30 @@ async function calculate() {
     dstH: /* FIXME */, dstW: /* FIXME */,
     order: WebDNN.Image.Order.HWC, // for Keras
     // order: WebDNN.Image.Order.CHW, // for Chainer (but the same as HWC because channel=1 in MNIST)
-    color: /* FIXME */,
+    color: WebDNN.Image.Color.GREY,
     bias: /* FIXME */,
     scale: /* FIXME */
   }));
 
   // run the DNN
-  /* FIXME: uncomment -> await webdnn_runner.run(); */
+  // DNNモデルを実行します
+  /* FIXME */;
 
   // get model output as Float32Array
-  var probabilities = /* FIXME: webdnn_output_view.toActual(); */
-  // 'probabilities' is array containing each label's probability (0.0 to 1.0)
+  // モデルの出力をFloat32Array形式で取得します
+  var probabilities = /* FIXME */;
+  // 'probabilities' is array containing each class's probability (0.0 to 1.0)
+  // 'probabilities'は各クラスの確率(0.0~1.0)を格納しています
   // display the result
+  // 結果を表示します
   var result_html = '';
   for (var i = 0; i < 10; i++) {
     var probability_percent = Math.floor(probabilities[i] * 100);
-    result_html += '' + i + ': ' + probability_percent + '%<br>'; // <br> makes new line
+    result_html += '' + i + ': ' + probability_percent + '%<br>'; // <br> makes new line (<br>は改行を表します)
   }
-  document.getElementById('result').innerHTML = result_html; // display result in 'result' element
+  // display result in 'result' element
+  // 'result'要素に結果を表示します
+  document.getElementById('result').innerHTML = result_html;
 
   console.log('End of calculate()');
 }

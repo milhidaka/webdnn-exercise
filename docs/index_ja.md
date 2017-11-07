@@ -65,64 +65,40 @@ cd ..
 
 (執筆時点commit 519bf7c)
 
-# DNNモデルの学習
+# DNNモデルの学習 (Keras)
+[「DNNモデルの学習」、「DNNモデルの変換」のChainer版はここをクリックしてください。](./chainer_ja.html)
+
 これ以降、`exercise`ディレクトリで作業します。`answer`ディレクトリに同じファイル構成で答えと計算済み出力ファイルが入っていますので、うまくいかない場合は参照してください。
 
 ```
 cd exercise
 ```
 
+`exercise`ディレクトリには以下のファイルが最初から入っています。
+- `train_mnist_keras.py`
+- `train_mnist_chainer.py`
+- `convert_model_chainer.py`
+- `index.html`
+- `script.js`
+- `paint.js`
+
+`train_mnist_keras.py`は、Kerasを用いてDNNモデルを学習するコードです。`train_mnist_chainer.py`は、Chainerを用いてDNNモデルを学習するコードです。`convert_model_chainer.py`は、WebDNNを用いてChainerモデルを変換するコードです。`index.html`、`script.js`、`paint.js`は、変換されたモデルを読み込んで動作するWebアプリケーションを構成するコードです。`index.html`、`script.js`については、編集すべき箇所があります。
+
 まず、Webブラウザ上で動かしたいモデルを学習します。この演習では、MNISTデータセットを用いた文字認識Convolutional Neural NetworkをKerasまたはChainerを用いて学習します。MNISTデータセットは0から9の手書き数字を識別するためのデータセットです。
 
-## Kerasを利用する場合
 次のコマンドでモデルを学習します。この時点では、WebDNNに依存する処理はまだ含まれていません。
 
 ```
-python train_model_keras.py
+python train_mnist_keras.py
 ```
 
 モデルが学習され、`keras_model.h5`ファイルが生成されます。
 
 学習されるモデルの入力は、28px * 28px、1チャンネルの画像です。値域は0から1(0から255ではない)で、前景が1で背景が0です。出力は、各クラス（数字）に対応するsoftmax確率を表す10次元のベクトルです。
 
-## Chainerを利用する場合
-次のコマンドでモデルを学習します。この時点では、WebDNNに依存する処理はまだ含まれていません。
-
-```
-python train_model_chainer.py
-```
-
-モデルが学習され、`chainer_output/chainer_model.npz`ファイルが生成されます。
-
-学習されるモデルの入力は、28px * 28px、1チャンネルの画像です。値域は0から1(0から255ではない)で、前景が1で背景が0です。出力は、各クラス（数字）に対応するモデルの反応(softmaxを適用する前の値)を表す10次元のベクトルです。
-
-softmax cross entropy lossを用いて学習するにあたり、モデルの定義に注意が必要です。この演習ではChainerの標準的な利用方法に従い、多クラス識別モデルを次のように実装します。
-```python
-class CNN(chainer.Chain):
-    def __init__(self):
-        super(CNN, self).__init__()
-        with self.init_scope():
-            # the size of the inputs to each layer will be inferred
-            self.conv1 = L.Convolution2D(None, 8, ksize=3)
-            self.conv2 = L.Convolution2D(None, 16, ksize=3)
-            self.l3 = L.Linear(None, 32)
-            self.l4 = L.Linear(None, 10)
-
-    def __call__(self, x):
-        h1 = F.relu(self.conv1(x))
-        h2 = F.relu(self.conv2(h1))
-        h3 = F.relu(self.l3(h2))
-        return self.l4(h3)
-
-model = chainer.links.Classifier(CNN())
-```
-
-すなわち、`CNN()`はsoftmaxを適用する前のモデルを表し、`chainer.links.Classifier`がsoftmaxおよび損失計算を担っています。このことはモデルの変換時に注意事項として出てきます。
-
-# DNNモデルの変換
+# DNNモデルの変換 (Keras)
 WebDNNを用いて、Keras・Chainerモデルを、Webブラウザで読み込める形式(WebDNNではgraph descriptorと呼ぶ)に変換します。
 
-## Kerasを利用する場合
 次のコマンドで変換を行います。
 
 ```
@@ -137,58 +113,15 @@ Webブラウザ上で数値計算を高速に行うために利用出来る規�
 
 `webdnn_graph_descriptor`ディレクトリが作成され、中に`graph_webgl_16384.json`などのファイルが出来ます。これがgraph descriptorで、あとでWebブラウザから読み込むことになります。
 
-## Chainerを利用する場合
-次のコマンドで変換を行います。
+# HTML/JavaScriptの実装
+<a name="html_javascript"></a>
 
-```
-python convert_model_chainer.py
-```
-
-コードは短いですが、重要な部分について説明を加えておきます。
-
-ChainerはDefine-by-Run方式をとっているため、モデルを実際に動作させて計算グラフを取得し、それをWebDNNに与えてgraph descriptorを生成させるという手順になっています。
-
-モデルオブジェクトの生成および学習したパラメータの読み込みを行います。
-```python
-model = chainer.links.Classifier(CNN())
-chainer.serializers.load_npz('chainer_output/chainer_model.npz', model)
-```
-
-ダミーの入力変数`input_variable`を作成し、モデルを動作させます。配列の形状`(1, 1, 28, 28)`は、入力画像の「バッチサイズ、チャンネル数、高さ、幅」を表しています。`model.predictor==CNN()`です。
-```python
-input_variable = chainer.Variable(np.zeros((1, 1, 28, 28), dtype=np.float32))
-prediction_raw_variable = model.predictor(input_variable)
-```
-
-softmax関数によって確率に変換します。chainer.links.Classifierの中では、softmaxとcross entropyが同時に計算されてしまい損失しか得ることができません。
-```python
-prediction_with_softmax_variable = chainer.functions.softmax(prediction_raw_variable)
-```
-
-入出力変数(計算履歴情報を保持している)を用いて、DNNの計算グラフをWebDNNの中間表現に変換します。
-```python
-graph = ChainerConverter().convert([input_variable], [
-    prediction_with_softmax_variable])
-```
-
-Webブラウザ上で数値計算を高速に行うために利用出来る規格がいくつかあります。WebDNNではこれをバックエンドと呼び、WebGPU・WebGL・WebAssemblyに対応しています。ここでは環境構築が容易なWebGLを利用することとし、オプションに`webgl`を指定して`generate_descriptor`を呼び出し、生成されたgraph descriptorを保存します。環境が整っていれば、`webgpu`, `webassembly`等を指定して同様にgraph descriptorを生成・保存することができます。この場合、Webブラウザ側ではそのブラウザが対応しているバックエンドを自動的に選択して読み込むようになっています。
-```python
-backend = 'webgl'
-exec_info = generate_descriptor(backend, graph)
-exec_info.save('webdnn_graph_descriptor')
-```
-
-`webdnn_graph_descriptor`ディレクトリが作成され、中に`graph_webgl_16384.json`などのファイルが出来ます。これがgraph descriptorで、あとでWebブラウザから読み込むことになります。
-
-# JavaScriptの実装
 ## WebDNN JavaScriptのコピー
 先ほど生成したgraph descriptorをWebブラウザ上で読み込んで動作させるためのJavaScriptライブラリを、以前cloneしたWebDNNリポジトリからコピーします。
 
 ```
 cp ../webdnn/dist/webdnn.js webdnn.js
 ```
-
-(もし`convert_keras.py`で`--encoding eightbit`を指定してモデルを圧縮した場合は、`../webdnn/lib/inflate.min.js`も必要)
 
 ## HTML/JavaScriptの実装
 Webアプリケーション本体の実装を行います。HTMLでページの視覚的構造を記述し、JavaScriptで動作のロジックを記述します。
@@ -201,7 +134,7 @@ Webアプリケーション本体の実装を行います。HTMLでページの�
 
 編集すべきファイルは`index.html`、`script.js`の2つです。編集すべき箇所には`FIXME`というキーワードが書かれています。
 
-`index.html`では、以下の箇所を編集します。
+### `index.html`の編集
 
 `script`タグで、先ほどコピーした`webdnn.js`を読み込みます。
 ```html
@@ -210,31 +143,30 @@ Webアプリケーション本体の実装を行います。HTMLでページの�
   <script src="paint.js"></script>
 ```
 
-`script.js`では、以下の箇所を編集します。
-
-`initialize`関数内
+### `script.js`
+#### `initialize`関数の編集
 
 ```javascript
-// Load WebDNN model
-webdnn_runner = /* FIXME: uncomment -> await WebDNN.load('./webdnn_graph_descriptor'); */
-// Get view object for input / output variable of the model
-// There can be multiple variables for input / output, but there is only one for this model
-webdnn_input_view = /* FIXME: uncomment -> webdnn_runner.getInputViews()[0]; */
-webdnn_output_view = /* FIXME: uncomment -> webdnn_runner.getOutputViews()[0]; */
+// WebDNNモデルをロードします
+webdnn_runner = /* FIXME */;
+// モデルの入出力変数に対するビューを取得します
+// 入出力に対して複数の変数を持つことができますが、このモデルでは1つだけです
+webdnn_input_view = /* FIXME */;
+webdnn_output_view = /* FIXME */;
 ```
 
   1. 先ほど生成したgraph descriptorの読み込み
 
-`WebDNN.load()`により、graph descriptorを読み込みます。これにより、runnerと呼ばれるオブジェクトが生成されます。runnerは、モデルの実行を制御する中心的なオブジェクトです。なお、`WebDNN.load()`は非同期関数のため、`await`キーワードで結果を取り出します([参考](https://developer.mozilla.org/ja/docs/Web/JavaScript/Reference/Operators/await))。
+`WebDNN.load(directory)`[マニュアル](https://mil-tokyo.github.io/webdnn/docs/api_reference/descriptor-runner/modules/webdnn.html#load)により、graph descriptorを読み込みます。これにより、runnerと呼ばれるオブジェクトが生成されます。runnerは、モデルの実行を制御する中心的なオブジェクトです。`directory`引数は、graph descriptorが存在するディレクトリ名です。なお、`WebDNN.load()`は非同期関数のため、`await`キーワードで結果を取り出します([参考](https://developer.mozilla.org/ja/docs/Web/JavaScript/Reference/Operators/await))。結果として、FIXMEに挿入すべきコードは`await WebDNN.load('./webdnn_graph_descriptor');`となります。
 
   2. 入出力ビューの取得
 
-runnerから、モデルの入出力データを操作するためのviewと呼ばれるオブジェクトを取得します。
+runnerから、モデルの入出力データを操作するためのviewと呼ばれるオブジェクトを取得します。これには、`getInputViews()`および`getOutputViews()`メソッドを用います[マニュアル](https://mil-tokyo.github.io/webdnn/docs/api_reference/descriptor-runner/classes/webdnn.descriptorrunner.html#getinputviews) 。WebDNNではモデルが複数の入出力変数を持てるようになっており、1変数あたり1つのviewが割り当てられています。今回のモデルでは入出力それぞれ先頭の1つのviewだけが有効なため、`getInputViews()[0]`のように先頭のviewを取り出して変数に格納しておきます。結果として、FIXMEに挿入すべきコードはそれぞれ`webdnn_runner.getInputViews()[0];`、`webdnn_runner.getOutputViews()[0];`となります。
 
-`calculate`関数内
+#### `calculate`関数の編集
 
 ```javascript
-// set input data by scaling and flattening the image in canvas
+// canvas上の画像をscaling, flatteningして入力データとして設定します
 // https://mil-tokyo.github.io/webdnn/docs/api_reference/descriptor-runner/modules/webdnn_image.html
 var canvas_draw = document.getElementById('draw'); // canvas object that contains input image
 webdnn_input_view.set(await WebDNN.Image.getImageArray(canvas_draw, {
@@ -242,16 +174,16 @@ webdnn_input_view.set(await WebDNN.Image.getImageArray(canvas_draw, {
   dstH: /* FIXME */, dstW: /* FIXME */,
   order: WebDNN.Image.Order.HWC, // for Keras
   // order: WebDNN.Image.Order.CHW, // for Chainer (but the same as HWC because channel=1 in MNIST)
-  color: /* FIXME */,
+  color: WebDNN.Image.Color.GREY,
   bias: /* FIXME */,
   scale: /* FIXME */
 }));
 
-// run the DNN
-/* FIXME: uncomment -> await webdnn_runner.run(); */
+// DNNモデルを実行します
+/* FIXME */;
 
-// get model output as Float32Array
-var probabilities = /* FIXME: webdnn_output_view.toActual(); */
+// モデルの出力をFloat32Array形式で取得します
+var probabilities = /* FIXME */;
 ```
 
   1. canvas上の画像を変換し、入力変数に書き込み
@@ -271,7 +203,7 @@ canvasオブジェクト`canvas_draw`に、ユーザが描いた画像を表す�
 
   2. モデルを実行
 
-`webdnn_runner.run()`でモデルを実行できます。
+`await webdnn_runner.run()`でモデルを実行できます。awaitは、非同期実行の完了を待つ演算子です。
 
   3. 出力変数から計算結果を取り出し
 
