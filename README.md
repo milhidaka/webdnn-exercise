@@ -8,6 +8,6 @@ Please [move to the main content (English)](https://milhidaka.github.io/webdnn-e
 
 本編は[こちら (日本語)](https://milhidaka.github.io/webdnn-exercise/index_ja.html)です。
 
-![Screenshot of complete application](https://raw.githubusercontent.com/milhidaka/webdnn-exercise/master/images/complete_screenshot.png)
+![Screenshot of complete application](https://raw.githubusercontent.com/milhidaka/webdnn-exercise/master/docs/images/complete_screenshot.png)
 
 [Working example](https://milhidaka.github.io/webdnn-exercise/answer/)
