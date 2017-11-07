@@ -10,4 +10,4 @@ Please [move to the main content (English)](https://milhidaka.github.io/webdnn-e
 
 ![Screenshot of complete application](https://raw.githubusercontent.com/milhidaka/webdnn-exercise/master/docs/images/complete_screenshot.png)
 
-[Working example](https://milhidaka.github.io/webdnn-exercise/answer/)
+[Working example](https://milhidaka.github.io/webdnn-exercise/example/)
