@@ -30,7 +30,7 @@ class SimpleCanvasPainter {
     this.context.fillStyle = 'black';
     this.context.strokeStyle = 'white';
     this.context.lineCap = 'round';
-    this.context.lineWidth = '10';
+    this.context.lineWidth = '20';
 
     canvas.addEventListener('mousedown', (ev) => this.onMouseDown(ev));
     canvas.addEventListener('mousemove', (ev) => this.onMouseMove(ev));
