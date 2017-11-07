@@ -9,6 +9,10 @@
 
 WebDNNのリポジトリ: https://github.com/mil-tokyo/webdnn
 
+## 対象読者
+この演習では、深層学習(Deep Learning)自体の説明は行いません。Pythonの基本的な文法およびKerasまたはChainerで簡単な画像識別モデルを学習させる方法についての知識があることを仮定しています。JavaScriptについても知識があると望ましいですが、なくてもかまいません。
+
+## 演習の流れ
 以下の流れで演習が進みます。
 1. 環境構築
 2. WebDNNのインストール
