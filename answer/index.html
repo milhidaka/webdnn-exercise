@@ -2,28 +2,25 @@
 <html>
 
 <head>
-    <title>WebDNN mnist example</title>
-    <meta charset="utf-8">
-    <script src="webdnn.js"></script>
-    <script src="script.js"></script>
-    <style type="text/css">
-    #draw {
-      border: 3px solid;
-    }
-    </style>
+  <title>WebDNN exercise</title>
+  <meta charset="utf-8">
+  <script src="webdnn.js"></script>
+  <script src="paint.js"></script>
+  <script src="script.js"></script>
 </head>
 
 <body>
-<div>
-  Draw digit by mouse below:
-  <br>
-  <canvas id="draw" width="256" height="256"></canvas>
-  <br>
-  <button type="button" id="reset">Reset</button>
-</div>
-<div id="result">
-
-</div>
+  <h1>WebDNN exercise</h1>
+  <div style="float: left;">
+    Draw digit by mouse below:
+    <br>
+    <canvas id="draw" width="256" height="256"></canvas>
+    <br>
+    <button type="button" id="reset">Reset</button>
+  </div>
+  <div id="result">
+    (Classification result will be displayed here)
+  </div>
 </body>
 
 </html>
