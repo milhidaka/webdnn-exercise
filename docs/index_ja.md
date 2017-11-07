@@ -252,27 +252,19 @@ webdnn_input_view.set(await WebDNN.Image.getImageArray(canvas_draw, {
 var probabilities = /* FIXME: webdnn_output_view.toActual(); */
 ```
 
-1. canvas上の画像を変換し、入力変数に書き込み
-
-canvasオブジェクト`canvas_draw`に、ユーザが描いた画像を表すデータが入っています。これをモデルに入力するためには所定の形式に変換する必要があります。`canvas_draw.getContext('2d').getImageData`メソッドにより生のピクセル値を取り出すことはできますが、モデルの入力として用いるためにはいくつかの変換が必要です。
-
+1. canvas上の画像を変換し、入力変数に書き込み 
+canvasオブジェクト`canvas_draw`に、ユーザが描いた画像を表すデータが入っています。これをモデルに入力するためには所定の形式に変換する必要があります。`canvas_draw.getContext('2d').getImageData`メソッドにより生のピクセル値を取り出すことはできますが、モデルの入力として用いるためにはいくつかの変換が必要です。 
 |項目|canvasデータ|モデルが受け付ける形式|
 |---|---|---|
 |ピクセル数|256px * 256px|28px * 28px|
 |色|RGBA(カラー+透明度)|モノクロ|
 |値域|0~255|0~1|
 |データオーダー|HWC|HWC(Kerasモデルの場合)、CHW(Chainerモデルの場合)|
-
-データオーダーとは画像を1次元の配列で表現した時のピクセルの並び順のことです。ピクセルの明るさを関数`I(y, x, channel)`で表現した場合、HWC(height, width, channel)なら`[I(0, 0, 0), I(0, 0, 1), I(0, 0, 2), I(0, 1, 0)...]`となり、CHW(chanel, height, width)なら`[I(0, 0, 0), I(0, 1, 0), I(0, 2, 0), ..., I(0, W-1, 0), I(1, 0, 0), ...]`というように順序が定まります。
-
+データオーダーとは画像を1次元の配列で表現した時のピクセルの並び順のことです。ピクセルの明るさを関数`I(y, x, channel)`で表現した場合、HWC(height, width, channel)なら`[I(0, 0, 0), I(0, 0, 1), I(0, 0, 2), I(0, 1, 0)...]`となり、CHW(chanel, height, width)なら`[I(0, 0, 0), I(0, 1, 0), I(0, 2, 0), ..., I(0, W-1, 0), I(1, 0, 0), ...]`というように順序が定まります。 
 これらの変換を簡単に行うためのメソッドが`WebDNN.Image.getImageArray`です。[マニュアル](https://mil-tokyo.github.io/webdnn/docs/api_reference/descriptor-runner/modules/webdnn_image.html)を見ながらFIXMEとなっているところを埋めましょう。
-
-2. モデルを実行
-
+2. モデルを実行 
 `webdnn_runner.run()`でモデルを実行できます。
-
-3. 出力変数から計算結果を取り出し
-
+3. 出力変数から計算結果を取り出し 
 `webdnn_output_view.toActual()`で、モデルの計算結果(各クラスの確率)を取り出すことができます。後続の処理は、これを加工して画面に表示しています。
 
 # 動作確認
