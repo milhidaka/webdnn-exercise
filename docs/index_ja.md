@@ -5,7 +5,7 @@
 
 ![Screenshot of complete application](https://raw.githubusercontent.com/milhidaka/webdnn-exercise/master/images/complete_screenshot.png)
 
-動作するデモが[ここ](http://example.com)から見られます。
+動作するデモが[ここ](https://milhidaka.github.io/webdnn-exercise/answer/)から見られます。
 
 WebDNNのリポジトリ: https://github.com/mil-tokyo/webdnn
 
