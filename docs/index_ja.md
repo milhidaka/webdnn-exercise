@@ -143,8 +143,8 @@ Webアプリケーション本体の実装を行います。HTMLでページの�
 <script src="paint.js"></script>
 ```
 
-### `script.js`
-#### `initialize`関数の編集
+### `script.js`の編集
+#### `initialize`関数
 
 ```javascript
 // WebDNNモデルをロードします
@@ -163,7 +163,7 @@ webdnn_output_view = /* FIXME */;
 
 runnerから、モデルの入出力データを操作するためのviewと呼ばれるオブジェクトを取得します。これには、`getInputViews()`および`getOutputViews()`メソッドを用います([マニュアル](https://mil-tokyo.github.io/webdnn/docs/api_reference/descriptor-runner/classes/webdnn.descriptorrunner.html#getinputviews))。WebDNNではモデルが複数の入出力変数を持てるようになっており、1変数あたり1つのviewが割り当てられています。今回のモデルでは入出力それぞれ先頭の1つのviewだけが有効なため、`getInputViews()[0]`のように先頭のviewを取り出して変数に格納しておきます。結果として、FIXMEに挿入すべきコードはそれぞれ`webdnn_runner.getInputViews()[0];`、`webdnn_runner.getOutputViews()[0];`となります。
 
-#### `calculate`関数の編集
+#### `calculate`関数
 
 ```javascript
 // canvas上の画像をscaling, flatteningして入力データとして設定します
