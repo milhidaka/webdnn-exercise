@@ -155,11 +155,11 @@ webdnn_input_view = /* FIXME */;
 webdnn_output_view = /* FIXME */;
 ```
 
-  1. 先ほど生成したgraph descriptorの読み込み
+1: 先ほど生成したgraph descriptorの読み込み
 
 `WebDNN.load(directory)`([マニュアル](https://mil-tokyo.github.io/webdnn/docs/api_reference/descriptor-runner/modules/webdnn.html#load))により、graph descriptorを読み込みます。これにより、runnerと呼ばれるオブジェクトが生成されます。runnerは、モデルの実行を制御する中心的なオブジェクトです。`directory`引数は、graph descriptorが存在するディレクトリ名です。なお、`WebDNN.load()`は非同期関数のため、`await`キーワードで結果を取り出します([参考](https://developer.mozilla.org/ja/docs/Web/JavaScript/Reference/Operators/await))。結果として、FIXMEに挿入すべきコードは`await WebDNN.load('./webdnn_graph_descriptor');`となります。
 
-  2. 入出力ビューの取得
+2: 入出力ビューの取得
 
 runnerから、モデルの入出力データを操作するためのviewと呼ばれるオブジェクトを取得します。これには、`getInputViews()`および`getOutputViews()`メソッドを用います([マニュアル](https://mil-tokyo.github.io/webdnn/docs/api_reference/descriptor-runner/classes/webdnn.descriptorrunner.html#getinputviews))。WebDNNではモデルが複数の入出力変数を持てるようになっており、1変数あたり1つのviewが割り当てられています。今回のモデルでは入出力それぞれ先頭の1つのviewだけが有効なため、`getInputViews()[0]`のように先頭のviewを取り出して変数に格納しておきます。結果として、FIXMEに挿入すべきコードはそれぞれ`webdnn_runner.getInputViews()[0];`、`webdnn_runner.getOutputViews()[0];`となります。
 
@@ -186,7 +186,7 @@ webdnn_input_view.set(await WebDNN.Image.getImageArray(canvas_draw, {
 var probabilities = /* FIXME */;
 ```
 
-  1. canvas上の画像を変換し、入力変数に書き込み
+1: canvas上の画像を変換し、入力変数に書き込み
 
 canvasオブジェクト`canvas_draw`に、ユーザが描いた画像を表すデータが入っています。これをモデルに入力するためには所定の形式に変換する必要があります。`canvas_draw.getContext('2d').getImageData`メソッドにより生のピクセル値を取り出すことはできますが、モデルの入力として用いるためにはいくつかの変換が必要です。
 
@@ -201,11 +201,11 @@ canvasオブジェクト`canvas_draw`に、ユーザが描いた画像を表す�
 
 これらの変換を簡単に行うためのメソッドが`WebDNN.Image.getImageArray`です。[マニュアル](https://mil-tokyo.github.io/webdnn/docs/api_reference/descriptor-runner/modules/webdnn_image.html)を見ながらFIXMEとなっているところを埋めましょう。
 
-  2. モデルを実行
+2: モデルを実行
 
-`await webdnn_runner.run()`でモデルを実行できます。awaitは、非同期実行の完了を待つ演算子です。
+`await webdnn_runner.run()`でモデルを実行できます。`await`は、非同期実行の完了を待つ演算子です。
 
-  3. 出力変数から計算結果を取り出し
+3: 出力変数から計算結果を取り出し
 
 `webdnn_output_view.toActual()`で、モデルの計算結果(各クラスの確率)を取り出すことができます。後続の処理は、これを加工して画面に表示しています。
 
