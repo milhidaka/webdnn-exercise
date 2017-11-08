@@ -97,7 +97,7 @@ python train_mnist_keras.py
 学習されるモデルの入力は、28px * 28px、1チャンネルの画像です。値域は0から1(0から255ではない)で、前景が1で背景が0です。出力は、各クラス（数字）に対応するsoftmax確率を表す10次元のベクトルです。
 
 # DNNモデルの変換 (Keras)
-WebDNNを用いて、Keras・Chainerモデルを、Webブラウザで読み込める形式(WebDNNではgraph descriptorと呼ぶ)に変換します。
+WebDNNを用いて、Kerasモデルを、Webブラウザで読み込める形式(WebDNNではgraph descriptorと呼ぶ)に変換します。
 
 次のコマンドで変換を行います。
 
