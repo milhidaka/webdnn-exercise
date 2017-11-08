@@ -80,9 +80,11 @@ class SimpleCanvasPainter {
     this.flagContinueStroke = false;
   }
 
-  requestCalculation() {
+  async requestCalculation() {
     if (this.flagCalculationRequested) return;
     this.flagCalculationRequested = true;
+
+    while (!webdnn_runner) await new Promise(r => requestAnimationFrame(r));
 
     calculate()
       .then(() => {
