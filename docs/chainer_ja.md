@@ -76,7 +76,7 @@ input_variable = chainer.Variable(np.zeros((1, 1, 28, 28), dtype=np.float32))
 prediction_raw_variable = model.predictor(input_variable)
 ```
 
-softmax関数によって確率に変換します。chainer.links.Classifierの中では、softmaxとcross entropyが同時に計算されてしまい損失しか得ることができません。
+softmax関数によって確率に変換します。`chainer.links.Classifier`の中では、softmaxとcross entropyが同時に計算されてしまい損失しか得ることができません。
 ```python
 prediction_with_softmax_variable = chainer.functions.softmax(prediction_raw_variable)
 ```
