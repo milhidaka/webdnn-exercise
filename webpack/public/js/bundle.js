@@ -177,23 +177,55 @@ exports.setTyped(TYPED_OK);
 
 /***/ }),
 /* 1 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
+/***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-/* harmony export (immutable) */ __webpack_exports__["d"] = transformUrl;
-/* harmony export (immutable) */ __webpack_exports__["c"] = registerTransformUrlDelegate;
-/* harmony export (immutable) */ __webpack_exports__["a"] = webdnnFetch;
-/* harmony export (immutable) */ __webpack_exports__["b"] = readArrayBufferProgressively;
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__util_dispatch_scheduler__ = __webpack_require__(34);
+
 /**
  * @module webdnn
  */
 /** Don't Remove This comment block */
-
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : new P(function (resolve) { resolve(result.value); }).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
+var __generator = (this && this.__generator) || function (thisArg, body) {
+    var _ = { label: 0, sent: function() { if (t[0] & 1) throw t[1]; return t[1]; }, trys: [], ops: [] }, f, y, t, g;
+    return g = { next: verb(0), "throw": verb(1), "return": verb(2) }, typeof Symbol === "function" && (g[Symbol.iterator] = function() { return this; }), g;
+    function verb(n) { return function (v) { return step([n, v]); }; }
+    function step(op) {
+        if (f) throw new TypeError("Generator is already executing.");
+        while (_) try {
+            if (f = 1, y && (t = y[op[0] & 2 ? "return" : op[0] ? "throw" : "next"]) && !(t = t.call(y, op[1])).done) return t;
+            if (y = 0, t) op = [0, t.value];
+            switch (op[0]) {
+                case 0: case 1: t = op; break;
+                case 4: _.label++; return { value: op[1], done: false };
+                case 5: _.label++; y = op[1]; op = [0]; continue;
+                case 7: op = _.ops.pop(); _.trys.pop(); continue;
+                default:
+                    if (!(t = _.trys, t = t.length > 0 && t[t.length - 1]) && (op[0] === 6 || op[0] === 2)) { _ = 0; continue; }
+                    if (op[0] === 3 && (!t || (op[1] > t[0] && op[1] < t[3]))) { _.label = op[1]; break; }
+                    if (op[0] === 6 && _.label < t[1]) { _.label = t[1]; t = op; break; }
+                    if (t && _.label < t[2]) { _.label = t[2]; _.ops.push(op); break; }
+                    if (t[2]) _.ops.pop();
+                    _.trys.pop(); continue;
+            }
+            op = body.call(thisArg, _);
+        } catch (e) { op = [6, e]; y = 0; } finally { f = t = 0; }
+        if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
+    }
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+var dispatch_scheduler_1 = __webpack_require__(35);
 /**
  * @protected
  */
-let transformDelegate = url => url;
+var transformDelegate = function (url) { return url; };
 /**
  * Transform url generated based on current active backend
  * @param url transformed url
@@ -202,6 +234,7 @@ let transformDelegate = url => url;
 function transformUrl(url) {
     return transformDelegate(url);
 }
+exports.transformUrl = transformUrl;
 /**
  * Register delegate function for transform url.
  * @param delegate Delegate function which will be called with original url, and must return converted url strings.
@@ -210,6 +243,7 @@ function transformUrl(url) {
 function registerTransformUrlDelegate(delegate) {
     transformDelegate = delegate;
 }
+exports.registerTransformUrlDelegate = registerTransformUrlDelegate;
 /**
  * Fetch function. WebDNN API use this function instead of original `fetch` function.
  * FIXME
@@ -219,26 +253,38 @@ function registerTransformUrlDelegate(delegate) {
  * @returns Response
  * @protected
  */
-async function webdnnFetch(input, init) {
-    if (typeof input == 'string') {
-        input = transformUrl(input) + ((init && init.ignoreCache) ? '?t=' + Date.now() : '');
-    }
-    else {
-        input = Object.assign({}, input, {
-            url: transformUrl(input.url) + ((init && init.ignoreCache) ? '?t=' + Date.now() : '')
+function webdnnFetch(input, init) {
+    return __awaiter(this, void 0, void 0, function () {
+        var res;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0:
+                    if (typeof input == 'string') {
+                        input = transformUrl(input) + ((init && init.ignoreCache) ? '?t=' + Date.now() : '');
+                    }
+                    else {
+                        input = Object.assign({}, input, {
+                            url: transformUrl(input.url) + ((init && init.ignoreCache) ? '?t=' + Date.now() : '')
+                        });
+                    }
+                    if (!(typeof input == 'string' && isXHR2WithBlobSupported())) return [3 /*break*/, 2];
+                    return [4 /*yield*/, fetchUsingXHR(input, init && init.progressCallback)];
+                case 1:
+                    res = _a.sent();
+                    return [3 /*break*/, 4];
+                case 2: return [4 /*yield*/, fetch(input, init)];
+                case 3:
+                    res = _a.sent();
+                    _a.label = 4;
+                case 4:
+                    if (!res.ok)
+                        throw new Error("Fetch returns status code " + res.status + ": " + res.statusText);
+                    return [2 /*return*/, res];
+            }
         });
-    }
-    let res;
-    if (typeof input == 'string' && isXHR2WithBlobSupported()) {
-        res = await fetchUsingXHR(input, init && init.progressCallback);
-    }
-    else {
-        res = await fetch(input, init);
-    }
-    if (!res.ok)
-        throw new Error(`Fetch returns status code ${res.status}: ${res.statusText}`);
-    return res;
+    });
 }
+exports.default = webdnnFetch;
 /**
  * Read `Response.body` stream as ArrayBuffer. This function provide progress information by callback.
  * @param res Response object
@@ -249,19 +295,19 @@ async function webdnnFetch(input, init) {
 function readArrayBufferProgressively(res, callback) {
     if (!callback || !res.body)
         return res.arrayBuffer();
-    let contentLength = res.headers.get('Content-Length');
+    var contentLength = res.headers.get('Content-Length');
     if (!contentLength)
         return res.arrayBuffer();
-    const total = parseInt(contentLength);
-    let buffer = new Uint8Array(total);
-    let loaded = 0;
-    let reader = res.body.getReader();
-    let callbackScheduler = new __WEBPACK_IMPORTED_MODULE_0__util_dispatch_scheduler__["a" /* default */]();
+    var total = parseInt(contentLength);
+    var buffer = new Uint8Array(total);
+    var loaded = 0;
+    var reader = res.body.getReader();
+    var callbackScheduler = new dispatch_scheduler_1.default();
     function accumulateLoadedSize(chunk) {
         buffer.set(chunk.value, loaded);
         loaded += chunk.value.length;
         if (callback) {
-            callbackScheduler.request(() => callback(loaded, total));
+            callbackScheduler.request(function () { return callback(loaded, total); });
         }
         if (loaded == total) {
             callbackScheduler.forceDispatch();
@@ -273,6 +319,7 @@ function readArrayBufferProgressively(res, callback) {
     }
     return reader.read().then(accumulateLoadedSize);
 }
+exports.readArrayBufferProgressively = readArrayBufferProgressively;
 /**
  * check whether XMLHttpRequest with Blob type is supported or not
  * @protected
@@ -281,7 +328,7 @@ function isXHR2WithBlobSupported() {
     if (!window.hasOwnProperty('ProgressEvent') || !window.hasOwnProperty('FormData')) {
         return false;
     }
-    let xhr = new XMLHttpRequest();
+    var xhr = new XMLHttpRequest();
     if (typeof xhr.responseType === 'string') {
         try {
             xhr.responseType = 'blob';
@@ -301,13 +348,13 @@ function isXHR2WithBlobSupported() {
  */
 function fetchUsingXHR(url, callback) {
     return new Promise(function (resolve, reject) {
-        let req = new XMLHttpRequest();
+        var req = new XMLHttpRequest();
         req.open("GET", url, true);
         req.responseType = "blob";
-        let callbackScheduler = new __WEBPACK_IMPORTED_MODULE_0__util_dispatch_scheduler__["a" /* default */]();
+        var callbackScheduler = new dispatch_scheduler_1.default();
         req.onload = function (event) {
             callbackScheduler.forceDispatch();
-            let res = new Response(req.response);
+            var res = new Response(req.response);
             resolve(res);
         };
         req.onprogress = function (event) {
@@ -325,35 +372,60 @@ function fetchUsingXHR(url, callback) {
 
 /***/ }),
 /* 2 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
+/***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-/* harmony export (immutable) */ __webpack_exports__["getConfiguration"] = getConfiguration;
-/* harmony export (immutable) */ __webpack_exports__["setConfiguration"] = setConfiguration;
-/* harmony export (immutable) */ __webpack_exports__["getBackendAvailability"] = getBackendAvailability;
-/* harmony export (immutable) */ __webpack_exports__["load"] = load;
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__descriptor_runner_descriptor_runner_fallback__ = __webpack_require__(22);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__descriptor_runner_descriptor_runner_webassembly__ = __webpack_require__(36);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__descriptor_runner_descriptor_runner_webgl__ = __webpack_require__(37);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__descriptor_runner_descriptor_runner_webgpu__ = __webpack_require__(39);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__fetch__ = __webpack_require__(1);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__image__ = __webpack_require__(40);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__math__ = __webpack_require__(43);
-/* harmony reexport (module object) */ __webpack_require__.d(__webpack_exports__, "Math", function() { return __WEBPACK_IMPORTED_MODULE_6__math__; });
-/* harmony reexport (module object) */ __webpack_require__.d(__webpack_exports__, "Image", function() { return __WEBPACK_IMPORTED_MODULE_5__image__; });
 
-
-
-
-
-
-
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : new P(function (resolve) { resolve(result.value); }).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
+var __generator = (this && this.__generator) || function (thisArg, body) {
+    var _ = { label: 0, sent: function() { if (t[0] & 1) throw t[1]; return t[1]; }, trys: [], ops: [] }, f, y, t, g;
+    return g = { next: verb(0), "throw": verb(1), "return": verb(2) }, typeof Symbol === "function" && (g[Symbol.iterator] = function() { return this; }), g;
+    function verb(n) { return function (v) { return step([n, v]); }; }
+    function step(op) {
+        if (f) throw new TypeError("Generator is already executing.");
+        while (_) try {
+            if (f = 1, y && (t = y[op[0] & 2 ? "return" : op[0] ? "throw" : "next"]) && !(t = t.call(y, op[1])).done) return t;
+            if (y = 0, t) op = [0, t.value];
+            switch (op[0]) {
+                case 0: case 1: t = op; break;
+                case 4: _.label++; return { value: op[1], done: false };
+                case 5: _.label++; y = op[1]; op = [0]; continue;
+                case 7: op = _.ops.pop(); _.trys.pop(); continue;
+                default:
+                    if (!(t = _.trys, t = t.length > 0 && t[t.length - 1]) && (op[0] === 6 || op[0] === 2)) { _ = 0; continue; }
+                    if (op[0] === 3 && (!t || (op[1] > t[0] && op[1] < t[3]))) { _.label = op[1]; break; }
+                    if (op[0] === 6 && _.label < t[1]) { _.label = t[1]; t = op; break; }
+                    if (t && _.label < t[2]) { _.label = t[2]; _.ops.push(op); break; }
+                    if (t[2]) _.ops.pop();
+                    _.trys.pop(); continue;
+            }
+            op = body.call(thisArg, _);
+        } catch (e) { op = [6, e]; y = 0; } finally { f = t = 0; }
+        if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
+    }
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+var descriptor_runner_fallback_1 = __webpack_require__(22);
+var descriptor_runner_webassembly_1 = __webpack_require__(37);
+var descriptor_runner_webgl_1 = __webpack_require__(38);
+var descriptor_runner_webgpu_1 = __webpack_require__(40);
+var fetch_1 = __webpack_require__(1);
+var Image = __webpack_require__(41);
+exports.Image = Image;
+var Math = __webpack_require__(44);
+exports.Math = Math;
 /**
  * DEBUG flag for developing WebDNN
  * @private
  */
-let configurations = {};
+var configurations = {};
 /**
  * get configuration
  * @private
@@ -361,6 +433,7 @@ let configurations = {};
 function getConfiguration(key, defaultValue) {
     return key in configurations ? configurations[key] : defaultValue;
 }
+exports.getConfiguration = getConfiguration;
 /**
  * set configuration
  * @private
@@ -368,15 +441,16 @@ function getConfiguration(key, defaultValue) {
 function setConfiguration(key, value) {
     configurations[key] = value;
 }
+exports.setConfiguration = setConfiguration;
 /**
  * Backend constructor map
  * @private
  */
-const descriptorRunners = {
-    webgpu: __WEBPACK_IMPORTED_MODULE_3__descriptor_runner_descriptor_runner_webgpu__["a" /* default */],
-    webgl: __WEBPACK_IMPORTED_MODULE_2__descriptor_runner_descriptor_runner_webgl__["a" /* default */],
-    webassembly: __WEBPACK_IMPORTED_MODULE_1__descriptor_runner_descriptor_runner_webassembly__["a" /* default */],
-    fallback: __WEBPACK_IMPORTED_MODULE_0__descriptor_runner_descriptor_runner_fallback__["a" /* default */]
+var descriptorRunners = {
+    webgpu: descriptor_runner_webgpu_1.default,
+    webgl: descriptor_runner_webgl_1.default,
+    webassembly: descriptor_runner_webassembly_1.default,
+    fallback: descriptor_runner_fallback_1.default
 };
 /**
  * Check each computing backend is available or not in this browser.
@@ -385,35 +459,47 @@ const descriptorRunners = {
  * @returns backend availability
  */
 function getBackendAvailability() {
-    let status = {
+    var status = {
         'webgpu': descriptorRunners['webgpu'].checkAvailability(),
         'webgl': descriptorRunners['webgl'].checkAvailability(),
         'webassembly': descriptorRunners['webassembly'].checkAvailability(),
         'fallback': descriptorRunners['fallback'].checkAvailability(),
     };
-    let order = ['webgpu', 'webgl', 'webassembly', 'fallback'].filter(backend => status[backend]);
+    var order = ['webgpu', 'webgl', 'webassembly', 'fallback'].filter(function (backend) { return status[backend]; });
     return {
         status: status,
         defaultOrder: order
     };
 }
+exports.getBackendAvailability = getBackendAvailability;
 /**
  * Initialize specified backend
  * @private
  */
-async function initBackend(backendName, option) {
-    if (!(backendName in descriptorRunners))
-        throw new Error(`Unknown backend: "${backendName}"`);
-    let runner;
-    try {
-        runner = new descriptorRunners[backendName](option);
-        await runner.init();
-    }
-    catch (ex) {
-        console.warn(`Failed to initialize ${backendName} backend: ${ex}`);
-        return null;
-    }
-    return runner;
+function initBackend(backendName, option) {
+    return __awaiter(this, void 0, void 0, function () {
+        var runner, ex_1;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0:
+                    if (!(backendName in descriptorRunners))
+                        throw new Error("Unknown backend: \"" + backendName + "\"");
+                    _a.label = 1;
+                case 1:
+                    _a.trys.push([1, 3, , 4]);
+                    runner = new descriptorRunners[backendName](option);
+                    return [4 /*yield*/, runner.init()];
+                case 2:
+                    _a.sent();
+                    return [3 /*break*/, 4];
+                case 3:
+                    ex_1 = _a.sent();
+                    console.warn("Failed to initialize " + backendName + " backend: " + ex_1);
+                    return [2 /*return*/, null];
+                case 4: return [2 /*return*/, runner];
+            }
+        });
+    });
 }
 /**
  * Initialize descriptor runner. This function performs follow things.
@@ -445,215 +531,2718 @@ async function initBackend(backendName, option) {
  * @param initOption Initialize option
  * @return DescriptorRunner instance, which is the interface to input/output data and run the model.
  */
-async function load(directory, initOption = {}) {
-    let { backendOrder = null, backendOptions = {}, cacheStrategy = 'latest', saveCache = true, progressCallback, weightDirectory, transformUrlDelegate } = initOption;
-    if (!backendOrder)
-        backendOrder = getBackendAvailability().defaultOrder;
-    if (typeof backendOrder === 'string')
-        backendOrder = [backendOrder];
-    backendOrder = backendOrder.slice();
-    if (backendOrder.indexOf('fallback') === -1)
-        backendOrder.concat(['fallback']);
-    Object(__WEBPACK_IMPORTED_MODULE_4__fetch__["c" /* registerTransformUrlDelegate */])((url) => {
-        if (weightDirectory) {
-            if ((/\.bin/).test(url)) {
-                url = url.replace(directory, weightDirectory);
-            }
-        }
-        if (transformUrlDelegate)
-            url = transformUrlDelegate(url);
-        return url;
-    });
-    while (backendOrder.length > 0) {
-        let backendName = backendOrder.shift();
-        let runner = await initBackend(backendName, backendOptions[backendName]);
-        if (!runner)
-            continue;
-        try {
-            let descriptor;
-            let parameters;
-            let fetchedDescriptor;
-            let cachedDescriptor;
-            switch (cacheStrategy) {
-                case 'latest':
-                    fetchedDescriptor = await runner.fetchDescriptor(directory).catch(() => null);
-                    cachedDescriptor = await runner.restoreCachedDescriptor(directory);
-                    if (cachedDescriptor && fetchedDescriptor && cachedDescriptor.converted_at === fetchedDescriptor.converted_at) {
-                        descriptor = cachedDescriptor;
-                        parameters = await runner.restoreCachedParameters(directory, progressCallback);
-                        if (parameters)
-                            break;
+function load(directory, initOption) {
+    if (initOption === void 0) { initOption = {}; }
+    return __awaiter(this, void 0, void 0, function () {
+        var _a, backendOrder, _b, backendOptions, _c, cacheStrategy, _d, saveCache, progressCallback, weightDirectory, transformUrlDelegate, backendName, runner, descriptor, parameters, fetchedDescriptor, cachedDescriptor, _e, e_1, ex_2;
+        return __generator(this, function (_f) {
+            switch (_f.label) {
+                case 0:
+                    _a = initOption.backendOrder, backendOrder = _a === void 0 ? null : _a, _b = initOption.backendOptions, backendOptions = _b === void 0 ? {} : _b, _c = initOption.cacheStrategy, cacheStrategy = _c === void 0 ? 'latest' : _c, _d = initOption.saveCache, saveCache = _d === void 0 ? true : _d, progressCallback = initOption.progressCallback, weightDirectory = initOption.weightDirectory, transformUrlDelegate = initOption.transformUrlDelegate;
+                    if (!backendOrder)
+                        backendOrder = getBackendAvailability().defaultOrder;
+                    if (typeof backendOrder === 'string')
+                        backendOrder = [backendOrder];
+                    backendOrder = backendOrder.slice();
+                    if (backendOrder.indexOf('fallback') === -1)
+                        backendOrder.concat(['fallback']);
+                    fetch_1.registerTransformUrlDelegate(function (url) {
+                        if (weightDirectory) {
+                            if ((/\.bin/).test(url)) {
+                                url = url.replace(directory, weightDirectory);
+                            }
+                        }
+                        if (transformUrlDelegate)
+                            url = transformUrlDelegate(url);
+                        return url;
+                    });
+                    _f.label = 1;
+                case 1:
+                    if (!(backendOrder.length > 0)) return [3 /*break*/, 36];
+                    backendName = backendOrder.shift();
+                    return [4 /*yield*/, initBackend(backendName, backendOptions[backendName])];
+                case 2:
+                    runner = _f.sent();
+                    if (!runner)
+                        return [3 /*break*/, 1];
+                    _f.label = 3;
+                case 3:
+                    _f.trys.push([3, 34, , 35]);
+                    descriptor = void 0;
+                    parameters = void 0;
+                    fetchedDescriptor = void 0;
+                    cachedDescriptor = void 0;
+                    _e = cacheStrategy;
+                    switch (_e) {
+                        case 'latest': return [3 /*break*/, 4];
+                        case 'networkOnly': return [3 /*break*/, 13];
+                        case 'networkFirst': return [3 /*break*/, 13];
+                        case 'cacheOnly': return [3 /*break*/, 20];
+                        case 'cacheFirst': return [3 /*break*/, 20];
                     }
-                    if (fetchedDescriptor) {
-                        descriptor = fetchedDescriptor;
-                        parameters = await runner.fetchParameters(directory, progressCallback);
-                        if (parameters)
-                            break;
-                    }
-                    if (cachedDescriptor) {
-                        descriptor = cachedDescriptor;
-                        parameters = await runner.restoreCachedParameters(directory, progressCallback);
-                        if (parameters)
-                            break;
-                    }
-                    throw Error('Network error is occurred and no cache is exist.');
-                case 'networkOnly':
-                case 'networkFirst':
-                    fetchedDescriptor = await runner.fetchDescriptor(directory).catch(() => null);
-                    if (fetchedDescriptor) {
-                        descriptor = fetchedDescriptor;
-                        parameters = await runner.fetchParameters(directory, progressCallback);
-                        if (parameters)
-                            break;
-                    }
+                    return [3 /*break*/, 27];
+                case 4: return [4 /*yield*/, runner.fetchDescriptor(directory).catch(function () { return null; })];
+                case 5:
+                    fetchedDescriptor = _f.sent();
+                    return [4 /*yield*/, runner.restoreCachedDescriptor(directory)];
+                case 6:
+                    cachedDescriptor = _f.sent();
+                    if (!(cachedDescriptor && fetchedDescriptor && cachedDescriptor.converted_at === fetchedDescriptor.converted_at)) return [3 /*break*/, 8];
+                    descriptor = cachedDescriptor;
+                    return [4 /*yield*/, runner.restoreCachedParameters(directory, progressCallback)];
+                case 7:
+                    parameters = _f.sent();
+                    if (parameters)
+                        return [3 /*break*/, 28];
+                    _f.label = 8;
+                case 8:
+                    if (!fetchedDescriptor) return [3 /*break*/, 10];
+                    descriptor = fetchedDescriptor;
+                    return [4 /*yield*/, runner.fetchParameters(directory, progressCallback)];
+                case 9:
+                    parameters = _f.sent();
+                    if (parameters)
+                        return [3 /*break*/, 28];
+                    _f.label = 10;
+                case 10:
+                    if (!cachedDescriptor) return [3 /*break*/, 12];
+                    descriptor = cachedDescriptor;
+                    return [4 /*yield*/, runner.restoreCachedParameters(directory, progressCallback)];
+                case 11:
+                    parameters = _f.sent();
+                    if (parameters)
+                        return [3 /*break*/, 28];
+                    _f.label = 12;
+                case 12: throw Error('Network error is occurred and no cache is exist.');
+                case 13: return [4 /*yield*/, runner.fetchDescriptor(directory).catch(function () { return null; })];
+                case 14:
+                    fetchedDescriptor = _f.sent();
+                    if (!fetchedDescriptor) return [3 /*break*/, 16];
+                    descriptor = fetchedDescriptor;
+                    return [4 /*yield*/, runner.fetchParameters(directory, progressCallback)];
+                case 15:
+                    parameters = _f.sent();
+                    if (parameters)
+                        return [3 /*break*/, 28];
+                    _f.label = 16;
+                case 16:
                     if (cacheStrategy === 'networkOnly')
                         throw Error('Network error is occurred in "networkOnly" cache strategy');
-                    cachedDescriptor = await runner.restoreCachedDescriptor(directory);
-                    if (cachedDescriptor) {
-                        descriptor = cachedDescriptor;
-                        parameters = await runner.restoreCachedParameters(directory, progressCallback);
-                        if (parameters)
-                            break;
-                    }
-                    throw Error('Network error is occurred and no cache is exist.');
-                case 'cacheOnly':
-                case 'cacheFirst':
-                    cachedDescriptor = await runner.restoreCachedDescriptor(directory);
-                    if (cachedDescriptor) {
-                        descriptor = cachedDescriptor;
-                        parameters = await runner.restoreCachedParameters(directory, progressCallback);
-                        if (parameters)
-                            break;
-                    }
+                    return [4 /*yield*/, runner.restoreCachedDescriptor(directory)];
+                case 17:
+                    cachedDescriptor = _f.sent();
+                    if (!cachedDescriptor) return [3 /*break*/, 19];
+                    descriptor = cachedDescriptor;
+                    return [4 /*yield*/, runner.restoreCachedParameters(directory, progressCallback)];
+                case 18:
+                    parameters = _f.sent();
+                    if (parameters)
+                        return [3 /*break*/, 28];
+                    _f.label = 19;
+                case 19: throw Error('Network error is occurred and no cache is exist.');
+                case 20: return [4 /*yield*/, runner.restoreCachedDescriptor(directory)];
+                case 21:
+                    cachedDescriptor = _f.sent();
+                    if (!cachedDescriptor) return [3 /*break*/, 23];
+                    descriptor = cachedDescriptor;
+                    return [4 /*yield*/, runner.restoreCachedParameters(directory, progressCallback)];
+                case 22:
+                    parameters = _f.sent();
+                    if (parameters)
+                        return [3 /*break*/, 28];
+                    _f.label = 23;
+                case 23:
                     if (cacheStrategy === 'cacheOnly')
                         throw Error('No cache is exist in "cacheOnly" cache strategy');
-                    fetchedDescriptor = await runner.fetchDescriptor(directory).catch(() => null);
-                    if (fetchedDescriptor) {
-                        descriptor = fetchedDescriptor;
-                        parameters = await runner.fetchParameters(directory, progressCallback);
-                        if (parameters)
-                            break;
-                    }
-                    throw Error('Network error is occurred and no cache is exist.');
-                default:
-                    throw Error(`"${cacheStrategy}" is not valid cache strategy name: "latest", "networkFirst", "networkOnly", "cacheFirst", "cacheOnly" is available.`);
+                    return [4 /*yield*/, runner.fetchDescriptor(directory).catch(function () { return null; })];
+                case 24:
+                    fetchedDescriptor = _f.sent();
+                    if (!fetchedDescriptor) return [3 /*break*/, 26];
+                    descriptor = fetchedDescriptor;
+                    return [4 /*yield*/, runner.fetchParameters(directory, progressCallback)];
+                case 25:
+                    parameters = _f.sent();
+                    if (parameters)
+                        return [3 /*break*/, 28];
+                    _f.label = 26;
+                case 26: throw Error('Network error is occurred and no cache is exist.');
+                case 27: throw Error("\"" + cacheStrategy + "\" is not valid cache strategy name: \"latest\", \"networkFirst\", \"networkOnly\", \"cacheFirst\", \"cacheOnly\" is available.");
+                case 28:
+                    if (!saveCache) return [3 /*break*/, 32];
+                    _f.label = 29;
+                case 29:
+                    _f.trys.push([29, 31, , 32]);
+                    return [4 /*yield*/, runner.saveCache(directory, descriptor, parameters)];
+                case 30:
+                    _f.sent();
+                    return [3 /*break*/, 32];
+                case 31:
+                    e_1 = _f.sent();
+                    return [3 /*break*/, 32];
+                case 32: return [4 /*yield*/, runner.setDescriptorAndParameters(descriptor, parameters)];
+                case 33:
+                    _f.sent();
+                    return [3 /*break*/, 35];
+                case 34:
+                    ex_2 = _f.sent();
+                    console.warn("Model loading failed for " + backendName + " backend. Trying next backend: " + ex_2.message);
+                    return [3 /*break*/, 1];
+                case 35: return [2 /*return*/, runner];
+                case 36: throw new Error('No backend is available');
             }
-            if (saveCache) {
-                try {
-                    await runner.saveCache(directory, descriptor, parameters);
-                }
-                catch (e) {
-                    /* do nothing */
-                }
-            }
-            await runner.setDescriptorAndParameters(descriptor, parameters);
-        }
-        catch (ex) {
-            console.warn(`Model loading failed for ${backendName} backend. Trying next backend: ${ex.message}`);
-            continue;
-        }
-        return runner;
-    }
-    throw new Error('No backend is available');
+        });
+    });
 }
-// Export support (not-dependent) functions
-
+exports.load = load;
 
 
 /***/ }),
 /* 3 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
+/***/ (function(module, exports, __webpack_require__) {
+
+/* WEBPACK VAR INJECTION */(function(global) {var require;var require;/*!
+    localForage -- Offline Storage, Improved
+    Version 1.5.6
+    https://localforage.github.io/localForage
+    (c) 2013-2017 Mozilla, Apache License 2.0
+*/
+(function(f){if(true){module.exports=f()}else if(typeof define==="function"&&define.amd){define([],f)}else{var g;if(typeof window!=="undefined"){g=window}else if(typeof global!=="undefined"){g=global}else if(typeof self!=="undefined"){g=self}else{g=this}g.localforage = f()}})(function(){var define,module,exports;return (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return require(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw (f.code="MODULE_NOT_FOUND", f)}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(_dereq_,module,exports){
+(function (global){
+'use strict';
+var Mutation = global.MutationObserver || global.WebKitMutationObserver;
+
+var scheduleDrain;
+
+{
+  if (Mutation) {
+    var called = 0;
+    var observer = new Mutation(nextTick);
+    var element = global.document.createTextNode('');
+    observer.observe(element, {
+      characterData: true
+    });
+    scheduleDrain = function () {
+      element.data = (called = ++called % 2);
+    };
+  } else if (!global.setImmediate && typeof global.MessageChannel !== 'undefined') {
+    var channel = new global.MessageChannel();
+    channel.port1.onmessage = nextTick;
+    scheduleDrain = function () {
+      channel.port2.postMessage(0);
+    };
+  } else if ('document' in global && 'onreadystatechange' in global.document.createElement('script')) {
+    scheduleDrain = function () {
+
+      // Create a <script> element; its readystatechange event will be fired asynchronously once it is inserted
+      // into the document. Do so, thus queuing up the task. Remember to clean up once it's been called.
+      var scriptEl = global.document.createElement('script');
+      scriptEl.onreadystatechange = function () {
+        nextTick();
+
+        scriptEl.onreadystatechange = null;
+        scriptEl.parentNode.removeChild(scriptEl);
+        scriptEl = null;
+      };
+      global.document.documentElement.appendChild(scriptEl);
+    };
+  } else {
+    scheduleDrain = function () {
+      setTimeout(nextTick, 0);
+    };
+  }
+}
+
+var draining;
+var queue = [];
+//named nextTick for less confusing stack traces
+function nextTick() {
+  draining = true;
+  var i, oldQueue;
+  var len = queue.length;
+  while (len) {
+    oldQueue = queue;
+    queue = [];
+    i = -1;
+    while (++i < len) {
+      oldQueue[i]();
+    }
+    len = queue.length;
+  }
+  draining = false;
+}
+
+module.exports = immediate;
+function immediate(task) {
+  if (queue.push(task) === 1 && !draining) {
+    scheduleDrain();
+  }
+}
+
+}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
+},{}],2:[function(_dereq_,module,exports){
+'use strict';
+var immediate = _dereq_(1);
+
+/* istanbul ignore next */
+function INTERNAL() {}
+
+var handlers = {};
+
+var REJECTED = ['REJECTED'];
+var FULFILLED = ['FULFILLED'];
+var PENDING = ['PENDING'];
+
+module.exports = Promise;
+
+function Promise(resolver) {
+  if (typeof resolver !== 'function') {
+    throw new TypeError('resolver must be a function');
+  }
+  this.state = PENDING;
+  this.queue = [];
+  this.outcome = void 0;
+  if (resolver !== INTERNAL) {
+    safelyResolveThenable(this, resolver);
+  }
+}
+
+Promise.prototype["catch"] = function (onRejected) {
+  return this.then(null, onRejected);
+};
+Promise.prototype.then = function (onFulfilled, onRejected) {
+  if (typeof onFulfilled !== 'function' && this.state === FULFILLED ||
+    typeof onRejected !== 'function' && this.state === REJECTED) {
+    return this;
+  }
+  var promise = new this.constructor(INTERNAL);
+  if (this.state !== PENDING) {
+    var resolver = this.state === FULFILLED ? onFulfilled : onRejected;
+    unwrap(promise, resolver, this.outcome);
+  } else {
+    this.queue.push(new QueueItem(promise, onFulfilled, onRejected));
+  }
+
+  return promise;
+};
+function QueueItem(promise, onFulfilled, onRejected) {
+  this.promise = promise;
+  if (typeof onFulfilled === 'function') {
+    this.onFulfilled = onFulfilled;
+    this.callFulfilled = this.otherCallFulfilled;
+  }
+  if (typeof onRejected === 'function') {
+    this.onRejected = onRejected;
+    this.callRejected = this.otherCallRejected;
+  }
+}
+QueueItem.prototype.callFulfilled = function (value) {
+  handlers.resolve(this.promise, value);
+};
+QueueItem.prototype.otherCallFulfilled = function (value) {
+  unwrap(this.promise, this.onFulfilled, value);
+};
+QueueItem.prototype.callRejected = function (value) {
+  handlers.reject(this.promise, value);
+};
+QueueItem.prototype.otherCallRejected = function (value) {
+  unwrap(this.promise, this.onRejected, value);
+};
+
+function unwrap(promise, func, value) {
+  immediate(function () {
+    var returnValue;
+    try {
+      returnValue = func(value);
+    } catch (e) {
+      return handlers.reject(promise, e);
+    }
+    if (returnValue === promise) {
+      handlers.reject(promise, new TypeError('Cannot resolve promise with itself'));
+    } else {
+      handlers.resolve(promise, returnValue);
+    }
+  });
+}
+
+handlers.resolve = function (self, value) {
+  var result = tryCatch(getThen, value);
+  if (result.status === 'error') {
+    return handlers.reject(self, result.value);
+  }
+  var thenable = result.value;
+
+  if (thenable) {
+    safelyResolveThenable(self, thenable);
+  } else {
+    self.state = FULFILLED;
+    self.outcome = value;
+    var i = -1;
+    var len = self.queue.length;
+    while (++i < len) {
+      self.queue[i].callFulfilled(value);
+    }
+  }
+  return self;
+};
+handlers.reject = function (self, error) {
+  self.state = REJECTED;
+  self.outcome = error;
+  var i = -1;
+  var len = self.queue.length;
+  while (++i < len) {
+    self.queue[i].callRejected(error);
+  }
+  return self;
+};
+
+function getThen(obj) {
+  // Make sure we only access the accessor once as required by the spec
+  var then = obj && obj.then;
+  if (obj && (typeof obj === 'object' || typeof obj === 'function') && typeof then === 'function') {
+    return function appyThen() {
+      then.apply(obj, arguments);
+    };
+  }
+}
+
+function safelyResolveThenable(self, thenable) {
+  // Either fulfill, reject or reject with error
+  var called = false;
+  function onError(value) {
+    if (called) {
+      return;
+    }
+    called = true;
+    handlers.reject(self, value);
+  }
+
+  function onSuccess(value) {
+    if (called) {
+      return;
+    }
+    called = true;
+    handlers.resolve(self, value);
+  }
+
+  function tryToUnwrap() {
+    thenable(onSuccess, onError);
+  }
+
+  var result = tryCatch(tryToUnwrap);
+  if (result.status === 'error') {
+    onError(result.value);
+  }
+}
+
+function tryCatch(func, value) {
+  var out = {};
+  try {
+    out.value = func(value);
+    out.status = 'success';
+  } catch (e) {
+    out.status = 'error';
+    out.value = e;
+  }
+  return out;
+}
+
+Promise.resolve = resolve;
+function resolve(value) {
+  if (value instanceof this) {
+    return value;
+  }
+  return handlers.resolve(new this(INTERNAL), value);
+}
+
+Promise.reject = reject;
+function reject(reason) {
+  var promise = new this(INTERNAL);
+  return handlers.reject(promise, reason);
+}
+
+Promise.all = all;
+function all(iterable) {
+  var self = this;
+  if (Object.prototype.toString.call(iterable) !== '[object Array]') {
+    return this.reject(new TypeError('must be an array'));
+  }
+
+  var len = iterable.length;
+  var called = false;
+  if (!len) {
+    return this.resolve([]);
+  }
+
+  var values = new Array(len);
+  var resolved = 0;
+  var i = -1;
+  var promise = new this(INTERNAL);
+
+  while (++i < len) {
+    allResolver(iterable[i], i);
+  }
+  return promise;
+  function allResolver(value, i) {
+    self.resolve(value).then(resolveFromAll, function (error) {
+      if (!called) {
+        called = true;
+        handlers.reject(promise, error);
+      }
+    });
+    function resolveFromAll(outValue) {
+      values[i] = outValue;
+      if (++resolved === len && !called) {
+        called = true;
+        handlers.resolve(promise, values);
+      }
+    }
+  }
+}
+
+Promise.race = race;
+function race(iterable) {
+  var self = this;
+  if (Object.prototype.toString.call(iterable) !== '[object Array]') {
+    return this.reject(new TypeError('must be an array'));
+  }
+
+  var len = iterable.length;
+  var called = false;
+  if (!len) {
+    return this.resolve([]);
+  }
+
+  var i = -1;
+  var promise = new this(INTERNAL);
+
+  while (++i < len) {
+    resolver(iterable[i]);
+  }
+  return promise;
+  function resolver(value) {
+    self.resolve(value).then(function (response) {
+      if (!called) {
+        called = true;
+        handlers.resolve(promise, response);
+      }
+    }, function (error) {
+      if (!called) {
+        called = true;
+        handlers.reject(promise, error);
+      }
+    });
+  }
+}
+
+},{"1":1}],3:[function(_dereq_,module,exports){
+(function (global){
+'use strict';
+if (typeof global.Promise !== 'function') {
+  global.Promise = _dereq_(2);
+}
+
+}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
+},{"2":2}],4:[function(_dereq_,module,exports){
+'use strict';
+
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function getIDB() {
+    /* global indexedDB,webkitIndexedDB,mozIndexedDB,OIndexedDB,msIndexedDB */
+    try {
+        if (typeof indexedDB !== 'undefined') {
+            return indexedDB;
+        }
+        if (typeof webkitIndexedDB !== 'undefined') {
+            return webkitIndexedDB;
+        }
+        if (typeof mozIndexedDB !== 'undefined') {
+            return mozIndexedDB;
+        }
+        if (typeof OIndexedDB !== 'undefined') {
+            return OIndexedDB;
+        }
+        if (typeof msIndexedDB !== 'undefined') {
+            return msIndexedDB;
+        }
+    } catch (e) {
+        return;
+    }
+}
+
+var idb = getIDB();
+
+function isIndexedDBValid() {
+    try {
+        // Initialize IndexedDB; fall back to vendor-prefixed versions
+        // if needed.
+        if (!idb) {
+            return false;
+        }
+        // We mimic PouchDB here;
+        //
+        // We test for openDatabase because IE Mobile identifies itself
+        // as Safari. Oh the lulz...
+        var isSafari = typeof openDatabase !== 'undefined' && /(Safari|iPhone|iPad|iPod)/.test(navigator.userAgent) && !/Chrome/.test(navigator.userAgent) && !/BlackBerry/.test(navigator.platform);
+
+        var hasFetch = typeof fetch === 'function' && fetch.toString().indexOf('[native code') !== -1;
+
+        // Safari <10.1 does not meet our requirements for IDB support (#5572)
+        // since Safari 10.1 shipped with fetch, we can use that to detect it
+        return (!isSafari || hasFetch) && typeof indexedDB !== 'undefined' &&
+        // some outdated implementations of IDB that appear on Samsung
+        // and HTC Android devices <4.4 are missing IDBKeyRange
+        // See: https://github.com/mozilla/localForage/issues/128
+        // See: https://github.com/mozilla/localForage/issues/272
+        typeof IDBKeyRange !== 'undefined';
+    } catch (e) {
+        return false;
+    }
+}
+
+// Abstracts constructing a Blob object, so it also works in older
+// browsers that don't support the native Blob constructor. (i.e.
+// old QtWebKit versions, at least).
+// Abstracts constructing a Blob object, so it also works in older
+// browsers that don't support the native Blob constructor. (i.e.
+// old QtWebKit versions, at least).
+function createBlob(parts, properties) {
+    /* global BlobBuilder,MSBlobBuilder,MozBlobBuilder,WebKitBlobBuilder */
+    parts = parts || [];
+    properties = properties || {};
+    try {
+        return new Blob(parts, properties);
+    } catch (e) {
+        if (e.name !== 'TypeError') {
+            throw e;
+        }
+        var Builder = typeof BlobBuilder !== 'undefined' ? BlobBuilder : typeof MSBlobBuilder !== 'undefined' ? MSBlobBuilder : typeof MozBlobBuilder !== 'undefined' ? MozBlobBuilder : WebKitBlobBuilder;
+        var builder = new Builder();
+        for (var i = 0; i < parts.length; i += 1) {
+            builder.append(parts[i]);
+        }
+        return builder.getBlob(properties.type);
+    }
+}
+
+// This is CommonJS because lie is an external dependency, so Rollup
+// can just ignore it.
+if (typeof Promise === 'undefined') {
+    // In the "nopromises" build this will just throw if you don't have
+    // a global promise object, but it would throw anyway later.
+    _dereq_(3);
+}
+var Promise$1 = Promise;
+
+function executeCallback(promise, callback) {
+    if (callback) {
+        promise.then(function (result) {
+            callback(null, result);
+        }, function (error) {
+            callback(error);
+        });
+    }
+}
+
+function executeTwoCallbacks(promise, callback, errorCallback) {
+    if (typeof callback === 'function') {
+        promise.then(callback);
+    }
+
+    if (typeof errorCallback === 'function') {
+        promise["catch"](errorCallback);
+    }
+}
+
+function normalizeKey(key) {
+    // Cast the key to a string, as that's all we can set as a key.
+    if (typeof key !== 'string') {
+        console.warn(key + ' used as a key, but it is not a string.');
+        key = String(key);
+    }
+
+    return key;
+}
+
+// Some code originally from async_storage.js in
+// [Gaia](https://github.com/mozilla-b2g/gaia).
+
+var DETECT_BLOB_SUPPORT_STORE = 'local-forage-detect-blob-support';
+var supportsBlobs;
+var dbContexts;
+var toString = Object.prototype.toString;
+
+// Transaction Modes
+var READ_ONLY = 'readonly';
+var READ_WRITE = 'readwrite';
+
+// Transform a binary string to an array buffer, because otherwise
+// weird stuff happens when you try to work with the binary string directly.
+// It is known.
+// From http://stackoverflow.com/questions/14967647/ (continues on next line)
+// encode-decode-image-with-base64-breaks-image (2013-04-21)
+function _binStringToArrayBuffer(bin) {
+    var length = bin.length;
+    var buf = new ArrayBuffer(length);
+    var arr = new Uint8Array(buf);
+    for (var i = 0; i < length; i++) {
+        arr[i] = bin.charCodeAt(i);
+    }
+    return buf;
+}
+
+//
+// Blobs are not supported in all versions of IndexedDB, notably
+// Chrome <37 and Android <5. In those versions, storing a blob will throw.
+//
+// Various other blob bugs exist in Chrome v37-42 (inclusive).
+// Detecting them is expensive and confusing to users, and Chrome 37-42
+// is at very low usage worldwide, so we do a hacky userAgent check instead.
+//
+// content-type bug: https://code.google.com/p/chromium/issues/detail?id=408120
+// 404 bug: https://code.google.com/p/chromium/issues/detail?id=447916
+// FileReader bug: https://code.google.com/p/chromium/issues/detail?id=447836
+//
+// Code borrowed from PouchDB. See:
+// https://github.com/pouchdb/pouchdb/blob/master/packages/node_modules/pouchdb-adapter-idb/src/blobSupport.js
+//
+function _checkBlobSupportWithoutCaching(idb) {
+    return new Promise$1(function (resolve) {
+        var txn = idb.transaction(DETECT_BLOB_SUPPORT_STORE, READ_WRITE);
+        var blob = createBlob(['']);
+        txn.objectStore(DETECT_BLOB_SUPPORT_STORE).put(blob, 'key');
+
+        txn.onabort = function (e) {
+            // If the transaction aborts now its due to not being able to
+            // write to the database, likely due to the disk being full
+            e.preventDefault();
+            e.stopPropagation();
+            resolve(false);
+        };
+
+        txn.oncomplete = function () {
+            var matchedChrome = navigator.userAgent.match(/Chrome\/(\d+)/);
+            var matchedEdge = navigator.userAgent.match(/Edge\//);
+            // MS Edge pretends to be Chrome 42:
+            // https://msdn.microsoft.com/en-us/library/hh869301%28v=vs.85%29.aspx
+            resolve(matchedEdge || !matchedChrome || parseInt(matchedChrome[1], 10) >= 43);
+        };
+    })["catch"](function () {
+        return false; // error, so assume unsupported
+    });
+}
+
+function _checkBlobSupport(idb) {
+    if (typeof supportsBlobs === 'boolean') {
+        return Promise$1.resolve(supportsBlobs);
+    }
+    return _checkBlobSupportWithoutCaching(idb).then(function (value) {
+        supportsBlobs = value;
+        return supportsBlobs;
+    });
+}
+
+function _deferReadiness(dbInfo) {
+    var dbContext = dbContexts[dbInfo.name];
+
+    // Create a deferred object representing the current database operation.
+    var deferredOperation = {};
+
+    deferredOperation.promise = new Promise$1(function (resolve) {
+        deferredOperation.resolve = resolve;
+    });
+
+    // Enqueue the deferred operation.
+    dbContext.deferredOperations.push(deferredOperation);
+
+    // Chain its promise to the database readiness.
+    if (!dbContext.dbReady) {
+        dbContext.dbReady = deferredOperation.promise;
+    } else {
+        dbContext.dbReady = dbContext.dbReady.then(function () {
+            return deferredOperation.promise;
+        });
+    }
+}
+
+function _advanceReadiness(dbInfo) {
+    var dbContext = dbContexts[dbInfo.name];
+
+    // Dequeue a deferred operation.
+    var deferredOperation = dbContext.deferredOperations.pop();
+
+    // Resolve its promise (which is part of the database readiness
+    // chain of promises).
+    if (deferredOperation) {
+        deferredOperation.resolve();
+    }
+}
+
+function _rejectReadiness(dbInfo, err) {
+    var dbContext = dbContexts[dbInfo.name];
+
+    // Dequeue a deferred operation.
+    var deferredOperation = dbContext.deferredOperations.pop();
+
+    // Reject its promise (which is part of the database readiness
+    // chain of promises).
+    if (deferredOperation) {
+        deferredOperation.reject(err);
+    }
+}
+
+function _getConnection(dbInfo, upgradeNeeded) {
+    return new Promise$1(function (resolve, reject) {
+
+        if (dbInfo.db) {
+            if (upgradeNeeded) {
+                _deferReadiness(dbInfo);
+                dbInfo.db.close();
+            } else {
+                return resolve(dbInfo.db);
+            }
+        }
+
+        var dbArgs = [dbInfo.name];
+
+        if (upgradeNeeded) {
+            dbArgs.push(dbInfo.version);
+        }
+
+        var openreq = idb.open.apply(idb, dbArgs);
+
+        if (upgradeNeeded) {
+            openreq.onupgradeneeded = function (e) {
+                var db = openreq.result;
+                try {
+                    db.createObjectStore(dbInfo.storeName);
+                    if (e.oldVersion <= 1) {
+                        // Added when support for blob shims was added
+                        db.createObjectStore(DETECT_BLOB_SUPPORT_STORE);
+                    }
+                } catch (ex) {
+                    if (ex.name === 'ConstraintError') {
+                        console.warn('The database "' + dbInfo.name + '"' + ' has been upgraded from version ' + e.oldVersion + ' to version ' + e.newVersion + ', but the storage "' + dbInfo.storeName + '" already exists.');
+                    } else {
+                        throw ex;
+                    }
+                }
+            };
+        }
+
+        openreq.onerror = function (e) {
+            e.preventDefault();
+            reject(openreq.error);
+        };
+
+        openreq.onsuccess = function () {
+            resolve(openreq.result);
+            _advanceReadiness(dbInfo);
+        };
+    });
+}
+
+function _getOriginalConnection(dbInfo) {
+    return _getConnection(dbInfo, false);
+}
+
+function _getUpgradedConnection(dbInfo) {
+    return _getConnection(dbInfo, true);
+}
+
+function _isUpgradeNeeded(dbInfo, defaultVersion) {
+    if (!dbInfo.db) {
+        return true;
+    }
+
+    var isNewStore = !dbInfo.db.objectStoreNames.contains(dbInfo.storeName);
+    var isDowngrade = dbInfo.version < dbInfo.db.version;
+    var isUpgrade = dbInfo.version > dbInfo.db.version;
+
+    if (isDowngrade) {
+        // If the version is not the default one
+        // then warn for impossible downgrade.
+        if (dbInfo.version !== defaultVersion) {
+            console.warn('The database "' + dbInfo.name + '"' + ' can\'t be downgraded from version ' + dbInfo.db.version + ' to version ' + dbInfo.version + '.');
+        }
+        // Align the versions to prevent errors.
+        dbInfo.version = dbInfo.db.version;
+    }
+
+    if (isUpgrade || isNewStore) {
+        // If the store is new then increment the version (if needed).
+        // This will trigger an "upgradeneeded" event which is required
+        // for creating a store.
+        if (isNewStore) {
+            var incVersion = dbInfo.db.version + 1;
+            if (incVersion > dbInfo.version) {
+                dbInfo.version = incVersion;
+            }
+        }
+
+        return true;
+    }
+
+    return false;
+}
+
+// encode a blob for indexeddb engines that don't support blobs
+function _encodeBlob(blob) {
+    return new Promise$1(function (resolve, reject) {
+        var reader = new FileReader();
+        reader.onerror = reject;
+        reader.onloadend = function (e) {
+            var base64 = btoa(e.target.result || '');
+            resolve({
+                __local_forage_encoded_blob: true,
+                data: base64,
+                type: blob.type
+            });
+        };
+        reader.readAsBinaryString(blob);
+    });
+}
+
+// decode an encoded blob
+function _decodeBlob(encodedBlob) {
+    var arrayBuff = _binStringToArrayBuffer(atob(encodedBlob.data));
+    return createBlob([arrayBuff], { type: encodedBlob.type });
+}
+
+// is this one of our fancy encoded blobs?
+function _isEncodedBlob(value) {
+    return value && value.__local_forage_encoded_blob;
+}
+
+// Specialize the default `ready()` function by making it dependent
+// on the current database operations. Thus, the driver will be actually
+// ready when it's been initialized (default) *and* there are no pending
+// operations on the database (initiated by some other instances).
+function _fullyReady(callback) {
+    var self = this;
+
+    var promise = self._initReady().then(function () {
+        var dbContext = dbContexts[self._dbInfo.name];
+
+        if (dbContext && dbContext.dbReady) {
+            return dbContext.dbReady;
+        }
+    });
+
+    executeTwoCallbacks(promise, callback, callback);
+    return promise;
+}
+
+// Try to establish a new db connection to replace the
+// current one which is broken (i.e. experiencing
+// InvalidStateError while creating a transaction).
+function _tryReconnect(dbInfo) {
+    _deferReadiness(dbInfo);
+
+    var dbContext = dbContexts[dbInfo.name];
+    var forages = dbContext.forages;
+
+    for (var i = 0; i < forages.length; i++) {
+        if (forages[i]._dbInfo.db) {
+            forages[i]._dbInfo.db.close();
+            forages[i]._dbInfo.db = null;
+        }
+    }
+
+    return _getConnection(dbInfo, false).then(function (db) {
+        for (var j = 0; j < forages.length; j++) {
+            forages[j]._dbInfo.db = db;
+        }
+    })["catch"](function (err) {
+        _rejectReadiness(dbInfo, err);
+        throw err;
+    });
+}
+
+// FF doesn't like Promises (micro-tasks) and IDDB store operations,
+// so we have to do it with callbacks
+function createTransaction(dbInfo, mode, callback) {
+    try {
+        var tx = dbInfo.db.transaction(dbInfo.storeName, mode);
+        callback(null, tx);
+    } catch (err) {
+        if (!dbInfo.db || err.name === 'InvalidStateError') {
+            return _tryReconnect(dbInfo).then(function () {
+
+                var tx = dbInfo.db.transaction(dbInfo.storeName, mode);
+                callback(null, tx);
+            });
+        }
+
+        callback(err);
+    }
+}
+
+// Open the IndexedDB database (automatically creates one if one didn't
+// previously exist), using any options set in the config.
+function _initStorage(options) {
+    var self = this;
+    var dbInfo = {
+        db: null
+    };
+
+    if (options) {
+        for (var i in options) {
+            dbInfo[i] = options[i];
+        }
+    }
+
+    // Initialize a singleton container for all running localForages.
+    if (!dbContexts) {
+        dbContexts = {};
+    }
+
+    // Get the current context of the database;
+    var dbContext = dbContexts[dbInfo.name];
+
+    // ...or create a new context.
+    if (!dbContext) {
+        dbContext = {
+            // Running localForages sharing a database.
+            forages: [],
+            // Shared database.
+            db: null,
+            // Database readiness (promise).
+            dbReady: null,
+            // Deferred operations on the database.
+            deferredOperations: []
+        };
+        // Register the new context in the global container.
+        dbContexts[dbInfo.name] = dbContext;
+    }
+
+    // Register itself as a running localForage in the current context.
+    dbContext.forages.push(self);
+
+    // Replace the default `ready()` function with the specialized one.
+    if (!self._initReady) {
+        self._initReady = self.ready;
+        self.ready = _fullyReady;
+    }
+
+    // Create an array of initialization states of the related localForages.
+    var initPromises = [];
+
+    function ignoreErrors() {
+        // Don't handle errors here,
+        // just makes sure related localForages aren't pending.
+        return Promise$1.resolve();
+    }
+
+    for (var j = 0; j < dbContext.forages.length; j++) {
+        var forage = dbContext.forages[j];
+        if (forage !== self) {
+            // Don't wait for itself...
+            initPromises.push(forage._initReady()["catch"](ignoreErrors));
+        }
+    }
+
+    // Take a snapshot of the related localForages.
+    var forages = dbContext.forages.slice(0);
+
+    // Initialize the connection process only when
+    // all the related localForages aren't pending.
+    return Promise$1.all(initPromises).then(function () {
+        dbInfo.db = dbContext.db;
+        // Get the connection or open a new one without upgrade.
+        return _getOriginalConnection(dbInfo);
+    }).then(function (db) {
+        dbInfo.db = db;
+        if (_isUpgradeNeeded(dbInfo, self._defaultConfig.version)) {
+            // Reopen the database for upgrading.
+            return _getUpgradedConnection(dbInfo);
+        }
+        return db;
+    }).then(function (db) {
+        dbInfo.db = dbContext.db = db;
+        self._dbInfo = dbInfo;
+        // Share the final connection amongst related localForages.
+        for (var k = 0; k < forages.length; k++) {
+            var forage = forages[k];
+            if (forage !== self) {
+                // Self is already up-to-date.
+                forage._dbInfo.db = dbInfo.db;
+                forage._dbInfo.version = dbInfo.version;
+            }
+        }
+    });
+}
+
+function getItem(key, callback) {
+    var self = this;
+
+    key = normalizeKey(key);
+
+    var promise = new Promise$1(function (resolve, reject) {
+        self.ready().then(function () {
+            createTransaction(self._dbInfo, READ_ONLY, function (err, transaction) {
+                if (err) {
+                    return reject(err);
+                }
+
+                try {
+                    var store = transaction.objectStore(self._dbInfo.storeName);
+                    var req = store.get(key);
+
+                    req.onsuccess = function () {
+                        var value = req.result;
+                        if (value === undefined) {
+                            value = null;
+                        }
+                        if (_isEncodedBlob(value)) {
+                            value = _decodeBlob(value);
+                        }
+                        resolve(value);
+                    };
+
+                    req.onerror = function () {
+                        reject(req.error);
+                    };
+                } catch (e) {
+                    reject(e);
+                }
+            });
+        })["catch"](reject);
+    });
+
+    executeCallback(promise, callback);
+    return promise;
+}
+
+// Iterate over all items stored in database.
+function iterate(iterator, callback) {
+    var self = this;
+
+    var promise = new Promise$1(function (resolve, reject) {
+        self.ready().then(function () {
+            createTransaction(self._dbInfo, READ_ONLY, function (err, transaction) {
+                if (err) {
+                    return reject(err);
+                }
+
+                try {
+                    var store = transaction.objectStore(self._dbInfo.storeName);
+                    var req = store.openCursor();
+                    var iterationNumber = 1;
+
+                    req.onsuccess = function () {
+                        var cursor = req.result;
+
+                        if (cursor) {
+                            var value = cursor.value;
+                            if (_isEncodedBlob(value)) {
+                                value = _decodeBlob(value);
+                            }
+                            var result = iterator(value, cursor.key, iterationNumber++);
+
+                            // when the iterator callback retuns any
+                            // (non-`undefined`) value, then we stop
+                            // the iteration immediately
+                            if (result !== void 0) {
+                                resolve(result);
+                            } else {
+                                cursor["continue"]();
+                            }
+                        } else {
+                            resolve();
+                        }
+                    };
+
+                    req.onerror = function () {
+                        reject(req.error);
+                    };
+                } catch (e) {
+                    reject(e);
+                }
+            });
+        })["catch"](reject);
+    });
+
+    executeCallback(promise, callback);
+
+    return promise;
+}
+
+function setItem(key, value, callback) {
+    var self = this;
+
+    key = normalizeKey(key);
+
+    var promise = new Promise$1(function (resolve, reject) {
+        var dbInfo;
+        self.ready().then(function () {
+            dbInfo = self._dbInfo;
+            if (toString.call(value) === '[object Blob]') {
+                return _checkBlobSupport(dbInfo.db).then(function (blobSupport) {
+                    if (blobSupport) {
+                        return value;
+                    }
+                    return _encodeBlob(value);
+                });
+            }
+            return value;
+        }).then(function (value) {
+            createTransaction(self._dbInfo, READ_WRITE, function (err, transaction) {
+                if (err) {
+                    return reject(err);
+                }
+
+                try {
+                    var store = transaction.objectStore(self._dbInfo.storeName);
+
+                    // The reason we don't _save_ null is because IE 10 does
+                    // not support saving the `null` type in IndexedDB. How
+                    // ironic, given the bug below!
+                    // See: https://github.com/mozilla/localForage/issues/161
+                    if (value === null) {
+                        value = undefined;
+                    }
+
+                    var req = store.put(value, key);
+
+                    transaction.oncomplete = function () {
+                        // Cast to undefined so the value passed to
+                        // callback/promise is the same as what one would get out
+                        // of `getItem()` later. This leads to some weirdness
+                        // (setItem('foo', undefined) will return `null`), but
+                        // it's not my fault localStorage is our baseline and that
+                        // it's weird.
+                        if (value === undefined) {
+                            value = null;
+                        }
+
+                        resolve(value);
+                    };
+                    transaction.onabort = transaction.onerror = function () {
+                        var err = req.error ? req.error : req.transaction.error;
+                        reject(err);
+                    };
+                } catch (e) {
+                    reject(e);
+                }
+            });
+        })["catch"](reject);
+    });
+
+    executeCallback(promise, callback);
+    return promise;
+}
+
+function removeItem(key, callback) {
+    var self = this;
+
+    key = normalizeKey(key);
+
+    var promise = new Promise$1(function (resolve, reject) {
+        self.ready().then(function () {
+            createTransaction(self._dbInfo, READ_WRITE, function (err, transaction) {
+                if (err) {
+                    return reject(err);
+                }
+
+                try {
+                    var store = transaction.objectStore(self._dbInfo.storeName);
+                    // We use a Grunt task to make this safe for IE and some
+                    // versions of Android (including those used by Cordova).
+                    // Normally IE won't like `.delete()` and will insist on
+                    // using `['delete']()`, but we have a build step that
+                    // fixes this for us now.
+                    var req = store["delete"](key);
+                    transaction.oncomplete = function () {
+                        resolve();
+                    };
+
+                    transaction.onerror = function () {
+                        reject(req.error);
+                    };
+
+                    // The request will be also be aborted if we've exceeded our storage
+                    // space.
+                    transaction.onabort = function () {
+                        var err = req.error ? req.error : req.transaction.error;
+                        reject(err);
+                    };
+                } catch (e) {
+                    reject(e);
+                }
+            });
+        })["catch"](reject);
+    });
+
+    executeCallback(promise, callback);
+    return promise;
+}
+
+function clear(callback) {
+    var self = this;
+
+    var promise = new Promise$1(function (resolve, reject) {
+        self.ready().then(function () {
+            createTransaction(self._dbInfo, READ_WRITE, function (err, transaction) {
+                if (err) {
+                    return reject(err);
+                }
+
+                try {
+                    var store = transaction.objectStore(self._dbInfo.storeName);
+                    var req = store.clear();
+
+                    transaction.oncomplete = function () {
+                        resolve();
+                    };
+
+                    transaction.onabort = transaction.onerror = function () {
+                        var err = req.error ? req.error : req.transaction.error;
+                        reject(err);
+                    };
+                } catch (e) {
+                    reject(e);
+                }
+            });
+        })["catch"](reject);
+    });
+
+    executeCallback(promise, callback);
+    return promise;
+}
+
+function length(callback) {
+    var self = this;
+
+    var promise = new Promise$1(function (resolve, reject) {
+        self.ready().then(function () {
+            createTransaction(self._dbInfo, READ_ONLY, function (err, transaction) {
+                if (err) {
+                    return reject(err);
+                }
+
+                try {
+                    var store = transaction.objectStore(self._dbInfo.storeName);
+                    var req = store.count();
+
+                    req.onsuccess = function () {
+                        resolve(req.result);
+                    };
+
+                    req.onerror = function () {
+                        reject(req.error);
+                    };
+                } catch (e) {
+                    reject(e);
+                }
+            });
+        })["catch"](reject);
+    });
+
+    executeCallback(promise, callback);
+    return promise;
+}
+
+function key(n, callback) {
+    var self = this;
+
+    var promise = new Promise$1(function (resolve, reject) {
+        if (n < 0) {
+            resolve(null);
+
+            return;
+        }
+
+        self.ready().then(function () {
+            createTransaction(self._dbInfo, READ_ONLY, function (err, transaction) {
+                if (err) {
+                    return reject(err);
+                }
+
+                try {
+                    var store = transaction.objectStore(self._dbInfo.storeName);
+                    var advanced = false;
+                    var req = store.openCursor();
+
+                    req.onsuccess = function () {
+                        var cursor = req.result;
+                        if (!cursor) {
+                            // this means there weren't enough keys
+                            resolve(null);
+
+                            return;
+                        }
+
+                        if (n === 0) {
+                            // We have the first key, return it if that's what they
+                            // wanted.
+                            resolve(cursor.key);
+                        } else {
+                            if (!advanced) {
+                                // Otherwise, ask the cursor to skip ahead n
+                                // records.
+                                advanced = true;
+                                cursor.advance(n);
+                            } else {
+                                // When we get here, we've got the nth key.
+                                resolve(cursor.key);
+                            }
+                        }
+                    };
+
+                    req.onerror = function () {
+                        reject(req.error);
+                    };
+                } catch (e) {
+                    reject(e);
+                }
+            });
+        })["catch"](reject);
+    });
+
+    executeCallback(promise, callback);
+    return promise;
+}
+
+function keys(callback) {
+    var self = this;
+
+    var promise = new Promise$1(function (resolve, reject) {
+        self.ready().then(function () {
+            createTransaction(self._dbInfo, READ_ONLY, function (err, transaction) {
+                if (err) {
+                    return reject(err);
+                }
+
+                try {
+                    var store = transaction.objectStore(self._dbInfo.storeName);
+                    var req = store.openCursor();
+                    var keys = [];
+
+                    req.onsuccess = function () {
+                        var cursor = req.result;
+
+                        if (!cursor) {
+                            resolve(keys);
+                            return;
+                        }
+
+                        keys.push(cursor.key);
+                        cursor["continue"]();
+                    };
+
+                    req.onerror = function () {
+                        reject(req.error);
+                    };
+                } catch (e) {
+                    reject(e);
+                }
+            });
+        })["catch"](reject);
+    });
+
+    executeCallback(promise, callback);
+    return promise;
+}
+
+var asyncStorage = {
+    _driver: 'asyncStorage',
+    _initStorage: _initStorage,
+    _support: isIndexedDBValid(),
+    iterate: iterate,
+    getItem: getItem,
+    setItem: setItem,
+    removeItem: removeItem,
+    clear: clear,
+    length: length,
+    key: key,
+    keys: keys
+};
+
+function isWebSQLValid() {
+    return typeof openDatabase === 'function';
+}
+
+// Sadly, the best way to save binary data in WebSQL/localStorage is serializing
+// it to Base64, so this is how we store it to prevent very strange errors with less
+// verbose ways of binary <-> string data storage.
+var BASE_CHARS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/';
+
+var BLOB_TYPE_PREFIX = '~~local_forage_type~';
+var BLOB_TYPE_PREFIX_REGEX = /^~~local_forage_type~([^~]+)~/;
+
+var SERIALIZED_MARKER = '__lfsc__:';
+var SERIALIZED_MARKER_LENGTH = SERIALIZED_MARKER.length;
+
+// OMG the serializations!
+var TYPE_ARRAYBUFFER = 'arbf';
+var TYPE_BLOB = 'blob';
+var TYPE_INT8ARRAY = 'si08';
+var TYPE_UINT8ARRAY = 'ui08';
+var TYPE_UINT8CLAMPEDARRAY = 'uic8';
+var TYPE_INT16ARRAY = 'si16';
+var TYPE_INT32ARRAY = 'si32';
+var TYPE_UINT16ARRAY = 'ur16';
+var TYPE_UINT32ARRAY = 'ui32';
+var TYPE_FLOAT32ARRAY = 'fl32';
+var TYPE_FLOAT64ARRAY = 'fl64';
+var TYPE_SERIALIZED_MARKER_LENGTH = SERIALIZED_MARKER_LENGTH + TYPE_ARRAYBUFFER.length;
+
+var toString$1 = Object.prototype.toString;
+
+function stringToBuffer(serializedString) {
+    // Fill the string into a ArrayBuffer.
+    var bufferLength = serializedString.length * 0.75;
+    var len = serializedString.length;
+    var i;
+    var p = 0;
+    var encoded1, encoded2, encoded3, encoded4;
+
+    if (serializedString[serializedString.length - 1] === '=') {
+        bufferLength--;
+        if (serializedString[serializedString.length - 2] === '=') {
+            bufferLength--;
+        }
+    }
+
+    var buffer = new ArrayBuffer(bufferLength);
+    var bytes = new Uint8Array(buffer);
+
+    for (i = 0; i < len; i += 4) {
+        encoded1 = BASE_CHARS.indexOf(serializedString[i]);
+        encoded2 = BASE_CHARS.indexOf(serializedString[i + 1]);
+        encoded3 = BASE_CHARS.indexOf(serializedString[i + 2]);
+        encoded4 = BASE_CHARS.indexOf(serializedString[i + 3]);
+
+        /*jslint bitwise: true */
+        bytes[p++] = encoded1 << 2 | encoded2 >> 4;
+        bytes[p++] = (encoded2 & 15) << 4 | encoded3 >> 2;
+        bytes[p++] = (encoded3 & 3) << 6 | encoded4 & 63;
+    }
+    return buffer;
+}
+
+// Converts a buffer to a string to store, serialized, in the backend
+// storage library.
+function bufferToString(buffer) {
+    // base64-arraybuffer
+    var bytes = new Uint8Array(buffer);
+    var base64String = '';
+    var i;
+
+    for (i = 0; i < bytes.length; i += 3) {
+        /*jslint bitwise: true */
+        base64String += BASE_CHARS[bytes[i] >> 2];
+        base64String += BASE_CHARS[(bytes[i] & 3) << 4 | bytes[i + 1] >> 4];
+        base64String += BASE_CHARS[(bytes[i + 1] & 15) << 2 | bytes[i + 2] >> 6];
+        base64String += BASE_CHARS[bytes[i + 2] & 63];
+    }
+
+    if (bytes.length % 3 === 2) {
+        base64String = base64String.substring(0, base64String.length - 1) + '=';
+    } else if (bytes.length % 3 === 1) {
+        base64String = base64String.substring(0, base64String.length - 2) + '==';
+    }
+
+    return base64String;
+}
+
+// Serialize a value, afterwards executing a callback (which usually
+// instructs the `setItem()` callback/promise to be executed). This is how
+// we store binary data with localStorage.
+function serialize(value, callback) {
+    var valueType = '';
+    if (value) {
+        valueType = toString$1.call(value);
+    }
+
+    // Cannot use `value instanceof ArrayBuffer` or such here, as these
+    // checks fail when running the tests using casper.js...
+    //
+    // TODO: See why those tests fail and use a better solution.
+    if (value && (valueType === '[object ArrayBuffer]' || value.buffer && toString$1.call(value.buffer) === '[object ArrayBuffer]')) {
+        // Convert binary arrays to a string and prefix the string with
+        // a special marker.
+        var buffer;
+        var marker = SERIALIZED_MARKER;
+
+        if (value instanceof ArrayBuffer) {
+            buffer = value;
+            marker += TYPE_ARRAYBUFFER;
+        } else {
+            buffer = value.buffer;
+
+            if (valueType === '[object Int8Array]') {
+                marker += TYPE_INT8ARRAY;
+            } else if (valueType === '[object Uint8Array]') {
+                marker += TYPE_UINT8ARRAY;
+            } else if (valueType === '[object Uint8ClampedArray]') {
+                marker += TYPE_UINT8CLAMPEDARRAY;
+            } else if (valueType === '[object Int16Array]') {
+                marker += TYPE_INT16ARRAY;
+            } else if (valueType === '[object Uint16Array]') {
+                marker += TYPE_UINT16ARRAY;
+            } else if (valueType === '[object Int32Array]') {
+                marker += TYPE_INT32ARRAY;
+            } else if (valueType === '[object Uint32Array]') {
+                marker += TYPE_UINT32ARRAY;
+            } else if (valueType === '[object Float32Array]') {
+                marker += TYPE_FLOAT32ARRAY;
+            } else if (valueType === '[object Float64Array]') {
+                marker += TYPE_FLOAT64ARRAY;
+            } else {
+                callback(new Error('Failed to get type for BinaryArray'));
+            }
+        }
+
+        callback(marker + bufferToString(buffer));
+    } else if (valueType === '[object Blob]') {
+        // Conver the blob to a binaryArray and then to a string.
+        var fileReader = new FileReader();
+
+        fileReader.onload = function () {
+            // Backwards-compatible prefix for the blob type.
+            var str = BLOB_TYPE_PREFIX + value.type + '~' + bufferToString(this.result);
+
+            callback(SERIALIZED_MARKER + TYPE_BLOB + str);
+        };
+
+        fileReader.readAsArrayBuffer(value);
+    } else {
+        try {
+            callback(JSON.stringify(value));
+        } catch (e) {
+            console.error("Couldn't convert value into a JSON string: ", value);
+
+            callback(null, e);
+        }
+    }
+}
+
+// Deserialize data we've inserted into a value column/field. We place
+// special markers into our strings to mark them as encoded; this isn't
+// as nice as a meta field, but it's the only sane thing we can do whilst
+// keeping localStorage support intact.
+//
+// Oftentimes this will just deserialize JSON content, but if we have a
+// special marker (SERIALIZED_MARKER, defined above), we will extract
+// some kind of arraybuffer/binary data/typed array out of the string.
+function deserialize(value) {
+    // If we haven't marked this string as being specially serialized (i.e.
+    // something other than serialized JSON), we can just return it and be
+    // done with it.
+    if (value.substring(0, SERIALIZED_MARKER_LENGTH) !== SERIALIZED_MARKER) {
+        return JSON.parse(value);
+    }
+
+    // The following code deals with deserializing some kind of Blob or
+    // TypedArray. First we separate out the type of data we're dealing
+    // with from the data itself.
+    var serializedString = value.substring(TYPE_SERIALIZED_MARKER_LENGTH);
+    var type = value.substring(SERIALIZED_MARKER_LENGTH, TYPE_SERIALIZED_MARKER_LENGTH);
+
+    var blobType;
+    // Backwards-compatible blob type serialization strategy.
+    // DBs created with older versions of localForage will simply not have the blob type.
+    if (type === TYPE_BLOB && BLOB_TYPE_PREFIX_REGEX.test(serializedString)) {
+        var matcher = serializedString.match(BLOB_TYPE_PREFIX_REGEX);
+        blobType = matcher[1];
+        serializedString = serializedString.substring(matcher[0].length);
+    }
+    var buffer = stringToBuffer(serializedString);
+
+    // Return the right type based on the code/type set during
+    // serialization.
+    switch (type) {
+        case TYPE_ARRAYBUFFER:
+            return buffer;
+        case TYPE_BLOB:
+            return createBlob([buffer], { type: blobType });
+        case TYPE_INT8ARRAY:
+            return new Int8Array(buffer);
+        case TYPE_UINT8ARRAY:
+            return new Uint8Array(buffer);
+        case TYPE_UINT8CLAMPEDARRAY:
+            return new Uint8ClampedArray(buffer);
+        case TYPE_INT16ARRAY:
+            return new Int16Array(buffer);
+        case TYPE_UINT16ARRAY:
+            return new Uint16Array(buffer);
+        case TYPE_INT32ARRAY:
+            return new Int32Array(buffer);
+        case TYPE_UINT32ARRAY:
+            return new Uint32Array(buffer);
+        case TYPE_FLOAT32ARRAY:
+            return new Float32Array(buffer);
+        case TYPE_FLOAT64ARRAY:
+            return new Float64Array(buffer);
+        default:
+            throw new Error('Unkown type: ' + type);
+    }
+}
+
+var localforageSerializer = {
+    serialize: serialize,
+    deserialize: deserialize,
+    stringToBuffer: stringToBuffer,
+    bufferToString: bufferToString
+};
+
+/*
+ * Includes code from:
+ *
+ * base64-arraybuffer
+ * https://github.com/niklasvh/base64-arraybuffer
+ *
+ * Copyright (c) 2012 Niklas von Hertzen
+ * Licensed under the MIT license.
+ */
+// Open the WebSQL database (automatically creates one if one didn't
+// previously exist), using any options set in the config.
+function _initStorage$1(options) {
+    var self = this;
+    var dbInfo = {
+        db: null
+    };
+
+    if (options) {
+        for (var i in options) {
+            dbInfo[i] = typeof options[i] !== 'string' ? options[i].toString() : options[i];
+        }
+    }
+
+    var dbInfoPromise = new Promise$1(function (resolve, reject) {
+        // Open the database; the openDatabase API will automatically
+        // create it for us if it doesn't exist.
+        try {
+            dbInfo.db = openDatabase(dbInfo.name, String(dbInfo.version), dbInfo.description, dbInfo.size);
+        } catch (e) {
+            return reject(e);
+        }
+
+        // Create our key/value table if it doesn't exist.
+        dbInfo.db.transaction(function (t) {
+            t.executeSql('CREATE TABLE IF NOT EXISTS ' + dbInfo.storeName + ' (id INTEGER PRIMARY KEY, key unique, value)', [], function () {
+                self._dbInfo = dbInfo;
+                resolve();
+            }, function (t, error) {
+                reject(error);
+            });
+        });
+    });
+
+    dbInfo.serializer = localforageSerializer;
+    return dbInfoPromise;
+}
+
+function getItem$1(key, callback) {
+    var self = this;
+
+    key = normalizeKey(key);
+
+    var promise = new Promise$1(function (resolve, reject) {
+        self.ready().then(function () {
+            var dbInfo = self._dbInfo;
+            dbInfo.db.transaction(function (t) {
+                t.executeSql('SELECT * FROM ' + dbInfo.storeName + ' WHERE key = ? LIMIT 1', [key], function (t, results) {
+                    var result = results.rows.length ? results.rows.item(0).value : null;
+
+                    // Check to see if this is serialized content we need to
+                    // unpack.
+                    if (result) {
+                        result = dbInfo.serializer.deserialize(result);
+                    }
+
+                    resolve(result);
+                }, function (t, error) {
+
+                    reject(error);
+                });
+            });
+        })["catch"](reject);
+    });
+
+    executeCallback(promise, callback);
+    return promise;
+}
+
+function iterate$1(iterator, callback) {
+    var self = this;
+
+    var promise = new Promise$1(function (resolve, reject) {
+        self.ready().then(function () {
+            var dbInfo = self._dbInfo;
+
+            dbInfo.db.transaction(function (t) {
+                t.executeSql('SELECT * FROM ' + dbInfo.storeName, [], function (t, results) {
+                    var rows = results.rows;
+                    var length = rows.length;
+
+                    for (var i = 0; i < length; i++) {
+                        var item = rows.item(i);
+                        var result = item.value;
+
+                        // Check to see if this is serialized content
+                        // we need to unpack.
+                        if (result) {
+                            result = dbInfo.serializer.deserialize(result);
+                        }
+
+                        result = iterator(result, item.key, i + 1);
+
+                        // void(0) prevents problems with redefinition
+                        // of `undefined`.
+                        if (result !== void 0) {
+                            resolve(result);
+                            return;
+                        }
+                    }
+
+                    resolve();
+                }, function (t, error) {
+                    reject(error);
+                });
+            });
+        })["catch"](reject);
+    });
+
+    executeCallback(promise, callback);
+    return promise;
+}
+
+function _setItem(key, value, callback, retriesLeft) {
+    var self = this;
+
+    key = normalizeKey(key);
+
+    var promise = new Promise$1(function (resolve, reject) {
+        self.ready().then(function () {
+            // The localStorage API doesn't return undefined values in an
+            // "expected" way, so undefined is always cast to null in all
+            // drivers. See: https://github.com/mozilla/localForage/pull/42
+            if (value === undefined) {
+                value = null;
+            }
+
+            // Save the original value to pass to the callback.
+            var originalValue = value;
+
+            var dbInfo = self._dbInfo;
+            dbInfo.serializer.serialize(value, function (value, error) {
+                if (error) {
+                    reject(error);
+                } else {
+                    dbInfo.db.transaction(function (t) {
+                        t.executeSql('INSERT OR REPLACE INTO ' + dbInfo.storeName + ' (key, value) VALUES (?, ?)', [key, value], function () {
+                            resolve(originalValue);
+                        }, function (t, error) {
+                            reject(error);
+                        });
+                    }, function (sqlError) {
+                        // The transaction failed; check
+                        // to see if it's a quota error.
+                        if (sqlError.code === sqlError.QUOTA_ERR) {
+                            // We reject the callback outright for now, but
+                            // it's worth trying to re-run the transaction.
+                            // Even if the user accepts the prompt to use
+                            // more storage on Safari, this error will
+                            // be called.
+                            //
+                            // Try to re-run the transaction.
+                            if (retriesLeft > 0) {
+                                resolve(_setItem.apply(self, [key, originalValue, callback, retriesLeft - 1]));
+                                return;
+                            }
+                            reject(sqlError);
+                        }
+                    });
+                }
+            });
+        })["catch"](reject);
+    });
+
+    executeCallback(promise, callback);
+    return promise;
+}
+
+function setItem$1(key, value, callback) {
+    return _setItem.apply(this, [key, value, callback, 1]);
+}
+
+function removeItem$1(key, callback) {
+    var self = this;
+
+    key = normalizeKey(key);
+
+    var promise = new Promise$1(function (resolve, reject) {
+        self.ready().then(function () {
+            var dbInfo = self._dbInfo;
+            dbInfo.db.transaction(function (t) {
+                t.executeSql('DELETE FROM ' + dbInfo.storeName + ' WHERE key = ?', [key], function () {
+                    resolve();
+                }, function (t, error) {
+                    reject(error);
+                });
+            });
+        })["catch"](reject);
+    });
+
+    executeCallback(promise, callback);
+    return promise;
+}
+
+// Deletes every item in the table.
+// TODO: Find out if this resets the AUTO_INCREMENT number.
+function clear$1(callback) {
+    var self = this;
+
+    var promise = new Promise$1(function (resolve, reject) {
+        self.ready().then(function () {
+            var dbInfo = self._dbInfo;
+            dbInfo.db.transaction(function (t) {
+                t.executeSql('DELETE FROM ' + dbInfo.storeName, [], function () {
+                    resolve();
+                }, function (t, error) {
+                    reject(error);
+                });
+            });
+        })["catch"](reject);
+    });
+
+    executeCallback(promise, callback);
+    return promise;
+}
+
+// Does a simple `COUNT(key)` to get the number of items stored in
+// localForage.
+function length$1(callback) {
+    var self = this;
+
+    var promise = new Promise$1(function (resolve, reject) {
+        self.ready().then(function () {
+            var dbInfo = self._dbInfo;
+            dbInfo.db.transaction(function (t) {
+                // Ahhh, SQL makes this one soooooo easy.
+                t.executeSql('SELECT COUNT(key) as c FROM ' + dbInfo.storeName, [], function (t, results) {
+                    var result = results.rows.item(0).c;
+
+                    resolve(result);
+                }, function (t, error) {
+                    reject(error);
+                });
+            });
+        })["catch"](reject);
+    });
+
+    executeCallback(promise, callback);
+    return promise;
+}
+
+// Return the key located at key index X; essentially gets the key from a
+// `WHERE id = ?`. This is the most efficient way I can think to implement
+// this rarely-used (in my experience) part of the API, but it can seem
+// inconsistent, because we do `INSERT OR REPLACE INTO` on `setItem()`, so
+// the ID of each key will change every time it's updated. Perhaps a stored
+// procedure for the `setItem()` SQL would solve this problem?
+// TODO: Don't change ID on `setItem()`.
+function key$1(n, callback) {
+    var self = this;
+
+    var promise = new Promise$1(function (resolve, reject) {
+        self.ready().then(function () {
+            var dbInfo = self._dbInfo;
+            dbInfo.db.transaction(function (t) {
+                t.executeSql('SELECT key FROM ' + dbInfo.storeName + ' WHERE id = ? LIMIT 1', [n + 1], function (t, results) {
+                    var result = results.rows.length ? results.rows.item(0).key : null;
+                    resolve(result);
+                }, function (t, error) {
+                    reject(error);
+                });
+            });
+        })["catch"](reject);
+    });
+
+    executeCallback(promise, callback);
+    return promise;
+}
+
+function keys$1(callback) {
+    var self = this;
+
+    var promise = new Promise$1(function (resolve, reject) {
+        self.ready().then(function () {
+            var dbInfo = self._dbInfo;
+            dbInfo.db.transaction(function (t) {
+                t.executeSql('SELECT key FROM ' + dbInfo.storeName, [], function (t, results) {
+                    var keys = [];
+
+                    for (var i = 0; i < results.rows.length; i++) {
+                        keys.push(results.rows.item(i).key);
+                    }
+
+                    resolve(keys);
+                }, function (t, error) {
+                    reject(error);
+                });
+            });
+        })["catch"](reject);
+    });
+
+    executeCallback(promise, callback);
+    return promise;
+}
+
+var webSQLStorage = {
+    _driver: 'webSQLStorage',
+    _initStorage: _initStorage$1,
+    _support: isWebSQLValid(),
+    iterate: iterate$1,
+    getItem: getItem$1,
+    setItem: setItem$1,
+    removeItem: removeItem$1,
+    clear: clear$1,
+    length: length$1,
+    key: key$1,
+    keys: keys$1
+};
+
+function isLocalStorageValid() {
+    try {
+        return typeof localStorage !== 'undefined' && 'setItem' in localStorage && typeof localStorage.setItem === 'function';
+    } catch (e) {
+        return false;
+    }
+}
+
+// Check if localStorage throws when saving an item
+function checkIfLocalStorageThrows() {
+    var localStorageTestKey = '_localforage_support_test';
+
+    try {
+        localStorage.setItem(localStorageTestKey, true);
+        localStorage.removeItem(localStorageTestKey);
+
+        return false;
+    } catch (e) {
+        return true;
+    }
+}
+
+// Check if localStorage is usable and allows to save an item
+// This method checks if localStorage is usable in Safari Private Browsing
+// mode, or in any other case where the available quota for localStorage
+// is 0 and there wasn't any saved items yet.
+function _isLocalStorageUsable() {
+    return !checkIfLocalStorageThrows() || localStorage.length > 0;
+}
+
+// Config the localStorage backend, using options set in the config.
+function _initStorage$2(options) {
+    var self = this;
+    var dbInfo = {};
+    if (options) {
+        for (var i in options) {
+            dbInfo[i] = options[i];
+        }
+    }
+
+    dbInfo.keyPrefix = dbInfo.name + '/';
+
+    if (dbInfo.storeName !== self._defaultConfig.storeName) {
+        dbInfo.keyPrefix += dbInfo.storeName + '/';
+    }
+
+    if (!_isLocalStorageUsable()) {
+        return Promise$1.reject();
+    }
+
+    self._dbInfo = dbInfo;
+    dbInfo.serializer = localforageSerializer;
+
+    return Promise$1.resolve();
+}
+
+// Remove all keys from the datastore, effectively destroying all data in
+// the app's key/value store!
+function clear$2(callback) {
+    var self = this;
+    var promise = self.ready().then(function () {
+        var keyPrefix = self._dbInfo.keyPrefix;
+
+        for (var i = localStorage.length - 1; i >= 0; i--) {
+            var key = localStorage.key(i);
+
+            if (key.indexOf(keyPrefix) === 0) {
+                localStorage.removeItem(key);
+            }
+        }
+    });
+
+    executeCallback(promise, callback);
+    return promise;
+}
+
+// Retrieve an item from the store. Unlike the original async_storage
+// library in Gaia, we don't modify return values at all. If a key's value
+// is `undefined`, we pass that value to the callback function.
+function getItem$2(key, callback) {
+    var self = this;
+
+    key = normalizeKey(key);
+
+    var promise = self.ready().then(function () {
+        var dbInfo = self._dbInfo;
+        var result = localStorage.getItem(dbInfo.keyPrefix + key);
+
+        // If a result was found, parse it from the serialized
+        // string into a JS object. If result isn't truthy, the key
+        // is likely undefined and we'll pass it straight to the
+        // callback.
+        if (result) {
+            result = dbInfo.serializer.deserialize(result);
+        }
+
+        return result;
+    });
+
+    executeCallback(promise, callback);
+    return promise;
+}
+
+// Iterate over all items in the store.
+function iterate$2(iterator, callback) {
+    var self = this;
+
+    var promise = self.ready().then(function () {
+        var dbInfo = self._dbInfo;
+        var keyPrefix = dbInfo.keyPrefix;
+        var keyPrefixLength = keyPrefix.length;
+        var length = localStorage.length;
+
+        // We use a dedicated iterator instead of the `i` variable below
+        // so other keys we fetch in localStorage aren't counted in
+        // the `iterationNumber` argument passed to the `iterate()`
+        // callback.
+        //
+        // See: github.com/mozilla/localForage/pull/435#discussion_r38061530
+        var iterationNumber = 1;
+
+        for (var i = 0; i < length; i++) {
+            var key = localStorage.key(i);
+            if (key.indexOf(keyPrefix) !== 0) {
+                continue;
+            }
+            var value = localStorage.getItem(key);
+
+            // If a result was found, parse it from the serialized
+            // string into a JS object. If result isn't truthy, the
+            // key is likely undefined and we'll pass it straight
+            // to the iterator.
+            if (value) {
+                value = dbInfo.serializer.deserialize(value);
+            }
+
+            value = iterator(value, key.substring(keyPrefixLength), iterationNumber++);
+
+            if (value !== void 0) {
+                return value;
+            }
+        }
+    });
+
+    executeCallback(promise, callback);
+    return promise;
+}
+
+// Same as localStorage's key() method, except takes a callback.
+function key$2(n, callback) {
+    var self = this;
+    var promise = self.ready().then(function () {
+        var dbInfo = self._dbInfo;
+        var result;
+        try {
+            result = localStorage.key(n);
+        } catch (error) {
+            result = null;
+        }
+
+        // Remove the prefix from the key, if a key is found.
+        if (result) {
+            result = result.substring(dbInfo.keyPrefix.length);
+        }
+
+        return result;
+    });
+
+    executeCallback(promise, callback);
+    return promise;
+}
+
+function keys$2(callback) {
+    var self = this;
+    var promise = self.ready().then(function () {
+        var dbInfo = self._dbInfo;
+        var length = localStorage.length;
+        var keys = [];
+
+        for (var i = 0; i < length; i++) {
+            var itemKey = localStorage.key(i);
+            if (itemKey.indexOf(dbInfo.keyPrefix) === 0) {
+                keys.push(itemKey.substring(dbInfo.keyPrefix.length));
+            }
+        }
+
+        return keys;
+    });
+
+    executeCallback(promise, callback);
+    return promise;
+}
+
+// Supply the number of keys in the datastore to the callback function.
+function length$2(callback) {
+    var self = this;
+    var promise = self.keys().then(function (keys) {
+        return keys.length;
+    });
+
+    executeCallback(promise, callback);
+    return promise;
+}
+
+// Remove an item from the store, nice and simple.
+function removeItem$2(key, callback) {
+    var self = this;
+
+    key = normalizeKey(key);
+
+    var promise = self.ready().then(function () {
+        var dbInfo = self._dbInfo;
+        localStorage.removeItem(dbInfo.keyPrefix + key);
+    });
+
+    executeCallback(promise, callback);
+    return promise;
+}
+
+// Set a key's value and run an optional callback once the value is set.
+// Unlike Gaia's implementation, the callback function is passed the value,
+// in case you want to operate on that value only after you're sure it
+// saved, or something like that.
+function setItem$2(key, value, callback) {
+    var self = this;
+
+    key = normalizeKey(key);
+
+    var promise = self.ready().then(function () {
+        // Convert undefined values to null.
+        // https://github.com/mozilla/localForage/pull/42
+        if (value === undefined) {
+            value = null;
+        }
+
+        // Save the original value to pass to the callback.
+        var originalValue = value;
+
+        return new Promise$1(function (resolve, reject) {
+            var dbInfo = self._dbInfo;
+            dbInfo.serializer.serialize(value, function (value, error) {
+                if (error) {
+                    reject(error);
+                } else {
+                    try {
+                        localStorage.setItem(dbInfo.keyPrefix + key, value);
+                        resolve(originalValue);
+                    } catch (e) {
+                        // localStorage capacity exceeded.
+                        // TODO: Make this a specific error/event.
+                        if (e.name === 'QuotaExceededError' || e.name === 'NS_ERROR_DOM_QUOTA_REACHED') {
+                            reject(e);
+                        }
+                        reject(e);
+                    }
+                }
+            });
+        });
+    });
+
+    executeCallback(promise, callback);
+    return promise;
+}
+
+var localStorageWrapper = {
+    _driver: 'localStorageWrapper',
+    _initStorage: _initStorage$2,
+    _support: isLocalStorageValid(),
+    iterate: iterate$2,
+    getItem: getItem$2,
+    setItem: setItem$2,
+    removeItem: removeItem$2,
+    clear: clear$2,
+    length: length$2,
+    key: key$2,
+    keys: keys$2
+};
+
+var isArray = Array.isArray || function (arg) {
+    return Object.prototype.toString.call(arg) === '[object Array]';
+};
+
+// Drivers are stored here when `defineDriver()` is called.
+// They are shared across all instances of localForage.
+var DefinedDrivers = {};
+
+var DriverSupport = {};
+
+var DefaultDrivers = {
+    INDEXEDDB: asyncStorage,
+    WEBSQL: webSQLStorage,
+    LOCALSTORAGE: localStorageWrapper
+};
+
+var DefaultDriverOrder = [DefaultDrivers.INDEXEDDB._driver, DefaultDrivers.WEBSQL._driver, DefaultDrivers.LOCALSTORAGE._driver];
+
+var LibraryMethods = ['clear', 'getItem', 'iterate', 'key', 'keys', 'length', 'removeItem', 'setItem'];
+
+var DefaultConfig = {
+    description: '',
+    driver: DefaultDriverOrder.slice(),
+    name: 'localforage',
+    // Default DB size is _JUST UNDER_ 5MB, as it's the highest size
+    // we can use without a prompt.
+    size: 4980736,
+    storeName: 'keyvaluepairs',
+    version: 1.0
+};
+
+function callWhenReady(localForageInstance, libraryMethod) {
+    localForageInstance[libraryMethod] = function () {
+        var _args = arguments;
+        return localForageInstance.ready().then(function () {
+            return localForageInstance[libraryMethod].apply(localForageInstance, _args);
+        });
+    };
+}
+
+function extend() {
+    for (var i = 1; i < arguments.length; i++) {
+        var arg = arguments[i];
+
+        if (arg) {
+            for (var _key in arg) {
+                if (arg.hasOwnProperty(_key)) {
+                    if (isArray(arg[_key])) {
+                        arguments[0][_key] = arg[_key].slice();
+                    } else {
+                        arguments[0][_key] = arg[_key];
+                    }
+                }
+            }
+        }
+    }
+
+    return arguments[0];
+}
+
+var LocalForage = function () {
+    function LocalForage(options) {
+        _classCallCheck(this, LocalForage);
+
+        for (var driverTypeKey in DefaultDrivers) {
+            if (DefaultDrivers.hasOwnProperty(driverTypeKey)) {
+                var driver = DefaultDrivers[driverTypeKey];
+                var driverName = driver._driver;
+                this[driverTypeKey] = driverName;
+
+                if (!DefinedDrivers[driverName]) {
+                    // we don't need to wait for the promise,
+                    // since the default drivers can be defined
+                    // in a blocking manner
+                    this.defineDriver(driver);
+                }
+            }
+        }
+
+        this._defaultConfig = extend({}, DefaultConfig);
+        this._config = extend({}, this._defaultConfig, options);
+        this._driverSet = null;
+        this._initDriver = null;
+        this._ready = false;
+        this._dbInfo = null;
+
+        this._wrapLibraryMethodsWithReady();
+        this.setDriver(this._config.driver)["catch"](function () {});
+    }
+
+    // Set any config values for localForage; can be called anytime before
+    // the first API call (e.g. `getItem`, `setItem`).
+    // We loop through options so we don't overwrite existing config
+    // values.
+
+
+    LocalForage.prototype.config = function config(options) {
+        // If the options argument is an object, we use it to set values.
+        // Otherwise, we return either a specified config value or all
+        // config values.
+        if ((typeof options === 'undefined' ? 'undefined' : _typeof(options)) === 'object') {
+            // If localforage is ready and fully initialized, we can't set
+            // any new configuration values. Instead, we return an error.
+            if (this._ready) {
+                return new Error('Can\'t call config() after localforage ' + 'has been used.');
+            }
+
+            for (var i in options) {
+                if (i === 'storeName') {
+                    options[i] = options[i].replace(/\W/g, '_');
+                }
+
+                if (i === 'version' && typeof options[i] !== 'number') {
+                    return new Error('Database version must be a number.');
+                }
+
+                this._config[i] = options[i];
+            }
+
+            // after all config options are set and
+            // the driver option is used, try setting it
+            if ('driver' in options && options.driver) {
+                return this.setDriver(this._config.driver);
+            }
+
+            return true;
+        } else if (typeof options === 'string') {
+            return this._config[options];
+        } else {
+            return this._config;
+        }
+    };
+
+    // Used to define a custom driver, shared across all instances of
+    // localForage.
+
+
+    LocalForage.prototype.defineDriver = function defineDriver(driverObject, callback, errorCallback) {
+        var promise = new Promise$1(function (resolve, reject) {
+            try {
+                var driverName = driverObject._driver;
+                var complianceError = new Error('Custom driver not compliant; see ' + 'https://mozilla.github.io/localForage/#definedriver');
+
+                // A driver name should be defined and not overlap with the
+                // library-defined, default drivers.
+                if (!driverObject._driver) {
+                    reject(complianceError);
+                    return;
+                }
+
+                var driverMethods = LibraryMethods.concat('_initStorage');
+                for (var i = 0, len = driverMethods.length; i < len; i++) {
+                    var customDriverMethod = driverMethods[i];
+                    if (!customDriverMethod || !driverObject[customDriverMethod] || typeof driverObject[customDriverMethod] !== 'function') {
+                        reject(complianceError);
+                        return;
+                    }
+                }
+
+                var setDriverSupport = function setDriverSupport(support) {
+                    if (DefinedDrivers[driverName]) {
+                        console.info('Redefining LocalForage driver: ' + driverName);
+                    }
+                    DefinedDrivers[driverName] = driverObject;
+                    DriverSupport[driverName] = support;
+                    // don't use a then, so that we can define
+                    // drivers that have simple _support methods
+                    // in a blocking manner
+                    resolve();
+                };
+
+                if ('_support' in driverObject) {
+                    if (driverObject._support && typeof driverObject._support === 'function') {
+                        driverObject._support().then(setDriverSupport, reject);
+                    } else {
+                        setDriverSupport(!!driverObject._support);
+                    }
+                } else {
+                    setDriverSupport(true);
+                }
+            } catch (e) {
+                reject(e);
+            }
+        });
+
+        executeTwoCallbacks(promise, callback, errorCallback);
+        return promise;
+    };
+
+    LocalForage.prototype.driver = function driver() {
+        return this._driver || null;
+    };
+
+    LocalForage.prototype.getDriver = function getDriver(driverName, callback, errorCallback) {
+        var getDriverPromise = DefinedDrivers[driverName] ? Promise$1.resolve(DefinedDrivers[driverName]) : Promise$1.reject(new Error('Driver not found.'));
+
+        executeTwoCallbacks(getDriverPromise, callback, errorCallback);
+        return getDriverPromise;
+    };
+
+    LocalForage.prototype.getSerializer = function getSerializer(callback) {
+        var serializerPromise = Promise$1.resolve(localforageSerializer);
+        executeTwoCallbacks(serializerPromise, callback);
+        return serializerPromise;
+    };
+
+    LocalForage.prototype.ready = function ready(callback) {
+        var self = this;
+
+        var promise = self._driverSet.then(function () {
+            if (self._ready === null) {
+                self._ready = self._initDriver();
+            }
+
+            return self._ready;
+        });
+
+        executeTwoCallbacks(promise, callback, callback);
+        return promise;
+    };
+
+    LocalForage.prototype.setDriver = function setDriver(drivers, callback, errorCallback) {
+        var self = this;
+
+        if (!isArray(drivers)) {
+            drivers = [drivers];
+        }
+
+        var supportedDrivers = this._getSupportedDrivers(drivers);
+
+        function setDriverToConfig() {
+            self._config.driver = self.driver();
+        }
+
+        function extendSelfWithDriver(driver) {
+            self._extend(driver);
+            setDriverToConfig();
+
+            self._ready = self._initStorage(self._config);
+            return self._ready;
+        }
+
+        function initDriver(supportedDrivers) {
+            return function () {
+                var currentDriverIndex = 0;
+
+                function driverPromiseLoop() {
+                    while (currentDriverIndex < supportedDrivers.length) {
+                        var driverName = supportedDrivers[currentDriverIndex];
+                        currentDriverIndex++;
+
+                        self._dbInfo = null;
+                        self._ready = null;
+
+                        return self.getDriver(driverName).then(extendSelfWithDriver)["catch"](driverPromiseLoop);
+                    }
+
+                    setDriverToConfig();
+                    var error = new Error('No available storage method found.');
+                    self._driverSet = Promise$1.reject(error);
+                    return self._driverSet;
+                }
+
+                return driverPromiseLoop();
+            };
+        }
+
+        // There might be a driver initialization in progress
+        // so wait for it to finish in order to avoid a possible
+        // race condition to set _dbInfo
+        var oldDriverSetDone = this._driverSet !== null ? this._driverSet["catch"](function () {
+            return Promise$1.resolve();
+        }) : Promise$1.resolve();
+
+        this._driverSet = oldDriverSetDone.then(function () {
+            var driverName = supportedDrivers[0];
+            self._dbInfo = null;
+            self._ready = null;
+
+            return self.getDriver(driverName).then(function (driver) {
+                self._driver = driver._driver;
+                setDriverToConfig();
+                self._wrapLibraryMethodsWithReady();
+                self._initDriver = initDriver(supportedDrivers);
+            });
+        })["catch"](function () {
+            setDriverToConfig();
+            var error = new Error('No available storage method found.');
+            self._driverSet = Promise$1.reject(error);
+            return self._driverSet;
+        });
+
+        executeTwoCallbacks(this._driverSet, callback, errorCallback);
+        return this._driverSet;
+    };
+
+    LocalForage.prototype.supports = function supports(driverName) {
+        return !!DriverSupport[driverName];
+    };
+
+    LocalForage.prototype._extend = function _extend(libraryMethodsAndProperties) {
+        extend(this, libraryMethodsAndProperties);
+    };
+
+    LocalForage.prototype._getSupportedDrivers = function _getSupportedDrivers(drivers) {
+        var supportedDrivers = [];
+        for (var i = 0, len = drivers.length; i < len; i++) {
+            var driverName = drivers[i];
+            if (this.supports(driverName)) {
+                supportedDrivers.push(driverName);
+            }
+        }
+        return supportedDrivers;
+    };
+
+    LocalForage.prototype._wrapLibraryMethodsWithReady = function _wrapLibraryMethodsWithReady() {
+        // Add a stub for each driver API method that delays the call to the
+        // corresponding driver method until localForage is ready. These stubs
+        // will be replaced by the driver methods as soon as the driver is
+        // loaded, so there is no performance impact.
+        for (var i = 0, len = LibraryMethods.length; i < len; i++) {
+            callWhenReady(this, LibraryMethods[i]);
+        }
+    };
+
+    LocalForage.prototype.createInstance = function createInstance(options) {
+        return new LocalForage(options);
+    };
+
+    return LocalForage;
+}();
+
+// The actual localForage object that we expose as a module or via a
+// global. It's extended by pulling in one of our other libraries.
+
+
+var localforage_js = new LocalForage();
+
+module.exports = localforage_js;
+
+},{"3":3}]},{},[4])(4)
+});
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(23)))
+
+/***/ }),
+/* 4 */
+/***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-/* harmony export (immutable) */ __webpack_exports__["a"] = getWeightDecoder;
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__weight_decoder_eightbit__ = __webpack_require__(23);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__weight_decoder_raw__ = __webpack_require__(33);
+
 /**
  * @module webdnn
  */
 /** Don't Remove This comment block */
-
-
+Object.defineProperty(exports, "__esModule", { value: true });
+var weight_decoder_eightbit_1 = __webpack_require__(24);
+var weight_decoder_raw_1 = __webpack_require__(34);
 /**
  * @protected
  */
 function getWeightDecoder(name) {
     switch (name) {
         case 'raw':
-            return new __WEBPACK_IMPORTED_MODULE_1__weight_decoder_raw__["a" /* default */]();
+            return new weight_decoder_raw_1.default();
         case 'eightbit':
-            return new __WEBPACK_IMPORTED_MODULE_0__weight_decoder_eightbit__["a" /* default */]();
+            return new weight_decoder_eightbit_1.default();
         default:
             throw new Error('Unknown weight encoding');
     }
 }
+exports.default = getWeightDecoder;
 
 
 /***/ }),
-/* 4 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
+/* 5 */
+/***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
+
 /**
  * @module webdnn
  */
+Object.defineProperty(exports, "__esModule", { value: true });
 /**
  * PlaceholderContext manages the placeholders
  * @protected
  */
-class PlaceholderContext {
-    constructor(values) {
+var PlaceholderContext = /** @class */ (function () {
+    function PlaceholderContext(values) {
         this.values = {};
         if (values) {
             this.update(values);
         }
     }
-    get isResolved() {
-        return Object.values(this.values).every(value => typeof value == 'number');
-    }
-    update(values) {
+    Object.defineProperty(PlaceholderContext.prototype, "isResolved", {
+        get: function () {
+            return Object.values(this.values).every(function (value) { return typeof value == 'number'; });
+        },
+        enumerable: true,
+        configurable: true
+    });
+    PlaceholderContext.prototype.update = function (values) {
         this.values = Object.assign(this.values, values);
-    }
-    resolve(placeholder) {
+    };
+    PlaceholderContext.prototype.resolve = function (placeholder) {
+        var _this = this;
         // Literal value => return itself.
         if (typeof placeholder !== 'object')
             return placeholder;
         // Placeholder object ( { eval: string } ) => resolve
         if (Object.keys(placeholder).length == 1 && 'eval' in placeholder) {
             if (!this.isResolved)
-                throw Error(`Not all placeholders are resolved: ${this}`);
-            return ((placeholders) => eval(placeholder.eval))(this.values);
+                throw Error("Not all placeholders are resolved: " + this);
+            return (function (placeholders) { return eval(placeholder.eval); })(this.values);
         }
         // Array => deep copy
         if (placeholder instanceof Array) {
-            return placeholder.map((value) => this.resolve(value));
+            return placeholder.map(function (value) { return _this.resolve(value); });
         }
         // Object => deep copy
         return Object.entries(placeholder)
-            .reduce((result, [key, value]) => {
-            result[key] = this.resolve(value);
+            .reduce(function (result, _a) {
+            var key = _a[0], value = _a[1];
+            result[key] = _this.resolve(value);
             return result;
         }, {});
-    }
-    toString() {
+    };
+    PlaceholderContext.prototype.toString = function () {
         return JSON.stringify(this.values);
-    }
-}
-/* harmony export (immutable) */ __webpack_exports__["a"] = PlaceholderContext;
-
+    };
+    return PlaceholderContext;
+}());
+exports.default = PlaceholderContext;
 
 
 /***/ }),
-/* 5 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
+/* 6 */
+/***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__symbolic_typed_array__ = __webpack_require__(35);
+
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
+Object.defineProperty(exports, "__esModule", { value: true });
 /**
  * @module webdnn
  */
 /** Don't Remove This comment block */
-
+var symbolic_typed_array_1 = __webpack_require__(36);
 /**
  * Typed array used for input and output variables of [[webdnn.DescriptorRunner| `DescriptorRunner`]].
  * You can use `SymbolicFloat32Array` almost as same as `Float32Array`.
@@ -673,25 +3262,27 @@ class PlaceholderContext {
  * >>> 1.00  // Actual result
  * ```
  */
-class SymbolicFloat32Array extends __WEBPACK_IMPORTED_MODULE_0__symbolic_typed_array__["a" /* SymbolicTypedArray */] {
-    constructor() {
-        super(...arguments);
+var SymbolicFloat32Array = /** @class */ (function (_super) {
+    __extends(SymbolicFloat32Array, _super);
+    function SymbolicFloat32Array() {
+        var _this = _super !== null && _super.apply(this, arguments) || this;
         /**
          * The size in bytes of each element in the array.
          */
-        this.BYTES_PER_ELEMENT = 4;
+        _this.BYTES_PER_ELEMENT = 4;
+        return _this;
     }
     /**
      * Convert SymbolicTypedArray instance into actual TypedArray instance.
      *
      * @returns actual typed array
      */
-    toActual() {
+    SymbolicFloat32Array.prototype.toActual = function () {
         if (!this.buffer) {
             throw new Error('Internal buffer for this variable is not set. DescriptorRunner.setPlaceholderValue() have to be called before calling this function.');
         }
         return new Float32Array(this.buffer, this.byteOffset, this.length);
-    }
+    };
     /**
      * Determines whether all the members of an array satisfy the specified test.
      * @param callbackfn A function that accepts up to three arguments. The every method calls
@@ -700,9 +3291,9 @@ class SymbolicFloat32Array extends __WEBPACK_IMPORTED_MODULE_0__symbolic_typed_a
      * @param thisArg An object to which the this keyword can refer in the callbackfn function.
      * If thisArg is omitted, undefined is used as the this value.
      */
-    every(callbackfn, thisArg) {
+    SymbolicFloat32Array.prototype.every = function (callbackfn, thisArg) {
         return this.toActual().every(callbackfn, thisArg);
-    }
+    };
     /**
      * Returns the elements of an array that meet the condition specified in a callback function.
      * @param callbackfn A function that accepts up to three arguments. The filter method calls
@@ -710,9 +3301,9 @@ class SymbolicFloat32Array extends __WEBPACK_IMPORTED_MODULE_0__symbolic_typed_a
      * @param thisArg An object to which the this keyword can refer in the callbackfn function.
      * If thisArg is omitted, undefined is used as the this value.
      */
-    filter(callbackfn, thisArg) {
+    SymbolicFloat32Array.prototype.filter = function (callbackfn, thisArg) {
         return this.toActual().filter(callbackfn, thisArg);
-    }
+    };
     /**
      * Returns the value of the first element in the array where predicate is true, and undefined
      * otherwise.
@@ -722,9 +3313,9 @@ class SymbolicFloat32Array extends __WEBPACK_IMPORTED_MODULE_0__symbolic_typed_a
      * @param thisArg If provided, it will be used as the this value for each invocation of
      * predicate. If it is not provided, undefined is used instead.
      */
-    find(predicate, thisArg) {
+    SymbolicFloat32Array.prototype.find = function (predicate, thisArg) {
         return this.toActual().find(predicate, thisArg);
-    }
+    };
     /**
      * Returns the index of the first element in the array where predicate is true, and -1
      * otherwise.
@@ -734,9 +3325,9 @@ class SymbolicFloat32Array extends __WEBPACK_IMPORTED_MODULE_0__symbolic_typed_a
      * @param thisArg If provided, it will be used as the this value for each invocation of
      * predicate. If it is not provided, undefined is used instead.
      */
-    findIndex(predicate, thisArg) {
+    SymbolicFloat32Array.prototype.findIndex = function (predicate, thisArg) {
         return this.toActual().findIndex(predicate, thisArg);
-    }
+    };
     /**
      * Performs the specified action for each element in an array.
      * @param callbackfn  A function that accepts up to three arguments. forEach calls the
@@ -744,9 +3335,9 @@ class SymbolicFloat32Array extends __WEBPACK_IMPORTED_MODULE_0__symbolic_typed_a
      * @param thisArg  An object to which the this keyword can refer in the callbackfn function.
      * If thisArg is omitted, undefined is used as the this value.
      */
-    forEach(callbackfn, thisArg) {
+    SymbolicFloat32Array.prototype.forEach = function (callbackfn, thisArg) {
         return this.toActual().forEach(callbackfn, thisArg);
-    }
+    };
     /**
      * Calls a defined callback function on each element of an array, and returns an array that
      * contains the results.
@@ -755,29 +3346,29 @@ class SymbolicFloat32Array extends __WEBPACK_IMPORTED_MODULE_0__symbolic_typed_a
      * @param thisArg An object to which the this keyword can refer in the callbackfn function.
      * If thisArg is omitted, undefined is used as the this value.
      */
-    map(callbackfn, thisArg) {
+    SymbolicFloat32Array.prototype.map = function (callbackfn, thisArg) {
         return this.toActual().map(callbackfn, thisArg);
-    }
-    reduce(callbackfn, initialValue) {
+    };
+    SymbolicFloat32Array.prototype.reduce = function (callbackfn, initialValue) {
         return this.toActual().reduce(callbackfn, initialValue);
-    }
-    reduceRight(callbackfn, initialValue) {
+    };
+    SymbolicFloat32Array.prototype.reduceRight = function (callbackfn, initialValue) {
         return this.toActual().reduceRight(callbackfn, initialValue);
-    }
+    };
     /**
      * Reverses the elements in an Array.
      */
-    reverse() {
+    SymbolicFloat32Array.prototype.reverse = function () {
         return this.toActual().reverse();
-    }
+    };
     /**
      * Returns a section of an array.
      * @param start The beginning of the specified portion of the array.
      * @param end The end of the specified portion of the array.
      */
-    slice(start, end) {
+    SymbolicFloat32Array.prototype.slice = function (start, end) {
         return this.toActual().slice(start, end);
-    }
+    };
     /**
      * Determines whether the specified callback function returns true for any element of an array.
      * @param callbackfn A function that accepts up to three arguments. The some method calls the
@@ -786,58 +3377,47 @@ class SymbolicFloat32Array extends __WEBPACK_IMPORTED_MODULE_0__symbolic_typed_a
      * @param thisArg An object to which the this keyword can refer in the callbackfn function.
      * If thisArg is omitted, undefined is used as the this value.
      */
-    some(callbackfn, thisArg) {
+    SymbolicFloat32Array.prototype.some = function (callbackfn, thisArg) {
         return this.toActual().some(callbackfn, thisArg);
-    }
+    };
     /**
      * Gets a new Float32Array view of the ArrayBuffer store for this array, referencing the elements
      * at begin, inclusive, up to end, exclusive.
      * @param begin The index of the beginning of the array.
      * @param end The index of the end of the array.
      */
-    subarray(begin, end) {
+    SymbolicFloat32Array.prototype.subarray = function (begin, end) {
         return this.toActual().subarray(begin, end);
-    }
+    };
     /** @protected */
-    includes(searchElement, fromIndex) {
+    SymbolicFloat32Array.prototype.includes = function (searchElement, fromIndex) {
         return this.toActual().includes(searchElement, fromIndex);
-    }
-}
-/* harmony export (immutable) */ __webpack_exports__["a"] = SymbolicFloat32Array;
-
-/**
- * The size in bytes of each element in SymbolicFloat32Array.
- */
-SymbolicFloat32Array.BYTES_PER_ELEMENT = 4;
-
-
-/***/ }),
-/* 6 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var require;var require;/*!
-    localForage -- Offline Storage, Improved
-    Version 1.5.4
-    https://localforage.github.io/localForage
-    (c) 2013-2017 Mozilla, Apache License 2.0
-*/
-!function(a){if(true)module.exports=a();else if("function"==typeof define&&define.amd)define([],a);else{var b;b="undefined"!=typeof window?window:"undefined"!=typeof global?global:"undefined"!=typeof self?self:this,b.localforage=a()}}(function(){return function a(b,c,d){function e(g,h){if(!c[g]){if(!b[g]){var i="function"==typeof require&&require;if(!h&&i)return require(g,!0);if(f)return f(g,!0);var j=new Error("Cannot find module '"+g+"'");throw j.code="MODULE_NOT_FOUND",j}var k=c[g]={exports:{}};b[g][0].call(k.exports,function(a){var c=b[g][1][a];return e(c||a)},k,k.exports,a,b,c,d)}return c[g].exports}for(var f="function"==typeof require&&require,g=0;g<d.length;g++)e(d[g]);return e}({1:[function(a,b,c){"use strict";function d(a,b){if(!(a instanceof b))throw new TypeError("Cannot call a class as a function")}function e(){try{if("undefined"!=typeof indexedDB)return indexedDB;if("undefined"!=typeof webkitIndexedDB)return webkitIndexedDB;if("undefined"!=typeof mozIndexedDB)return mozIndexedDB;if("undefined"!=typeof OIndexedDB)return OIndexedDB;if("undefined"!=typeof msIndexedDB)return msIndexedDB}catch(a){return}}function f(){try{if(!ta)return!1;var a="undefined"!=typeof openDatabase&&/(Safari|iPhone|iPad|iPod)/.test(navigator.userAgent)&&!/Chrome/.test(navigator.userAgent)&&!/BlackBerry/.test(navigator.platform),b="function"==typeof fetch&&-1!==fetch.toString().indexOf("[native code");return(!a||b)&&"undefined"!=typeof indexedDB&&"undefined"!=typeof IDBKeyRange}catch(a){return!1}}function g(a,b){a=a||[],b=b||{};try{return new Blob(a,b)}catch(f){if("TypeError"!==f.name)throw f;for(var c="undefined"!=typeof BlobBuilder?BlobBuilder:"undefined"!=typeof MSBlobBuilder?MSBlobBuilder:"undefined"!=typeof MozBlobBuilder?MozBlobBuilder:WebKitBlobBuilder,d=new c,e=0;e<a.length;e+=1)d.append(a[e]);return d.getBlob(b.type)}}function h(a,b){b&&a.then(function(a){b(null,a)},function(a){b(a)})}function i(a,b,c){"function"==typeof b&&a.then(b),"function"==typeof c&&a.catch(c)}function j(a){return"string"!=typeof a&&(console.warn(a+" used as a key, but it is not a string."),a=String(a)),a}function k(){if(arguments.length&&"function"==typeof arguments[arguments.length-1])return arguments[arguments.length-1]}function l(a){for(var b=a.length,c=new ArrayBuffer(b),d=new Uint8Array(c),e=0;e<b;e++)d[e]=a.charCodeAt(e);return c}function m(a){return new wa(function(b){var c=a.transaction(xa,Aa),d=g([""]);c.objectStore(xa).put(d,"key"),c.onabort=function(a){a.preventDefault(),a.stopPropagation(),b(!1)},c.oncomplete=function(){var a=navigator.userAgent.match(/Chrome\/(\d+)/),c=navigator.userAgent.match(/Edge\//);b(c||!a||parseInt(a[1],10)>=43)}}).catch(function(){return!1})}function n(a){return"boolean"==typeof ua?wa.resolve(ua):m(a).then(function(a){return ua=a})}function o(a){var b=va[a.name],c={};c.promise=new wa(function(a,b){c.resolve=a,c.reject=b}),b.deferredOperations.push(c),b.dbReady?b.dbReady=b.dbReady.then(function(){return c.promise}):b.dbReady=c.promise}function p(a){var b=va[a.name],c=b.deferredOperations.pop();if(c)return c.resolve(),c.promise}function q(a,b){var c=va[a.name],d=c.deferredOperations.pop();if(d)return d.reject(b),d.promise}function r(a,b){return new wa(function(c,d){if(a.db){if(!b)return c(a.db);o(a),a.db.close()}var e=[a.name];b&&e.push(a.version);var f=ta.open.apply(ta,e);b&&(f.onupgradeneeded=function(b){var c=f.result;try{c.createObjectStore(a.storeName),b.oldVersion<=1&&c.createObjectStore(xa)}catch(c){if("ConstraintError"!==c.name)throw c;console.warn('The database "'+a.name+'" has been upgraded from version '+b.oldVersion+" to version "+b.newVersion+', but the storage "'+a.storeName+'" already exists.')}}),f.onerror=function(a){a.preventDefault(),d(f.error)},f.onsuccess=function(){c(f.result),p(a)}})}function s(a){return r(a,!1)}function t(a){return r(a,!0)}function u(a,b){if(!a.db)return!0;var c=!a.db.objectStoreNames.contains(a.storeName),d=a.version<a.db.version,e=a.version>a.db.version;if(d&&(a.version!==b&&console.warn('The database "'+a.name+"\" can't be downgraded from version "+a.db.version+" to version "+a.version+"."),a.version=a.db.version),e||c){if(c){var f=a.db.version+1;f>a.version&&(a.version=f)}return!0}return!1}function v(a){return new wa(function(b,c){var d=new FileReader;d.onerror=c,d.onloadend=function(c){var d=btoa(c.target.result||"");b({__local_forage_encoded_blob:!0,data:d,type:a.type})},d.readAsBinaryString(a)})}function w(a){return g([l(atob(a.data))],{type:a.type})}function x(a){return a&&a.__local_forage_encoded_blob}function y(a){var b=this,c=b._initReady().then(function(){var a=va[b._dbInfo.name];if(a&&a.dbReady)return a.dbReady});return i(c,a,a),c}function z(a){o(a);for(var b=va[a.name],c=b.forages,d=0;d<c.length;d++){var e=c[d];e._dbInfo.db&&(e._dbInfo.db.close(),e._dbInfo.db=null)}return s(a).then(function(b){for(var d=0;d<c.length;d++)c[d]._dbInfo.db=b;a.db=b}).then(function(){if(u(a))return t(a)}).catch(function(b){throw q(a,b),b})}function A(a,b,c,d){void 0===d&&(d=1);try{var e=a.db.transaction(a.storeName,b);c(null,e)}catch(e){if(d>0&&(!a.db||"InvalidStateError"===e.name||"NotFoundError"===e.name))return wa.resolve().then(function(){if(!a.db||"NotFoundError"===e.name&&!a.db.objectStoreNames.contains(a.storeName)&&a.version<=a.db.version)return a.db&&(a.version=a.db.version+1),t(a)}).then(function(){return z(a).then(function(){A(a,b,c,d-1)})}).catch(c);c(e)}}function B(a){function b(){return wa.resolve()}var c=this,d={db:null};if(a)for(var e in a)d[e]=a[e];va||(va={});var f=va[d.name];f||(f={forages:[],db:null,dbReady:null,deferredOperations:[]},va[d.name]=f),f.forages.push(c),c._initReady||(c._initReady=c.ready,c.ready=y);for(var g=[],h=0;h<f.forages.length;h++){var i=f.forages[h];i!==c&&g.push(i._initReady().catch(b))}var j=f.forages.slice(0);return wa.all(g).then(function(){return d.db=f.db,s(d)}).then(function(a){return d.db=a,u(d,c._defaultConfig.version)?t(d):a}).then(function(a){d.db=f.db=a,c._dbInfo=d;for(var b=0;b<j.length;b++){var e=j[b];e!==c&&(e._dbInfo.db=d.db,e._dbInfo.version=d.version)}})}function C(a,b){var c=this;a=j(a);var d=new wa(function(b,d){c.ready().then(function(){A(c._dbInfo,za,function(e,f){if(e)return d(e);try{var g=f.objectStore(c._dbInfo.storeName),h=g.get(a);h.onsuccess=function(){var a=h.result;void 0===a&&(a=null),x(a)&&(a=w(a)),b(a)},h.onerror=function(){d(h.error)}}catch(a){d(a)}})}).catch(d)});return h(d,b),d}function D(a,b){var c=this,d=new wa(function(b,d){c.ready().then(function(){A(c._dbInfo,za,function(e,f){if(e)return d(e);try{var g=f.objectStore(c._dbInfo.storeName),h=g.openCursor(),i=1;h.onsuccess=function(){var c=h.result;if(c){var d=c.value;x(d)&&(d=w(d));var e=a(d,c.key,i++);void 0!==e?b(e):c.continue()}else b()},h.onerror=function(){d(h.error)}}catch(a){d(a)}})}).catch(d)});return h(d,b),d}function E(a,b,c){var d=this;a=j(a);var e=new wa(function(c,e){var f;d.ready().then(function(){return f=d._dbInfo,"[object Blob]"===ya.call(b)?n(f.db).then(function(a){return a?b:v(b)}):b}).then(function(b){A(d._dbInfo,Aa,function(f,g){if(f)return e(f);try{var h=g.objectStore(d._dbInfo.storeName);null===b&&(b=void 0);var i=h.put(b,a);g.oncomplete=function(){void 0===b&&(b=null),c(b)},g.onabort=g.onerror=function(){var a=i.error?i.error:i.transaction.error;e(a)}}catch(a){e(a)}})}).catch(e)});return h(e,c),e}function F(a,b){var c=this;a=j(a);var d=new wa(function(b,d){c.ready().then(function(){A(c._dbInfo,Aa,function(e,f){if(e)return d(e);try{var g=f.objectStore(c._dbInfo.storeName),h=g.delete(a);f.oncomplete=function(){b()},f.onerror=function(){d(h.error)},f.onabort=function(){var a=h.error?h.error:h.transaction.error;d(a)}}catch(a){d(a)}})}).catch(d)});return h(d,b),d}function G(a){var b=this,c=new wa(function(a,c){b.ready().then(function(){A(b._dbInfo,Aa,function(d,e){if(d)return c(d);try{var f=e.objectStore(b._dbInfo.storeName),g=f.clear();e.oncomplete=function(){a()},e.onabort=e.onerror=function(){var a=g.error?g.error:g.transaction.error;c(a)}}catch(a){c(a)}})}).catch(c)});return h(c,a),c}function H(a){var b=this,c=new wa(function(a,c){b.ready().then(function(){A(b._dbInfo,za,function(d,e){if(d)return c(d);try{var f=e.objectStore(b._dbInfo.storeName),g=f.count();g.onsuccess=function(){a(g.result)},g.onerror=function(){c(g.error)}}catch(a){c(a)}})}).catch(c)});return h(c,a),c}function I(a,b){var c=this,d=new wa(function(b,d){if(a<0)return void b(null);c.ready().then(function(){A(c._dbInfo,za,function(e,f){if(e)return d(e);try{var g=f.objectStore(c._dbInfo.storeName),h=!1,i=g.openCursor();i.onsuccess=function(){var c=i.result;if(!c)return void b(null);0===a?b(c.key):h?b(c.key):(h=!0,c.advance(a))},i.onerror=function(){d(i.error)}}catch(a){d(a)}})}).catch(d)});return h(d,b),d}function J(a){var b=this,c=new wa(function(a,c){b.ready().then(function(){A(b._dbInfo,za,function(d,e){if(d)return c(d);try{var f=e.objectStore(b._dbInfo.storeName),g=f.openCursor(),h=[];g.onsuccess=function(){var b=g.result;if(!b)return void a(h);h.push(b.key),b.continue()},g.onerror=function(){c(g.error)}}catch(a){c(a)}})}).catch(c)});return h(c,a),c}function K(a,b){b=k.apply(this,arguments);var c=this.config();a="function"!=typeof a&&a||{},a.name||(a.name=a.name||c.name,a.storeName=a.storeName||c.storeName);var d,e=this;if(a.name){var f=a.name===c.name&&e._dbInfo.db?wa.resolve(e._dbInfo.db):s(a);d=a.storeName?f.then(function(b){if(b.objectStoreNames.contains(a.storeName)){var c=b.version+1;o(a);for(var d=va[a.name],e=d.forages,f=0;f<e.length;f++){var g=e[f];g._dbInfo.db&&(g._dbInfo.db.close(),g._dbInfo.db=null,g._dbInfo.version=c)}return new wa(function(b,d){var e=ta.open(a.name,c);e.onerror=d,e.onupgradeneeded=function(){e.result.deleteObjectStore(a.storeName)},e.onsuccess=function(){var a=e.result;b(a)}}).then(function(a){for(var b=0;b<e.length;b++){var c=e[b];c._dbInfo.db=a,p(c._dbInfo)}}).catch(function(b){throw(q(a,b)||wa.resolve()).catch(function(){}),b})}}):f.then(function(){o(a);for(var b=va[a.name],c=b.forages,d=0;d<c.length;d++){var e=c[d];e._dbInfo.db&&(e._dbInfo.db.close(),e._dbInfo.db=null)}return new wa(function(b,c){var d=ta.deleteDatabase(a.name);d.onerror=d.onblocked=c,d.onsuccess=b}).then(function(){for(var a=0;a<c.length;a++)p(e._dbInfo)}).catch(function(b){throw(q(a,b)||wa.resolve()).catch(function(){}),b})})}else d=wa.reject("Invalid arguments");return h(d,b),d}function L(){return"function"==typeof openDatabase}function M(a){var b,c,d,e,f,g=.75*a.length,h=a.length,i=0;"="===a[a.length-1]&&(g--,"="===a[a.length-2]&&g--);var j=new ArrayBuffer(g),k=new Uint8Array(j);for(b=0;b<h;b+=4)c=Ca.indexOf(a[b]),d=Ca.indexOf(a[b+1]),e=Ca.indexOf(a[b+2]),f=Ca.indexOf(a[b+3]),k[i++]=c<<2|d>>4,k[i++]=(15&d)<<4|e>>2,k[i++]=(3&e)<<6|63&f;return j}function N(a){var b,c=new Uint8Array(a),d="";for(b=0;b<c.length;b+=3)d+=Ca[c[b]>>2],d+=Ca[(3&c[b])<<4|c[b+1]>>4],d+=Ca[(15&c[b+1])<<2|c[b+2]>>6],d+=Ca[63&c[b+2]];return c.length%3==2?d=d.substring(0,d.length-1)+"=":c.length%3==1&&(d=d.substring(0,d.length-2)+"=="),d}function O(a,b){var c="";if(a&&(c=Ta.call(a)),a&&("[object ArrayBuffer]"===c||a.buffer&&"[object ArrayBuffer]"===Ta.call(a.buffer))){var d,e=Fa;a instanceof ArrayBuffer?(d=a,e+=Ha):(d=a.buffer,"[object Int8Array]"===c?e+=Ja:"[object Uint8Array]"===c?e+=Ka:"[object Uint8ClampedArray]"===c?e+=La:"[object Int16Array]"===c?e+=Ma:"[object Uint16Array]"===c?e+=Oa:"[object Int32Array]"===c?e+=Na:"[object Uint32Array]"===c?e+=Pa:"[object Float32Array]"===c?e+=Qa:"[object Float64Array]"===c?e+=Ra:b(new Error("Failed to get type for BinaryArray"))),b(e+N(d))}else if("[object Blob]"===c){var f=new FileReader;f.onload=function(){var c=Da+a.type+"~"+N(this.result);b(Fa+Ia+c)},f.readAsArrayBuffer(a)}else try{b(JSON.stringify(a))}catch(c){console.error("Couldn't convert value into a JSON string: ",a),b(null,c)}}function P(a){if(a.substring(0,Ga)!==Fa)return JSON.parse(a);var b,c=a.substring(Sa),d=a.substring(Ga,Sa);if(d===Ia&&Ea.test(c)){var e=c.match(Ea);b=e[1],c=c.substring(e[0].length)}var f=M(c);switch(d){case Ha:return f;case Ia:return g([f],{type:b});case Ja:return new Int8Array(f);case Ka:return new Uint8Array(f);case La:return new Uint8ClampedArray(f);case Ma:return new Int16Array(f);case Oa:return new Uint16Array(f);case Na:return new Int32Array(f);case Pa:return new Uint32Array(f);case Qa:return new Float32Array(f);case Ra:return new Float64Array(f);default:throw new Error("Unkown type: "+d)}}function Q(a,b,c,d){a.executeSql("CREATE TABLE IF NOT EXISTS "+b.storeName+" (id INTEGER PRIMARY KEY, key unique, value)",[],c,d)}function R(a){var b=this,c={db:null};if(a)for(var d in a)c[d]="string"!=typeof a[d]?a[d].toString():a[d];var e=new wa(function(a,d){try{c.db=openDatabase(c.name,String(c.version),c.description,c.size)}catch(a){return d(a)}c.db.transaction(function(e){Q(e,c,function(){b._dbInfo=c,a()},function(a,b){d(b)})},d)});return c.serializer=Ua,e}function S(a,b,c,d,e,f){a.executeSql(c,d,e,function(a,g){g.code===g.SYNTAX_ERR?a.executeSql("SELECT name FROM sqlite_master WHERE type='table' AND name = ?",[name],function(a,h){h.rows.length?f(a,g):Q(a,b,function(){a.executeSql(c,d,e,f)},f)},f):f(a,g)},f)}function T(a,b){var c=this;a=j(a);var d=new wa(function(b,d){c.ready().then(function(){var e=c._dbInfo;e.db.transaction(function(c){S(c,e,"SELECT * FROM "+e.storeName+" WHERE key = ? LIMIT 1",[a],function(a,c){var d=c.rows.length?c.rows.item(0).value:null;d&&(d=e.serializer.deserialize(d)),b(d)},function(a,b){d(b)})})}).catch(d)});return h(d,b),d}function U(a,b){var c=this,d=new wa(function(b,d){c.ready().then(function(){var e=c._dbInfo;e.db.transaction(function(c){S(c,e,"SELECT * FROM "+e.storeName,[],function(c,d){for(var f=d.rows,g=f.length,h=0;h<g;h++){var i=f.item(h),j=i.value;if(j&&(j=e.serializer.deserialize(j)),void 0!==(j=a(j,i.key,h+1)))return void b(j)}b()},function(a,b){d(b)})})}).catch(d)});return h(d,b),d}function V(a,b,c,d){var e=this;a=j(a);var f=new wa(function(f,g){e.ready().then(function(){void 0===b&&(b=null);var h=b,i=e._dbInfo;i.serializer.serialize(b,function(b,j){j?g(j):i.db.transaction(function(c){S(c,i,"INSERT OR REPLACE INTO "+i.storeName+" (key, value) VALUES (?, ?)",[a,b],function(){f(h)},function(a,b){g(b)})},function(b){if(b.code===b.QUOTA_ERR){if(d>0)return void f(V.apply(e,[a,h,c,d-1]));g(b)}})})}).catch(g)});return h(f,c),f}function W(a,b,c){return V.apply(this,[a,b,c,1])}function X(a,b){var c=this;a=j(a);var d=new wa(function(b,d){c.ready().then(function(){var e=c._dbInfo;e.db.transaction(function(c){S(c,e,"DELETE FROM "+e.storeName+" WHERE key = ?",[a],function(){b()},function(a,b){d(b)})})}).catch(d)});return h(d,b),d}function Y(a){var b=this,c=new wa(function(a,c){b.ready().then(function(){var d=b._dbInfo;d.db.transaction(function(b){S(b,d,"DELETE FROM "+d.storeName,[],function(){a()},function(a,b){c(b)})})}).catch(c)});return h(c,a),c}function Z(a){var b=this,c=new wa(function(a,c){b.ready().then(function(){var d=b._dbInfo;d.db.transaction(function(b){S(b,d,"SELECT COUNT(key) as c FROM "+d.storeName,[],function(b,c){var d=c.rows.item(0).c;a(d)},function(a,b){c(b)})})}).catch(c)});return h(c,a),c}function $(a,b){var c=this,d=new wa(function(b,d){c.ready().then(function(){var e=c._dbInfo;e.db.transaction(function(c){S(c,e,"SELECT key FROM "+e.storeName+" WHERE id = ? LIMIT 1",[a+1],function(a,c){var d=c.rows.length?c.rows.item(0).key:null;b(d)},function(a,b){d(b)})})}).catch(d)});return h(d,b),d}function _(a){var b=this,c=new wa(function(a,c){b.ready().then(function(){var d=b._dbInfo;d.db.transaction(function(b){S(b,d,"SELECT key FROM "+d.storeName,[],function(b,c){for(var d=[],e=0;e<c.rows.length;e++)d.push(c.rows.item(e).key);a(d)},function(a,b){c(b)})})}).catch(c)});return h(c,a),c}function aa(a){return new wa(function(b,c){a.transaction(function(d){d.executeSql("SELECT name FROM sqlite_master WHERE type='table' AND name <> '__WebKitDatabaseInfoTable__'",[],function(c,d){for(var e=[],f=0;f<d.rows.length;f++)e.push(d.rows.item(f).name);b({db:a,storeNames:e})},function(a,b){c(b)})},function(a){c(a)})})}function ba(a,b){b=k.apply(this,arguments);var c=this.config();a="function"!=typeof a&&a||{},a.name||(a.name=a.name||c.name,a.storeName=a.storeName||c.storeName);var d,e=this;return d=a.name?new wa(function(b){var d;d=a.name===c.name?e._dbInfo.db:openDatabase(a.name,"","",0),b(a.storeName?{db:d,storeNames:[a.storeName]}:aa(d))}).then(function(a){return new wa(function(b,c){a.db.transaction(function(d){function e(a){return new wa(function(b,c){d.executeSql("DROP TABLE IF EXISTS "+a,[],function(){b()},function(a,b){c(b)})})}for(var f=[],g=0,h=a.storeNames.length;g<h;g++)f.push(e(a.storeNames[g]));wa.all(f).then(function(){b()}).catch(function(a){c(a)})},function(a){c(a)})})}):wa.reject("Invalid arguments"),h(d,b),d}function ca(){try{return"undefined"!=typeof localStorage&&"setItem"in localStorage&&"function"==typeof localStorage.setItem}catch(a){return!1}}function da(a,b){var c=a.name+"/";return a.storeName!==b.storeName&&(c+=a.storeName+"/"),c}function ea(){var a="_localforage_support_test";try{return localStorage.setItem(a,!0),localStorage.removeItem(a),!1}catch(a){return!0}}function fa(){return!ea()||localStorage.length>0}function ga(a){var b=this,c={};if(a)for(var d in a)c[d]=a[d];return c.keyPrefix=da(a,b._defaultConfig),fa()?(b._dbInfo=c,c.serializer=Ua,wa.resolve()):wa.reject()}function ha(a){var b=this,c=b.ready().then(function(){for(var a=b._dbInfo.keyPrefix,c=localStorage.length-1;c>=0;c--){var d=localStorage.key(c);0===d.indexOf(a)&&localStorage.removeItem(d)}});return h(c,a),c}function ia(a,b){var c=this;a=j(a);var d=c.ready().then(function(){var b=c._dbInfo,d=localStorage.getItem(b.keyPrefix+a);return d&&(d=b.serializer.deserialize(d)),d});return h(d,b),d}function ja(a,b){var c=this,d=c.ready().then(function(){for(var b=c._dbInfo,d=b.keyPrefix,e=d.length,f=localStorage.length,g=1,h=0;h<f;h++){var i=localStorage.key(h);if(0===i.indexOf(d)){var j=localStorage.getItem(i);if(j&&(j=b.serializer.deserialize(j)),void 0!==(j=a(j,i.substring(e),g++)))return j}}});return h(d,b),d}function ka(a,b){var c=this,d=c.ready().then(function(){var b,d=c._dbInfo;try{b=localStorage.key(a)}catch(a){b=null}return b&&(b=b.substring(d.keyPrefix.length)),b});return h(d,b),d}function la(a){var b=this,c=b.ready().then(function(){for(var a=b._dbInfo,c=localStorage.length,d=[],e=0;e<c;e++){var f=localStorage.key(e);0===f.indexOf(a.keyPrefix)&&d.push(f.substring(a.keyPrefix.length))}return d});return h(c,a),c}function ma(a){var b=this,c=b.keys().then(function(a){return a.length});return h(c,a),c}function na(a,b){var c=this;a=j(a);var d=c.ready().then(function(){var b=c._dbInfo;localStorage.removeItem(b.keyPrefix+a)});return h(d,b),d}function oa(a,b,c){var d=this;a=j(a);var e=d.ready().then(function(){void 0===b&&(b=null);var c=b;return new wa(function(e,f){var g=d._dbInfo;g.serializer.serialize(b,function(b,d){if(d)f(d);else try{localStorage.setItem(g.keyPrefix+a,b),e(c)}catch(a){"QuotaExceededError"!==a.name&&"NS_ERROR_DOM_QUOTA_REACHED"!==a.name||f(a),f(a)}})})});return h(e,c),e}function pa(a,b){if(b=k.apply(this,arguments),a="function"!=typeof a&&a||{},!a.name){var c=this.config();a.name=a.name||c.name,a.storeName=a.storeName||c.storeName}var d,e=this;return d=a.name?new wa(function(b){b(a.storeName?da(a,e._defaultConfig):a.name+"/")}).then(function(a){for(var b=localStorage.length-1;b>=0;b--){var c=localStorage.key(b);0===c.indexOf(a)&&localStorage.removeItem(c)}}):wa.reject("Invalid arguments"),h(d,b),d}function qa(a,b){a[b]=function(){var c=arguments;return a.ready().then(function(){return a[b].apply(a,c)})}}function ra(){for(var a=1;a<arguments.length;a++){var b=arguments[a];if(b)for(var c in b)b.hasOwnProperty(c)&&(Xa(b[c])?arguments[0][c]=b[c].slice():arguments[0][c]=b[c])}return arguments[0]}var sa="function"==typeof Symbol&&"symbol"==typeof Symbol.iterator?function(a){return typeof a}:function(a){return a&&"function"==typeof Symbol&&a.constructor===Symbol&&a!==Symbol.prototype?"symbol":typeof a},ta=e();"undefined"==typeof Promise&&a("lie/polyfill");var ua,va,wa=Promise,xa="local-forage-detect-blob-support",ya=Object.prototype.toString,za="readonly",Aa="readwrite",Ba={_driver:"asyncStorage",_initStorage:B,_support:f(),iterate:D,getItem:C,setItem:E,removeItem:F,clear:G,length:H,key:I,keys:J,dropInstance:K},Ca="ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/",Da="~~local_forage_type~",Ea=/^~~local_forage_type~([^~]+)~/,Fa="__lfsc__:",Ga=Fa.length,Ha="arbf",Ia="blob",Ja="si08",Ka="ui08",La="uic8",Ma="si16",Na="si32",Oa="ur16",Pa="ui32",Qa="fl32",Ra="fl64",Sa=Ga+Ha.length,Ta=Object.prototype.toString,Ua={serialize:O,deserialize:P,stringToBuffer:M,bufferToString:N},Va={_driver:"webSQLStorage",_initStorage:R,_support:L(),iterate:U,getItem:T,setItem:W,removeItem:X,clear:Y,length:Z,key:$,keys:_,dropInstance:ba},Wa={_driver:"localStorageWrapper",_initStorage:ga,_support:ca(),iterate:ja,getItem:ia,setItem:oa,removeItem:na,clear:ha,length:ma,key:ka,keys:la,dropInstance:pa},Xa=Array.isArray||function(a){return"[object Array]"===Object.prototype.toString.call(a)},Ya={},Za={},$a={INDEXEDDB:Ba,WEBSQL:Va,LOCALSTORAGE:Wa},_a=[$a.INDEXEDDB._driver,$a.WEBSQL._driver,$a.LOCALSTORAGE._driver],ab=["dropInstance"],bb=["clear","getItem","iterate","key","keys","length","removeItem","setItem"].concat(ab),cb={description:"",driver:_a.slice(),name:"localforage",size:4980736,storeName:"keyvaluepairs",version:1},db=function(){function a(b){d(this,a);for(var c in $a)if($a.hasOwnProperty(c)){var e=$a[c],f=e._driver;this[c]=f,Ya[f]||this.defineDriver(e)}this._defaultConfig=ra({},cb),this._config=ra({},this._defaultConfig,b),this._driverSet=null,this._initDriver=null,this._ready=!1,this._dbInfo=null,this._wrapLibraryMethodsWithReady(),this.setDriver(this._config.driver).catch(function(){})}return a.prototype.config=function(a){if("object"===(void 0===a?"undefined":sa(a))){if(this._ready)return new Error("Can't call config() after localforage has been used.");for(var b in a){if("storeName"===b&&(a[b]=a[b].replace(/\W/g,"_")),"version"===b&&"number"!=typeof a[b])return new Error("Database version must be a number.");this._config[b]=a[b]}return!("driver"in a&&a.driver)||this.setDriver(this._config.driver)}return"string"==typeof a?this._config[a]:this._config},a.prototype.defineDriver=function(a,b,c){var d=new wa(function(b,c){try{var d=a._driver,e=new Error("Custom driver not compliant; see https://mozilla.github.io/localForage/#definedriver");if(!a._driver)return void c(e);for(var f=bb.concat("_initStorage"),g=0,i=f.length;g<i;g++){var j=f[g];if((ab.indexOf(j)<0||a[j])&&"function"!=typeof a[j])return void c(e)}(function(){for(var b=function(a){return function(){var b=new Error("Method "+a+" is not implemented by the current driver"),c=wa.reject(b);return h(c,arguments[arguments.length-1]),c}},c=0,d=ab.length;c<d;c++){var e=ab[c];a[e]||(a[e]=b(e))}})();var k=function(c){Ya[d]&&console.info("Redefining LocalForage driver: "+d),Ya[d]=a,Za[d]=c,b()};"_support"in a?a._support&&"function"==typeof a._support?a._support().then(k,c):k(!!a._support):k(!0)}catch(a){c(a)}});return i(d,b,c),d},a.prototype.driver=function(){return this._driver||null},a.prototype.getDriver=function(a,b,c){var d=Ya[a]?wa.resolve(Ya[a]):wa.reject(new Error("Driver not found."));return i(d,b,c),d},a.prototype.getSerializer=function(a){var b=wa.resolve(Ua);return i(b,a),b},a.prototype.ready=function(a){var b=this,c=b._driverSet.then(function(){return null===b._ready&&(b._ready=b._initDriver()),b._ready});return i(c,a,a),c},a.prototype.setDriver=function(a,b,c){function d(){g._config.driver=g.driver()}function e(a){return g._extend(a),d(),g._ready=g._initStorage(g._config),g._ready}function f(a){return function(){function b(){for(;c<a.length;){var f=a[c];return c++,g._dbInfo=null,g._ready=null,g.getDriver(f).then(e).catch(b)}d();var h=new Error("No available storage method found.");return g._driverSet=wa.reject(h),g._driverSet}var c=0;return b()}}var g=this;Xa(a)||(a=[a]);var h=this._getSupportedDrivers(a),j=null!==this._driverSet?this._driverSet.catch(function(){return wa.resolve()}):wa.resolve();return this._driverSet=j.then(function(){var a=h[0];return g._dbInfo=null,g._ready=null,g.getDriver(a).then(function(a){g._driver=a._driver,d(),g._wrapLibraryMethodsWithReady(),g._initDriver=f(h)})}).catch(function(){d();var a=new Error("No available storage method found.");return g._driverSet=wa.reject(a),g._driverSet}),i(this._driverSet,b,c),this._driverSet},a.prototype.supports=function(a){return!!Za[a]},a.prototype._extend=function(a){ra(this,a)},a.prototype._getSupportedDrivers=function(a){for(var b=[],c=0,d=a.length;c<d;c++){var e=a[c];this.supports(e)&&b.push(e)}return b},a.prototype._wrapLibraryMethodsWithReady=function(){for(var a=0,b=bb.length;a<b;a++)qa(this,bb[a])},a.prototype.createInstance=function(b){return new a(b)},a}(),eb=new db;b.exports=eb},{undefined:void 0}]},{},[1])(1)});
+    };
+    /**
+     * The size in bytes of each element in SymbolicFloat32Array.
+     */
+    SymbolicFloat32Array.BYTES_PER_ELEMENT = 4;
+    return SymbolicFloat32Array;
+}(symbolic_typed_array_1.SymbolicTypedArray));
+exports.default = SymbolicFloat32Array;
 
 
 /***/ }),
 /* 7 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
+/***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
+
 /**
  * @module webdnn
  */
 /** Don't Remove This comment block */
+Object.defineProperty(exports, "__esModule", { value: true });
 /**
  * `DescriptorRunner` provides interface to execute DNN model and access input and output buffers.
  */
-class DescriptorRunner {
-    constructor() {
+var DescriptorRunner = /** @class */ (function () {
+    function DescriptorRunner() {
         /**
          * For Developer:
          *
@@ -876,12 +3456,12 @@ class DescriptorRunner {
      * Return `true` if this backend is available in this environment.
      * @returns {boolean}
      */
-    static checkAvailability() {
+    DescriptorRunner.checkAvailability = function () {
         return false;
-    }
-}
-/* harmony export (immutable) */ __webpack_exports__["a"] = DescriptorRunner;
-
+    };
+    return DescriptorRunner;
+}());
+exports.DescriptorRunner = DescriptorRunner;
 
 
 /***/ }),
@@ -1370,48 +3950,84 @@ module.exports = {
 
 /***/ }),
 /* 14 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
+/***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-/* harmony export (immutable) */ __webpack_exports__["b"] = isWebGL2;
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__webdnn__ = __webpack_require__(2);
+
 /**
  * @module webdnn
  */
 /** Don't Remove This comment block */
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : new P(function (resolve) { resolve(result.value); }).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
+var __generator = (this && this.__generator) || function (thisArg, body) {
+    var _ = { label: 0, sent: function() { if (t[0] & 1) throw t[1]; return t[1]; }, trys: [], ops: [] }, f, y, t, g;
+    return g = { next: verb(0), "throw": verb(1), "return": verb(2) }, typeof Symbol === "function" && (g[Symbol.iterator] = function() { return this; }), g;
+    function verb(n) { return function (v) { return step([n, v]); }; }
+    function step(op) {
+        if (f) throw new TypeError("Generator is already executing.");
+        while (_) try {
+            if (f = 1, y && (t = y[op[0] & 2 ? "return" : op[0] ? "throw" : "next"]) && !(t = t.call(y, op[1])).done) return t;
+            if (y = 0, t) op = [0, t.value];
+            switch (op[0]) {
+                case 0: case 1: t = op; break;
+                case 4: _.label++; return { value: op[1], done: false };
+                case 5: _.label++; y = op[1]; op = [0]; continue;
+                case 7: op = _.ops.pop(); _.trys.pop(); continue;
+                default:
+                    if (!(t = _.trys, t = t.length > 0 && t[t.length - 1]) && (op[0] === 6 || op[0] === 2)) { _ = 0; continue; }
+                    if (op[0] === 3 && (!t || (op[1] > t[0] && op[1] < t[3]))) { _.label = op[1]; break; }
+                    if (op[0] === 6 && _.label < t[1]) { _.label = t[1]; t = op; break; }
+                    if (t && _.label < t[2]) { _.label = t[2]; _.ops.push(op); break; }
+                    if (t[2]) _.ops.pop();
+                    _.trys.pop(); continue;
+            }
+            op = body.call(thisArg, _);
+        } catch (e) { op = [6, e]; y = 0; } finally { f = t = 0; }
+        if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
+    }
+};
+Object.defineProperty(exports, "__esModule", { value: true });
 /// <reference path="./webgl2.d.ts" />
-
+var webdnn_1 = __webpack_require__(2);
 /**
  * @protected
  */
 function isWebGL2(gl) {
     return gl.constructor.name === 'WebGL2RenderingContext';
 }
+exports.isWebGL2 = isWebGL2;
 /**
  * @private
  */
-let instance;
+var instance;
 /**
  * @protected
  */
-class WebGLHandler {
+var WebGLHandler = /** @class */ (function () {
     /**
      * WebGLHandler is singleton class and instantiate directly is forbidden (constructor is hidden).
      *
      * Since the number of GPU contexts may be limited, the handler is used as a singleton
      * and only one context is shared among multiple runners.
      */
-    constructor() {
+    function WebGLHandler() {
         this.gl = checkNull(WebGLHandler.initializeContext());
     }
-    static getInstance() {
+    WebGLHandler.getInstance = function () {
         if (!instance)
             instance = new WebGLHandler();
         return instance;
-    }
-    createTexture(textureWidth, textureHeight, internalFormat, format) {
-        let gl = this.gl;
-        let texture = checkNull(gl.createTexture());
+    };
+    WebGLHandler.prototype.createTexture = function (textureWidth, textureHeight, internalFormat, format) {
+        var gl = this.gl;
+        var texture = checkNull(gl.createTexture());
         gl.activeTexture(gl.TEXTURE0 + 9); // TODO: texture unit 9 is always available?
         gl.bindTexture(gl.TEXTURE_2D, texture);
         gl.texImage2D(gl.TEXTURE_2D, 0, internalFormat, textureWidth, textureHeight, 0, format, gl.FLOAT, null);
@@ -1421,15 +4037,15 @@ class WebGLHandler {
         gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
         gl.bindTexture(gl.TEXTURE_2D, null);
         return texture;
-    }
-    createVertexShader(source) {
+    };
+    WebGLHandler.prototype.createVertexShader = function (source) {
         return this.createShader(this.gl.VERTEX_SHADER, source);
-    }
-    createFragmentShader(source) {
+    };
+    WebGLHandler.prototype.createFragmentShader = function (source) {
         return this.createShader(this.gl.FRAGMENT_SHADER, source);
-    }
-    createShader(type, source) {
-        let shader = checkNull(this.gl.createShader(type));
+    };
+    WebGLHandler.prototype.createShader = function (type, source) {
+        var shader = checkNull(this.gl.createShader(type));
         this.gl.shaderSource(shader, source);
         this.gl.compileShader(shader);
         if (!this.gl.getShaderParameter(shader, this.gl.COMPILE_STATUS)) {
@@ -1437,9 +4053,9 @@ class WebGLHandler {
             throw Error("Shader Compile failed: " + this.gl.getShaderInfoLog(shader));
         }
         return shader;
-    }
-    createProgram(vertexShader, fragmentShader) {
-        let program = checkNull(this.gl.createProgram());
+    };
+    WebGLHandler.prototype.createProgram = function (vertexShader, fragmentShader) {
+        var program = checkNull(this.gl.createProgram());
         this.gl.attachShader(program, fragmentShader);
         this.gl.attachShader(program, vertexShader);
         this.gl.linkProgram(program);
@@ -1448,43 +4064,45 @@ class WebGLHandler {
             throw Error('ShaderProgram Initialization failed.');
         }
         return program;
-    }
-    createArrayBuffer(vertexArray) {
-        let buffer = checkNull(this.gl.createBuffer());
+    };
+    WebGLHandler.prototype.createArrayBuffer = function (vertexArray) {
+        var buffer = checkNull(this.gl.createBuffer());
         this.gl.bindBuffer(this.gl.ARRAY_BUFFER, buffer);
         this.gl.bufferData(this.gl.ARRAY_BUFFER, vertexArray, this.gl.STATIC_DRAW);
         return buffer;
-    }
-    createFrameBuffer() {
+    };
+    WebGLHandler.prototype.createFrameBuffer = function () {
         return checkNull(this.gl.createFramebuffer());
-    }
-    bindArrayBuffer(buffer) {
+    };
+    WebGLHandler.prototype.bindArrayBuffer = function (buffer) {
         this.gl.bindBuffer(this.gl.ARRAY_BUFFER, buffer);
-    }
-    bindFrameBuffer(frameBuffer, width, height) {
+    };
+    WebGLHandler.prototype.bindFrameBuffer = function (frameBuffer, width, height) {
         this.gl.bindFramebuffer(this.gl.FRAMEBUFFER, frameBuffer);
         this.gl.viewport(0, 0, width, height);
         this.gl.scissor(0, 0, width, height);
-    }
-    useProgram(program) {
+    };
+    WebGLHandler.prototype.useProgram = function (program) {
         this.gl.useProgram(program);
-    }
-    deleteTexture(texture) {
+    };
+    WebGLHandler.prototype.deleteTexture = function (texture) {
         this.gl.deleteTexture(texture);
-    }
-    static initializeWebGL2Context(canvas = document.createElement('canvas')) {
-        let gl;
+    };
+    WebGLHandler.initializeWebGL2Context = function (canvas) {
+        if (canvas === void 0) { canvas = document.createElement('canvas'); }
+        var gl;
         gl = (canvas.getContext('webgl2'));
         if (!gl)
             return null;
         if (!gl.getExtension('EXT_color_buffer_float'))
             return null;
-        if (Object(__WEBPACK_IMPORTED_MODULE_0__webdnn__["getConfiguration"])('DEBUG', false) && !gl.getExtension('WEBGL_debug_renderer_info'))
+        if (webdnn_1.getConfiguration('DEBUG', false) && !gl.getExtension('WEBGL_debug_renderer_info'))
             return null;
         return gl;
-    }
-    static initializeWebGL1Context(canvas = document.createElement('canvas')) {
-        let gl = (canvas.getContext('webgl') || canvas.getContext('experimental-webgl'));
+    };
+    WebGLHandler.initializeWebGL1Context = function (canvas) {
+        if (canvas === void 0) { canvas = document.createElement('canvas'); }
+        var gl = (canvas.getContext('webgl') || canvas.getContext('experimental-webgl'));
         if (!gl)
             return null;
         if (!gl.getExtension('OES_texture_float'))
@@ -1495,22 +4113,22 @@ class WebGLHandler {
             // currently when WebGLRenderingContext#readPixels is called, an error is thrown.
             return null;
         }
-        if (Object(__WEBPACK_IMPORTED_MODULE_0__webdnn__["getConfiguration"])('DEBUG', false) && !gl.getExtension('WEBGL_debug_renderer_info'))
+        if (webdnn_1.getConfiguration('DEBUG', false) && !gl.getExtension('WEBGL_debug_renderer_info'))
             return null;
         return gl;
-    }
-    static initializeContext() {
-        let canvas = document.createElement('canvas');
-        let gl;
+    };
+    WebGLHandler.initializeContext = function () {
+        var canvas = document.createElement('canvas');
+        var gl;
         gl = WebGLHandler.initializeWebGL2Context(canvas);
         if (gl) {
-            if (Object(__WEBPACK_IMPORTED_MODULE_0__webdnn__["getConfiguration"])('DEBUG', false))
+            if (webdnn_1.getConfiguration('DEBUG', false))
                 console.info('WebGL2 is enabled');
         }
         else {
             gl = WebGLHandler.initializeWebGL1Context(canvas);
             if (gl) {
-                if (Object(__WEBPACK_IMPORTED_MODULE_0__webdnn__["getConfiguration"])('DEBUG', false))
+                if (webdnn_1.getConfiguration('DEBUG', false))
                     console.info('WebGL2 is disabled');
             }
             else {
@@ -1527,18 +4145,18 @@ class WebGLHandler {
         gl.enable(gl.CULL_FACE);
         gl.cullFace(gl.BACK);
         return gl;
-    }
+    };
     /**
      * Check whether WebGL is supported or not
      * @protected
      */
-    static checkAvailability() {
+    WebGLHandler.checkAvailability = function () {
         if (availability === null) {
-            let gl = WebGLHandler.initializeContext();
+            var gl = WebGLHandler.initializeContext();
             if (!gl) {
                 availability = false;
             }
-            else if (Object(__WEBPACK_IMPORTED_MODULE_0__webdnn__["getConfiguration"])('MAX_TEXTURE_SIZE', gl.getParameter(gl.MAX_TEXTURE_SIZE)) < 4096) {
+            else if (webdnn_1.getConfiguration('MAX_TEXTURE_SIZE', gl.getParameter(gl.MAX_TEXTURE_SIZE)) < 4096) {
                 availability = false;
             }
             else {
@@ -1546,46 +4164,64 @@ class WebGLHandler {
             }
         }
         return availability;
-    }
-    async waitForComplete() {
-        let gl = this.gl;
-        if (isWebGL2(gl)) {
-            let sync = gl.fenceSync(gl.SYNC_GPU_COMMANDS_COMPLETE, 0);
-            let status = gl.clientWaitSync(sync, 0, 0);
-            while (status !== gl.CONDITION_SATISFIED && status !== gl.ALREADY_SIGNALED) {
-                await new Promise(r => setTimeout(r, 1));
-                status = gl.clientWaitSync(sync, 0, 0);
+    };
+    WebGLHandler.prototype.waitForComplete = function () {
+        return __awaiter(this, void 0, void 0, function () {
+            var gl, sync, status_1;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        gl = this.gl;
+                        if (!isWebGL2(gl)) return [3 /*break*/, 4];
+                        sync = gl.fenceSync(gl.SYNC_GPU_COMMANDS_COMPLETE, 0);
+                        status_1 = gl.clientWaitSync(sync, 0, 0);
+                        _a.label = 1;
+                    case 1:
+                        if (!(status_1 !== gl.CONDITION_SATISFIED && status_1 !== gl.ALREADY_SIGNALED)) return [3 /*break*/, 3];
+                        return [4 /*yield*/, new Promise(function (r) { return setTimeout(r, 1); })];
+                    case 2:
+                        _a.sent();
+                        status_1 = gl.clientWaitSync(sync, 0, 0);
+                        return [3 /*break*/, 1];
+                    case 3:
+                        gl.deleteSync(sync);
+                        return [3 /*break*/, 5];
+                    case 4:
+                        gl.finish();
+                        _a.label = 5;
+                    case 5: return [2 /*return*/];
+                }
+            });
+        });
+    };
+    Object.defineProperty(WebGLHandler.prototype, "MAX_TEXTURE_SIZE", {
+        get: function () {
+            var MAX_TEXTURE_SIZE = webdnn_1.getConfiguration('MAX_TEXTURE_SIZE', this.gl.getParameter(this.gl.MAX_TEXTURE_SIZE));
+            // FIXME: In most case, MAX_TEXTURE_SIZE=4096 is the fastest (Why?).
+            if (MAX_TEXTURE_SIZE >= 16384) {
+                return 4096;
             }
-            gl.deleteSync(sync);
-        }
-        else {
-            gl.finish();
-        }
-    }
-    get MAX_TEXTURE_SIZE() {
-        let MAX_TEXTURE_SIZE = Object(__WEBPACK_IMPORTED_MODULE_0__webdnn__["getConfiguration"])('MAX_TEXTURE_SIZE', this.gl.getParameter(this.gl.MAX_TEXTURE_SIZE));
-        // FIXME: In most case, MAX_TEXTURE_SIZE=4096 is the fastest (Why?).
-        if (MAX_TEXTURE_SIZE >= 16384) {
-            return 4096;
-        }
-        else if (MAX_TEXTURE_SIZE >= 8192) {
-            return 4096;
-        }
-        else if (MAX_TEXTURE_SIZE >= 4096) {
-            return 4096;
-        }
-        else {
-            throw new Error(`MAX_TEXTURE_SIZE is too small: ${MAX_TEXTURE_SIZE}`);
-        }
-    }
-}
-/* harmony export (immutable) */ __webpack_exports__["a"] = WebGLHandler;
-
-WebGLHandler.IS_SAFARI = navigator.userAgent.toLowerCase().indexOf('safari') !== -1 && navigator.userAgent.toLowerCase().indexOf('chrome') === -1;
+            else if (MAX_TEXTURE_SIZE >= 8192) {
+                return 4096;
+            }
+            else if (MAX_TEXTURE_SIZE >= 4096) {
+                return 4096;
+            }
+            else {
+                throw new Error("MAX_TEXTURE_SIZE is too small: " + MAX_TEXTURE_SIZE);
+            }
+        },
+        enumerable: true,
+        configurable: true
+    });
+    WebGLHandler.IS_SAFARI = navigator.userAgent.toLowerCase().indexOf('safari') !== -1 && navigator.userAgent.toLowerCase().indexOf('chrome') === -1;
+    return WebGLHandler;
+}());
+exports.default = WebGLHandler;
 /**
  * @private
  */
-let availability = null;
+var availability = null;
 /**
  * @private
  */
@@ -1598,125 +4234,246 @@ function checkNull(obj) {
 
 /***/ }),
 /* 15 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
+/***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
+
 /**
  * @module webdnn
  */
 /** Don't Remove This comment block */
+Object.defineProperty(exports, "__esModule", { value: true });
 /**
  * Abstract buffer interface. Read/write transactions are regarded as asynchronous operation.
  *
  * @protected
  */
-class Buffer {
-    constructor(byteLength, backend) {
+var Buffer = /** @class */ (function () {
+    function Buffer(byteLength, backend) {
         this.byteLength = byteLength;
         this.backend = backend;
     }
-}
-/* harmony export (immutable) */ __webpack_exports__["a"] = Buffer;
-
+    return Buffer;
+}());
+exports.Buffer = Buffer;
 
 
 /***/ }),
 /* 16 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
+/***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__webgpu_handler__ = __webpack_require__(17);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__buffer__ = __webpack_require__(15);
+
 /**
  * @module webdnn
  */
 /** Don't Remove This comment block */
-
-
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : new P(function (resolve) { resolve(result.value); }).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
+var __generator = (this && this.__generator) || function (thisArg, body) {
+    var _ = { label: 0, sent: function() { if (t[0] & 1) throw t[1]; return t[1]; }, trys: [], ops: [] }, f, y, t, g;
+    return g = { next: verb(0), "throw": verb(1), "return": verb(2) }, typeof Symbol === "function" && (g[Symbol.iterator] = function() { return this; }), g;
+    function verb(n) { return function (v) { return step([n, v]); }; }
+    function step(op) {
+        if (f) throw new TypeError("Generator is already executing.");
+        while (_) try {
+            if (f = 1, y && (t = y[op[0] & 2 ? "return" : op[0] ? "throw" : "next"]) && !(t = t.call(y, op[1])).done) return t;
+            if (y = 0, t) op = [0, t.value];
+            switch (op[0]) {
+                case 0: case 1: t = op; break;
+                case 4: _.label++; return { value: op[1], done: false };
+                case 5: _.label++; y = op[1]; op = [0]; continue;
+                case 7: op = _.ops.pop(); _.trys.pop(); continue;
+                default:
+                    if (!(t = _.trys, t = t.length > 0 && t[t.length - 1]) && (op[0] === 6 || op[0] === 2)) { _ = 0; continue; }
+                    if (op[0] === 3 && (!t || (op[1] > t[0] && op[1] < t[3]))) { _.label = op[1]; break; }
+                    if (op[0] === 6 && _.label < t[1]) { _.label = t[1]; t = op; break; }
+                    if (t && _.label < t[2]) { _.label = t[2]; _.ops.push(op); break; }
+                    if (t[2]) _.ops.pop();
+                    _.trys.pop(); continue;
+            }
+            op = body.call(thisArg, _);
+        } catch (e) { op = [6, e]; y = 0; } finally { f = t = 0; }
+        if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
+    }
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+var webgpu_handler_1 = __webpack_require__(17);
+var buffer_1 = __webpack_require__(15);
 /**
  * @protected
  */
-class BufferWebGPU extends __WEBPACK_IMPORTED_MODULE_1__buffer__["a" /* Buffer */] {
-    constructor(byteLength) {
-        super(byteLength, 'webgpu');
+var BufferWebGPU = /** @class */ (function (_super) {
+    __extends(BufferWebGPU, _super);
+    function BufferWebGPU(byteLength) {
+        var _this = _super.call(this, byteLength, 'webgpu') || this;
         if (byteLength == 0) {
             byteLength = 4; //0 length buffer causes error
         }
-        this.handler = __WEBPACK_IMPORTED_MODULE_0__webgpu_handler__["b" /* default */].getInstance();
-        this.buffer = this.handler.createBuffer(new Uint8Array(byteLength));
-        this.bufferView = new Uint8Array(this.buffer.contents);
+        _this.handler = webgpu_handler_1.default.getInstance();
+        _this.buffer = _this.handler.createBuffer(new Uint8Array(byteLength));
+        _this.bufferView = new Uint8Array(_this.buffer.contents);
+        return _this;
     }
     // async: there may be platforms synchronization is needed before writing
-    async write(src, dst_offset) {
-        await this.handler.sync();
-        let viewSameType = new src.constructor(this.bufferView.buffer);
-        viewSameType.set(src, dst_offset);
-    }
-    async read(dst, src_offset = 0, length) {
-        if (!dst)
-            throw new Error('dst cannot be null');
-        await this.handler.sync();
-        if (this.byteLength === 0)
-            return;
-        let dstConstructor = dst.constructor;
-        let viewSameType = new dstConstructor(this.bufferView.buffer, this.bufferView.byteOffset + src_offset * dstConstructor.BYTES_PER_ELEMENT, length);
-        dst.set(viewSameType);
-        return;
-    }
-    getWriteView(offset, length, type) {
+    BufferWebGPU.prototype.write = function (src, dst_offset) {
+        return __awaiter(this, void 0, void 0, function () {
+            var viewSameType;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, this.handler.sync()];
+                    case 1:
+                        _a.sent();
+                        viewSameType = new src.constructor(this.bufferView.buffer);
+                        viewSameType.set(src, dst_offset);
+                        return [2 /*return*/];
+                }
+            });
+        });
+    };
+    BufferWebGPU.prototype.read = function (dst, src_offset, length) {
+        if (src_offset === void 0) { src_offset = 0; }
+        return __awaiter(this, void 0, void 0, function () {
+            var dstConstructor, viewSameType;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        if (!dst)
+                            throw new Error('dst cannot be null');
+                        return [4 /*yield*/, this.handler.sync()];
+                    case 1:
+                        _a.sent();
+                        if (this.byteLength === 0)
+                            return [2 /*return*/];
+                        dstConstructor = dst.constructor;
+                        viewSameType = new dstConstructor(this.bufferView.buffer, this.bufferView.byteOffset + src_offset * dstConstructor.BYTES_PER_ELEMENT, length);
+                        dst.set(viewSameType);
+                        return [2 /*return*/];
+                }
+            });
+        });
+    };
+    BufferWebGPU.prototype.getWriteView = function (offset, length, type) {
         return new type(this.bufferView.buffer, this.bufferView.byteOffset + offset * type.BYTES_PER_ELEMENT, length);
-    }
-    getReadView(offset, length, type) {
+    };
+    BufferWebGPU.prototype.getReadView = function (offset, length, type) {
         return new type(this.bufferView.buffer, this.bufferView.byteOffset + offset * type.BYTES_PER_ELEMENT, length);
-    }
-    async syncWriteViews() {
-        // no sync needed
-    }
-    async syncReadViews() {
-        // if the user awaits promise from final kernel execution, this function call is not needed.
-        await this.handler.sync();
-    }
-}
-/* harmony export (immutable) */ __webpack_exports__["a"] = BufferWebGPU;
-
+    };
+    BufferWebGPU.prototype.syncWriteViews = function () {
+        return __awaiter(this, void 0, void 0, function () {
+            return __generator(this, function (_a) {
+                return [2 /*return*/];
+            });
+        });
+    };
+    BufferWebGPU.prototype.syncReadViews = function () {
+        return __awaiter(this, void 0, void 0, function () {
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: 
+                    // if the user awaits promise from final kernel execution, this function call is not needed.
+                    return [4 /*yield*/, this.handler.sync()];
+                    case 1:
+                        // if the user awaits promise from final kernel execution, this function call is not needed.
+                        _a.sent();
+                        return [2 /*return*/];
+                }
+            });
+        });
+    };
+    return BufferWebGPU;
+}(buffer_1.Buffer));
+exports.default = BufferWebGPU;
 
 
 /***/ }),
 /* 17 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
+/***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__buffer_buffer_webgpu__ = __webpack_require__(16);
+
 ///<reference path="./webgpu.d.ts" />
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : new P(function (resolve) { resolve(result.value); }).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
+var __generator = (this && this.__generator) || function (thisArg, body) {
+    var _ = { label: 0, sent: function() { if (t[0] & 1) throw t[1]; return t[1]; }, trys: [], ops: [] }, f, y, t, g;
+    return g = { next: verb(0), "throw": verb(1), "return": verb(2) }, typeof Symbol === "function" && (g[Symbol.iterator] = function() { return this; }), g;
+    function verb(n) { return function (v) { return step([n, v]); }; }
+    function step(op) {
+        if (f) throw new TypeError("Generator is already executing.");
+        while (_) try {
+            if (f = 1, y && (t = y[op[0] & 2 ? "return" : op[0] ? "throw" : "next"]) && !(t = t.call(y, op[1])).done) return t;
+            if (y = 0, t) op = [0, t.value];
+            switch (op[0]) {
+                case 0: case 1: t = op; break;
+                case 4: _.label++; return { value: op[1], done: false };
+                case 5: _.label++; y = op[1]; op = [0]; continue;
+                case 7: op = _.ops.pop(); _.trys.pop(); continue;
+                default:
+                    if (!(t = _.trys, t = t.length > 0 && t[t.length - 1]) && (op[0] === 6 || op[0] === 2)) { _ = 0; continue; }
+                    if (op[0] === 3 && (!t || (op[1] > t[0] && op[1] < t[3]))) { _.label = op[1]; break; }
+                    if (op[0] === 6 && _.label < t[1]) { _.label = t[1]; t = op; break; }
+                    if (t && _.label < t[2]) { _.label = t[2]; _.ops.push(op); break; }
+                    if (t[2]) _.ops.pop();
+                    _.trys.pop(); continue;
+            }
+            op = body.call(thisArg, _);
+        } catch (e) { op = [6, e]; y = 0; } finally { f = t = 0; }
+        if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
+    }
+};
+Object.defineProperty(exports, "__esModule", { value: true });
 /**
  * @module webdnn
  */
 /** Don't Remove This comment block */
-
+var buffer_webgpu_1 = __webpack_require__(16);
 /**
  * @private
  */
-let instance;
+var instance;
 /**
  * @protected
  */
-class WebGPUHandler {
+var WebGPUHandler = /** @class */ (function () {
     /**
      * WebGPUHandler is singleton class and instantiate directly is forbidden (constructor is hidden).
      *
      * Since the number of GPU contexts may be limited, the handler is used as a singleton
      * and only one context is shared among multiple runners.
      */
-    constructor() {
+    function WebGPUHandler() {
         this.pipelineStates = new Map();
-        if (!IS_WEBGPU_SUPPORTED)
+        if (!exports.IS_WEBGPU_SUPPORTED)
             throw new Error('This browser does not support WebGPU');
-        let context;
+        var context;
         try {
             context = document.createElement('canvas').getContext('webgpu');
         }
         catch (err) {
-            throw new Error(`During initializing WebGPURenderingContext, unexpected error is occurred: ${err.message}`);
+            throw new Error("During initializing WebGPURenderingContext, unexpected error is occurred: " + err.message);
         }
         if (!context)
             throw new Error('WebGPURenderingContext initialization failed');
@@ -1724,40 +4481,42 @@ class WebGPUHandler {
         this.commandQueue = context.createCommandQueue();
         this.loadKernel('kernel void sync(){}', 'basic');
     }
-    static getInstance() {
+    WebGPUHandler.getInstance = function () {
         if (!instance)
             instance = new WebGPUHandler();
         return instance;
-    }
-    createBuffer(arrayBuffer) {
+    };
+    WebGPUHandler.prototype.createBuffer = function (arrayBuffer) {
         return this.context.createBuffer(arrayBuffer);
-    }
-    loadKernel(librarySource, namespace = '') {
-        let library = this.context.createLibrary(librarySource);
-        for (let name of library.functionNames) {
-            let kernelFunction = library.functionWithName(name);
-            let pipelineStates = this.context.createComputePipelineState(kernelFunction);
-            this.pipelineStates.set(namespace + '.' + name, pipelineStates);
+    };
+    WebGPUHandler.prototype.loadKernel = function (librarySource, namespace) {
+        if (namespace === void 0) { namespace = ''; }
+        var library = this.context.createLibrary(librarySource);
+        for (var _i = 0, _a = library.functionNames; _i < _a.length; _i++) {
+            var name_1 = _a[_i];
+            var kernelFunction = library.functionWithName(name_1);
+            var pipelineStates = this.context.createComputePipelineState(kernelFunction);
+            this.pipelineStates.set(namespace + '.' + name_1, pipelineStates);
         }
-    }
-    createCommandBuffer() {
+    };
+    WebGPUHandler.prototype.createCommandBuffer = function () {
         return this.commandQueue.createCommandBuffer();
-    }
-    getPipelineStateByName(name) {
-        let state = this.pipelineStates.get(name);
+    };
+    WebGPUHandler.prototype.getPipelineStateByName = function (name) {
+        var state = this.pipelineStates.get(name);
         if (!state) {
-            throw TypeError(`Kernel function "${name}" is not loaded.`);
+            throw TypeError("Kernel function \"" + name + "\" is not loaded.");
         }
         return state;
-    }
-    executeSinglePipelineState(name, threadgroupsPerGrid, threadsPerThreadgroup, buffers, getCompletedPromise) {
-        let commandBuffer = this.commandBuffer || (this.commandBuffer = this.createCommandBuffer());
-        let commandEncoder = commandBuffer.createComputeCommandEncoder();
+    };
+    WebGPUHandler.prototype.executeSinglePipelineState = function (name, threadgroupsPerGrid, threadsPerThreadgroup, buffers, getCompletedPromise) {
+        var commandBuffer = this.commandBuffer || (this.commandBuffer = this.createCommandBuffer());
+        var commandEncoder = commandBuffer.createComputeCommandEncoder();
         commandEncoder.setComputePipelineState(this.getPipelineStateByName(name));
-        for (let i = 0; i < buffers.length; i++) {
-            let buffer = buffers[i];
-            let wgbuf;
-            if (buffer instanceof __WEBPACK_IMPORTED_MODULE_0__buffer_buffer_webgpu__["a" /* default */]) {
+        for (var i = 0; i < buffers.length; i++) {
+            var buffer = buffers[i];
+            var wgbuf = void 0;
+            if (buffer instanceof buffer_webgpu_1.default) {
                 wgbuf = buffer.buffer;
             }
             else {
@@ -1768,54 +4527,57 @@ class WebGPUHandler {
         }
         commandEncoder.dispatch(threadgroupsPerGrid, threadsPerThreadgroup);
         commandEncoder.endEncoding();
-        let promise = null;
+        var promise = null;
         if (getCompletedPromise) {
             promise = commandBuffer.completed;
         }
         this.commandBuffer = null;
         commandBuffer.commit();
         return promise;
-    }
-    async sync() {
-        let commandBuffer = this.createCommandBuffer();
-        let commandEncoder = commandBuffer.createComputeCommandEncoder();
-        commandEncoder.setComputePipelineState(this.getPipelineStateByName('basic.sync'));
-        commandEncoder.dispatch({
-            width: 1,
-            height: 1,
-            depth: 1
-        }, {
-            width: 1,
-            height: 1,
-            depth: 1
+    };
+    WebGPUHandler.prototype.sync = function () {
+        return __awaiter(this, void 0, void 0, function () {
+            var commandBuffer, commandEncoder, promise;
+            return __generator(this, function (_a) {
+                commandBuffer = this.createCommandBuffer();
+                commandEncoder = commandBuffer.createComputeCommandEncoder();
+                commandEncoder.setComputePipelineState(this.getPipelineStateByName('basic.sync'));
+                commandEncoder.dispatch({
+                    width: 1,
+                    height: 1,
+                    depth: 1
+                }, {
+                    width: 1,
+                    height: 1,
+                    depth: 1
+                });
+                commandEncoder.endEncoding();
+                promise = commandBuffer.completed;
+                commandBuffer.commit();
+                return [2 /*return*/, promise];
+            });
         });
-        commandEncoder.endEncoding();
-        let promise = commandBuffer.completed;
-        commandBuffer.commit();
-        return promise;
-    }
-}
-/* harmony export (immutable) */ __webpack_exports__["b"] = WebGPUHandler;
-
+    };
+    return WebGPUHandler;
+}());
+exports.default = WebGPUHandler;
 /**
  * Flag whether WebGPU is supported or not
  * @protected
  */
-const IS_WEBGPU_SUPPORTED = 'WebGPURenderingContext' in window && 'WebGPUComputeCommandEncoder' in window;
-/* harmony export (immutable) */ __webpack_exports__["a"] = IS_WEBGPU_SUPPORTED;
-
+exports.IS_WEBGPU_SUPPORTED = 'WebGPURenderingContext' in window && 'WebGPUComputeCommandEncoder' in window;
 
 
 /***/ }),
 /* 18 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
+/***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "b", function() { return Order; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return Color; });
+
 /**
  * @module webdnn/image
  */
+Object.defineProperty(exports, "__esModule", { value: true });
 /** Don't Remove This comment block */
 /**
  * The data order
@@ -1826,7 +4588,7 @@ var Order;
     Order[Order["CHW"] = 0] = "CHW";
     /** `[Height, Width, Channel]` format */
     Order[Order["HWC"] = 1] = "HWC";
-})(Order || (Order = {}));
+})(Order = exports.Order || (exports.Order = {}));
 /**
  * The color format
  */
@@ -1838,19 +4600,20 @@ var Color;
     Color[Color["BGR"] = 1] = "BGR";
     /** grey scale */
     Color[Color["GREY"] = 2] = "GREY";
-})(Color || (Color = {}));
+})(Color = exports.Color || (exports.Color = {}));
 
 
 /***/ }),
 /* 19 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
+/***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-/* harmony export (immutable) */ __webpack_exports__["a"] = getContext2D;
+
 /**
  * @module webdnn/image
  */
 /** Don't Remove This comment block */
+Object.defineProperty(exports, "__esModule", { value: true });
 /**
  * Get canvas rendering context and check whether it is nonnull value.
  *
@@ -1858,24 +4621,59 @@ var Color;
  * @protected
  */
 function getContext2D(canvas) {
-    let context = canvas.getContext('2d');
+    var context = canvas.getContext('2d');
     if (!context)
         throw Error('CanvasRenderingContext2D initialization failed');
     return context;
 }
+exports.getContext2D = getContext2D;
 
 
 /***/ }),
 /* 20 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
+/***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-/* harmony export (immutable) */ __webpack_exports__["b"] = loadImageByUrl;
-/* harmony export (immutable) */ __webpack_exports__["c"] = loadImageFromFileInput;
-/* harmony export (immutable) */ __webpack_exports__["a"] = loadImageByDialog;
+
 /**
  * @module webdnn/image
  */
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : new P(function (resolve) { resolve(result.value); }).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
+var __generator = (this && this.__generator) || function (thisArg, body) {
+    var _ = { label: 0, sent: function() { if (t[0] & 1) throw t[1]; return t[1]; }, trys: [], ops: [] }, f, y, t, g;
+    return g = { next: verb(0), "throw": verb(1), "return": verb(2) }, typeof Symbol === "function" && (g[Symbol.iterator] = function() { return this; }), g;
+    function verb(n) { return function (v) { return step([n, v]); }; }
+    function step(op) {
+        if (f) throw new TypeError("Generator is already executing.");
+        while (_) try {
+            if (f = 1, y && (t = y[op[0] & 2 ? "return" : op[0] ? "throw" : "next"]) && !(t = t.call(y, op[1])).done) return t;
+            if (y = 0, t) op = [0, t.value];
+            switch (op[0]) {
+                case 0: case 1: t = op; break;
+                case 4: _.label++; return { value: op[1], done: false };
+                case 5: _.label++; y = op[1]; op = [0]; continue;
+                case 7: op = _.ops.pop(); _.trys.pop(); continue;
+                default:
+                    if (!(t = _.trys, t = t.length > 0 && t[t.length - 1]) && (op[0] === 6 || op[0] === 2)) { _ = 0; continue; }
+                    if (op[0] === 3 && (!t || (op[1] > t[0] && op[1] < t[3]))) { _.label = op[1]; break; }
+                    if (op[0] === 6 && _.label < t[1]) { _.label = t[1]; t = op; break; }
+                    if (t && _.label < t[2]) { _.label = t[2]; _.ops.push(op); break; }
+                    if (t[2]) _.ops.pop();
+                    _.trys.pop(); continue;
+            }
+            op = body.call(thisArg, _);
+        } catch (e) { op = [6, e]; y = 0; } finally { f = t = 0; }
+        if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
+    }
+};
+Object.defineProperty(exports, "__esModule", { value: true });
 /** Don't Remove This comment block */
 /**
  * Load image of specified url
@@ -1883,15 +4681,21 @@ function getContext2D(canvas) {
  * @param {string} url the image url
  * @returns {Promise<HTMLImageElement>} image element
  */
-async function loadImageByUrl(url) {
-    let image = document.createElement('img');
-    return new Promise((resolve, reject) => {
-        image.onload = resolve;
-        image.onerror = reject;
-        image.src = url;
-    })
-        .then(() => image);
+function loadImageByUrl(url) {
+    return __awaiter(this, void 0, void 0, function () {
+        var image;
+        return __generator(this, function (_a) {
+            image = document.createElement('img');
+            return [2 /*return*/, new Promise(function (resolve, reject) {
+                    image.onload = resolve;
+                    image.onerror = reject;
+                    image.src = url;
+                })
+                    .then(function () { return image; })];
+        });
+    });
 }
+exports.loadImageByUrl = loadImageByUrl;
 /* istanbul ignore next */
 /**
  * Load image file selected in `<input type="file">` element.
@@ -1899,13 +4703,19 @@ async function loadImageByUrl(url) {
  * @param {HTMLInputElement} input the `<input type="file">` element
  * @returns {Promise<HTMLImageElement>} image element
  */
-async function loadImageFromFileInput(input) {
-    let files = input.files;
-    if (!files || files.length == 0)
-        throw new Error('No file is selected');
-    let url = URL.createObjectURL(files[0]);
-    return loadImageByUrl(url);
+function loadImageFromFileInput(input) {
+    return __awaiter(this, void 0, void 0, function () {
+        var files, url;
+        return __generator(this, function (_a) {
+            files = input.files;
+            if (!files || files.length == 0)
+                throw new Error('No file is selected');
+            url = URL.createObjectURL(files[0]);
+            return [2 /*return*/, loadImageByUrl(url)];
+        });
+    });
 }
+exports.loadImageFromFileInput = loadImageFromFileInput;
 /* istanbul ignore next */
 /**
  * Load image selected in file picker dialog
@@ -1916,15 +4726,21 @@ async function loadImageFromFileInput(input) {
  * @returns {Promise<HTMLImageElement>} image element
  * @protected
  */
-async function loadImageByDialog() {
-    let input = document.createElement('input');
-    input.type = 'file';
-    input.accept = 'image/*';
-    return new Promise((resolve) => {
-        input.onchange = () => resolve(loadImageFromFileInput(input));
-        input.click();
+function loadImageByDialog() {
+    return __awaiter(this, void 0, void 0, function () {
+        var input;
+        return __generator(this, function (_a) {
+            input = document.createElement('input');
+            input.type = 'file';
+            input.accept = 'image/*';
+            return [2 /*return*/, new Promise(function (resolve) {
+                    input.onchange = function () { return resolve(loadImageFromFileInput(input)); };
+                    input.click();
+                })];
+        });
     });
 }
+exports.loadImageByDialog = loadImageByDialog;
 
 
 /***/ }),
@@ -1935,7 +4751,7 @@ async function loadImageByDialog() {
 
 
 var WebDNN = __webpack_require__(2);
-var SimpleCanvasPainter = __webpack_require__(45).SimpleCanvasPainter;
+var SimpleCanvasPainter = __webpack_require__(46).SimpleCanvasPainter;
 var webdnn_runner = null;
 var webdnn_input_view, webdnn_output_view;
 
@@ -2012,337 +4828,574 @@ window.addEventListener('load', function () {
 
 /***/ }),
 /* 22 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
+/***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__decoder_get_weight_decoder__ = __webpack_require__(3);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__fetch__ = __webpack_require__(1);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__placeholder__ = __webpack_require__(4);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__symbolic_typed_array_symbolic_float32array__ = __webpack_require__(5);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__third_localforage_nopromises_min__ = __webpack_require__(6);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__third_localforage_nopromises_min___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_4__third_localforage_nopromises_min__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__descriptor_runner__ = __webpack_require__(7);
+
 /**
  * @module webdnn
  */
 /** Don't Remove This comment block */
-
-
-
-
-
-
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : new P(function (resolve) { resolve(result.value); }).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
+var __generator = (this && this.__generator) || function (thisArg, body) {
+    var _ = { label: 0, sent: function() { if (t[0] & 1) throw t[1]; return t[1]; }, trys: [], ops: [] }, f, y, t, g;
+    return g = { next: verb(0), "throw": verb(1), "return": verb(2) }, typeof Symbol === "function" && (g[Symbol.iterator] = function() { return this; }), g;
+    function verb(n) { return function (v) { return step([n, v]); }; }
+    function step(op) {
+        if (f) throw new TypeError("Generator is already executing.");
+        while (_) try {
+            if (f = 1, y && (t = y[op[0] & 2 ? "return" : op[0] ? "throw" : "next"]) && !(t = t.call(y, op[1])).done) return t;
+            if (y = 0, t) op = [0, t.value];
+            switch (op[0]) {
+                case 0: case 1: t = op; break;
+                case 4: _.label++; return { value: op[1], done: false };
+                case 5: _.label++; y = op[1]; op = [0]; continue;
+                case 7: op = _.ops.pop(); _.trys.pop(); continue;
+                default:
+                    if (!(t = _.trys, t = t.length > 0 && t[t.length - 1]) && (op[0] === 6 || op[0] === 2)) { _ = 0; continue; }
+                    if (op[0] === 3 && (!t || (op[1] > t[0] && op[1] < t[3]))) { _.label = op[1]; break; }
+                    if (op[0] === 6 && _.label < t[1]) { _.label = t[1]; t = op; break; }
+                    if (t && _.label < t[2]) { _.label = t[2]; _.ops.push(op); break; }
+                    if (t[2]) _.ops.pop();
+                    _.trys.pop(); continue;
+            }
+            op = body.call(thisArg, _);
+        } catch (e) { op = [6, e]; y = 0; } finally { f = t = 0; }
+        if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
+    }
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+var localforage = __webpack_require__(3);
+var get_weight_decoder_1 = __webpack_require__(4);
+var fetch_1 = __webpack_require__(1);
+var placeholder_1 = __webpack_require__(5);
+var symbolic_float32array_1 = __webpack_require__(6);
+var descriptor_runner_1 = __webpack_require__(7);
 /**
  * @private
  */
-function wait(duration = 10) {
+function wait(duration) {
+    if (duration === void 0) { duration = 10; }
     // let console.log to be displayed, and prevent freeze
-    return new Promise(resolve => setTimeout(resolve, duration));
+    return new Promise(function (resolve) { return setTimeout(resolve, duration); });
 }
 /**
  * @protected
  */
-class DescriptorRunnerFallback extends __WEBPACK_IMPORTED_MODULE_5__descriptor_runner__["a" /* DescriptorRunner */] {
-    constructor() {
-        super(...arguments);
-        this.backendName = 'fallback';
+var DescriptorRunnerFallback = /** @class */ (function (_super) {
+    __extends(DescriptorRunnerFallback, _super);
+    function DescriptorRunnerFallback() {
+        var _this = _super !== null && _super.apply(this, arguments) || this;
+        _this.backendName = 'fallback';
+        return _this;
     }
-    static checkAvailability() {
+    DescriptorRunnerFallback.checkAvailability = function () {
         return true;
-    }
-    async init() {
-        //nothing to do
-    }
-    async setDescriptorAndParameters(descriptor, parameters) {
-        this.setDescriptor(descriptor);
-        await this.compile();
-        await this.initializeStaticBuffer(parameters);
-        if (this.placeholderContext && this.placeholderContext.isResolved)
-            await this.initializeDynamicBuffer();
-    }
-    async fetchDescriptor(directory) {
-        this.directory = directory;
-        let res = await Object(__WEBPACK_IMPORTED_MODULE_1__fetch__["a" /* default */])(`${directory}/graph_${this.backendName}.json`);
-        return res.json();
-    }
-    async fetchParameters(directory, progressCallback) {
-        let res = await Object(__WEBPACK_IMPORTED_MODULE_1__fetch__["a" /* default */])(`${directory}/weight_${this.backendName}.bin`);
-        return Object(__WEBPACK_IMPORTED_MODULE_1__fetch__["b" /* readArrayBufferProgressively */])(res, progressCallback);
-    }
+    };
+    DescriptorRunnerFallback.prototype.init = function () {
+        return __awaiter(this, void 0, void 0, function () {
+            return __generator(this, function (_a) {
+                return [2 /*return*/];
+            });
+        });
+    };
+    DescriptorRunnerFallback.prototype.setDescriptorAndParameters = function (descriptor, parameters) {
+        return __awaiter(this, void 0, void 0, function () {
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        this.setDescriptor(descriptor);
+                        return [4 /*yield*/, this.compile()];
+                    case 1:
+                        _a.sent();
+                        return [4 /*yield*/, this.initializeStaticBuffer(parameters)];
+                    case 2:
+                        _a.sent();
+                        if (!(this.placeholderContext && this.placeholderContext.isResolved)) return [3 /*break*/, 4];
+                        return [4 /*yield*/, this.initializeDynamicBuffer()];
+                    case 3:
+                        _a.sent();
+                        _a.label = 4;
+                    case 4: return [2 /*return*/];
+                }
+            });
+        });
+    };
+    DescriptorRunnerFallback.prototype.fetchDescriptor = function (directory) {
+        return __awaiter(this, void 0, void 0, function () {
+            var res;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        this.directory = directory;
+                        return [4 /*yield*/, fetch_1.default(directory + "/graph_" + this.backendName + ".json")];
+                    case 1:
+                        res = _a.sent();
+                        return [2 /*return*/, res.json()];
+                }
+            });
+        });
+    };
+    DescriptorRunnerFallback.prototype.fetchParameters = function (directory, progressCallback) {
+        return __awaiter(this, void 0, void 0, function () {
+            var res;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, fetch_1.default(directory + "/weight_" + this.backendName + ".bin")];
+                    case 1:
+                        res = _a.sent();
+                        return [2 /*return*/, fetch_1.readArrayBufferProgressively(res, progressCallback)];
+                }
+            });
+        });
+    };
     /**
      * Load cached descriptor from WebStorage
      * @protected
      */
-    async restoreCachedDescriptor(directory) {
-        return __WEBPACK_IMPORTED_MODULE_4__third_localforage_nopromises_min__["getItem"](`${directory}_${this.backendName}_descriptor`).catch(() => null);
-    }
+    DescriptorRunnerFallback.prototype.restoreCachedDescriptor = function (directory) {
+        return __awaiter(this, void 0, void 0, function () {
+            return __generator(this, function (_a) {
+                return [2 /*return*/, localforage.getItem(directory + "_" + this.backendName + "_descriptor").catch(function () { return null; })];
+            });
+        });
+    };
     /**
      * Load cached descriptor from WebStorage
      * @protected
      */
-    async restoreCachedParameters(directory, progressCallback) {
-        let parameter = await __WEBPACK_IMPORTED_MODULE_4__third_localforage_nopromises_min__["getItem"](`${directory}_${this.backendName}_parameters`).catch(() => null);
-        if (parameter && progressCallback)
-            progressCallback(parameter.byteLength, parameter.byteLength);
-        return parameter;
-    }
+    DescriptorRunnerFallback.prototype.restoreCachedParameters = function (directory, progressCallback) {
+        return __awaiter(this, void 0, void 0, function () {
+            var parameter;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, localforage.getItem(directory + "_" + this.backendName + "_parameters").catch(function () { return null; })];
+                    case 1:
+                        parameter = _a.sent();
+                        if (parameter && progressCallback)
+                            progressCallback(parameter.byteLength, parameter.byteLength);
+                        return [2 /*return*/, parameter];
+                }
+            });
+        });
+    };
     /**
      * save cache
      */
-    async saveCache(directory, descriptor, parameters) {
-        await Promise.all([
-            __WEBPACK_IMPORTED_MODULE_4__third_localforage_nopromises_min__["setItem"](`${directory}_${this.backendName}_descriptor`, descriptor),
-            __WEBPACK_IMPORTED_MODULE_4__third_localforage_nopromises_min__["setItem"](`${directory}_${this.backendName}_parameters`, parameters)
-        ]);
-    }
+    DescriptorRunnerFallback.prototype.saveCache = function (directory, descriptor, parameters) {
+        return __awaiter(this, void 0, void 0, function () {
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, Promise.all([
+                            localforage.setItem(directory + "_" + this.backendName + "_descriptor", descriptor),
+                            localforage.setItem(directory + "_" + this.backendName + "_parameters", parameters)
+                        ])];
+                    case 1:
+                        _a.sent();
+                        return [2 /*return*/];
+                }
+            });
+        });
+    };
     ;
-    setDescriptor(descriptor) {
+    DescriptorRunnerFallback.prototype.setDescriptor = function (descriptor) {
         this.descriptor = descriptor;
         // reset
-        this.placeholderContext = new __WEBPACK_IMPORTED_MODULE_2__placeholder__["a" /* default */]();
+        this.placeholderContext = new placeholder_1.default();
         this.placeholderContext.update(descriptor.placeholders);
         this.kernelObj = null;
         this.variableMap = null;
         this.staticBuffer = null;
         this.dynamicBuffer = null;
-    }
-    async compile() {
-        if (!this.descriptor)
-            throw new Error('Descriptor is not loaded');
-        await new Promise((resolve) => {
-            let script = document.createElement("script");
-            script.type = "text/javascript";
-            if (script.readyState) {
-                script.onreadystatechange = () => {
-                    if (script.readyState == "loaded" || script.readyState == "complete") {
-                        script.onreadystatechange = null;
-                        resolve();
-                    }
-                };
-            }
-            else {
-                script.onload = resolve;
-            }
-            script.src = Object(__WEBPACK_IMPORTED_MODULE_1__fetch__["d" /* transformUrl */])(`${this.directory}/kernels_fallback.js`);
-            document.getElementsByTagName("head")[0].appendChild(script);
+    };
+    DescriptorRunnerFallback.prototype.compile = function () {
+        return __awaiter(this, void 0, void 0, function () {
+            var _this = this;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        if (!this.descriptor)
+                            throw new Error('Descriptor is not loaded');
+                        return [4 /*yield*/, new Promise(function (resolve) {
+                                var script = document.createElement("script");
+                                script.type = "text/javascript";
+                                if (script.readyState) {
+                                    script.onreadystatechange = function () {
+                                        if (script.readyState == "loaded" || script.readyState == "complete") {
+                                            script.onreadystatechange = null;
+                                            resolve();
+                                        }
+                                    };
+                                }
+                                else {
+                                    script.onload = resolve;
+                                }
+                                script.src = fetch_1.transformUrl(_this.directory + "/kernels_fallback.js");
+                                document.getElementsByTagName("head")[0].appendChild(script);
+                            })];
+                    case 1:
+                        _a.sent();
+                        this.kernelObj = window.dnn_fallback_kernel; // "window.dnn_fallback_kernel" is defined in "kernels_fallback.js"
+                        return [2 /*return*/];
+                }
+            });
         });
-        this.kernelObj = window.dnn_fallback_kernel; // "window.dnn_fallback_kernel" is defined in "kernels_fallback.js"
-    }
-    async initializeStaticBuffer(weightRawArray) {
-        if (!this.descriptor)
-            throw new Error('Descriptor is not loaded');
-        let descriptor = this.descriptor;
-        let staticBuffer = new Float32Array(descriptor.memory_layout.static.size);
-        this.staticBuffer = staticBuffer;
-        let variableMap = this.variableMap || new Map();
-        this.variableMap = variableMap;
-        Object.entries(descriptor.memory_layout.static.allocations)
-            .forEach(([name, allocation]) => {
-            variableMap.set(name, new Float32Array(staticBuffer.buffer, allocation.offset * Float32Array.BYTES_PER_ELEMENT, allocation.size));
+    };
+    DescriptorRunnerFallback.prototype.initializeStaticBuffer = function (weightRawArray) {
+        return __awaiter(this, void 0, void 0, function () {
+            var descriptor, staticBuffer, variableMap, decoder, _a, _b;
+            return __generator(this, function (_c) {
+                switch (_c.label) {
+                    case 0:
+                        if (!this.descriptor)
+                            throw new Error('Descriptor is not loaded');
+                        descriptor = this.descriptor;
+                        staticBuffer = new Float32Array(descriptor.memory_layout.static.size);
+                        this.staticBuffer = staticBuffer;
+                        variableMap = this.variableMap || new Map();
+                        this.variableMap = variableMap;
+                        Object.entries(descriptor.memory_layout.static.allocations)
+                            .forEach(function (_a) {
+                            var name = _a[0], allocation = _a[1];
+                            variableMap.set(name, new Float32Array(staticBuffer.buffer, allocation.offset * Float32Array.BYTES_PER_ELEMENT, allocation.size));
+                        });
+                        decoder = get_weight_decoder_1.default(this.descriptor.weight_encoding);
+                        _b = (_a = staticBuffer).set;
+                        return [4 /*yield*/, decoder.decode(new Uint8Array(weightRawArray))];
+                    case 1:
+                        _b.apply(_a, [_c.sent()]);
+                        return [4 /*yield*/, this.getInputViews()];
+                    case 2:
+                        (_c.sent())
+                            .filter(function (view) { return !view.isDynamic; })
+                            .forEach(function (view) {
+                            view.buffer = staticBuffer.buffer;
+                        });
+                        return [4 /*yield*/, this.getOutputViews()];
+                    case 3:
+                        (_c.sent())
+                            .filter(function (view) { return !view.isDynamic; })
+                            .forEach(function (view) {
+                            view.buffer = staticBuffer.buffer;
+                        });
+                        return [2 /*return*/];
+                }
+            });
         });
-        let decoder = Object(__WEBPACK_IMPORTED_MODULE_0__decoder_get_weight_decoder__["a" /* default */])(this.descriptor.weight_encoding);
-        staticBuffer.set(await decoder.decode(new Uint8Array(weightRawArray)));
-        (await this.getInputViews())
-            .filter(view => !view.isDynamic)
-            .forEach(view => {
-            view.buffer = staticBuffer.buffer;
+    };
+    DescriptorRunnerFallback.prototype.initializeDynamicBuffer = function () {
+        return __awaiter(this, void 0, void 0, function () {
+            var descriptor, placeholderContext, dynamicBuffer, variableMap;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        if (!this.descriptor)
+                            throw new Error('Descriptor is not loaded');
+                        if (!this.placeholderContext)
+                            throw new Error('PlaceholderContext is not initialized');
+                        descriptor = this.descriptor;
+                        placeholderContext = this.placeholderContext;
+                        dynamicBuffer = new Float32Array(placeholderContext.resolve(descriptor.memory_layout.dynamic.size));
+                        this.dynamicBuffer = dynamicBuffer;
+                        variableMap = this.variableMap || new Map();
+                        this.variableMap = variableMap;
+                        Object.entries(descriptor.memory_layout.dynamic.allocations)
+                            .forEach(function (_a) {
+                            var name = _a[0], allocation = _a[1];
+                            variableMap.set(name, new Float32Array(dynamicBuffer.buffer, placeholderContext.resolve(allocation.offset) * Float32Array.BYTES_PER_ELEMENT, placeholderContext.resolve(allocation.size)));
+                        });
+                        return [4 /*yield*/, this.getInputViews()];
+                    case 1:
+                        (_a.sent())
+                            .filter(function (view) { return view.isDynamic; })
+                            .forEach(function (view) {
+                            view.buffer = dynamicBuffer.buffer;
+                        });
+                        return [4 /*yield*/, this.getOutputViews()];
+                    case 2:
+                        (_a.sent())
+                            .filter(function (view) { return view.isDynamic; })
+                            .forEach(function (view) {
+                            view.buffer = dynamicBuffer.buffer;
+                        });
+                        return [2 /*return*/];
+                }
+            });
         });
-        (await this.getOutputViews())
-            .filter(view => !view.isDynamic)
-            .forEach(view => {
-            view.buffer = staticBuffer.buffer;
+    };
+    DescriptorRunnerFallback.prototype.setPlaceholderValue = function (values) {
+        return __awaiter(this, void 0, void 0, function () {
+            var placeholderContext;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        if (!this.placeholderContext)
+                            throw new Error('placeholderContext is not initialized');
+                        placeholderContext = this.placeholderContext;
+                        placeholderContext.update(values);
+                        if (!placeholderContext.isResolved)
+                            return [2 /*return*/];
+                        return [4 /*yield*/, this.initializeDynamicBuffer()];
+                    case 1:
+                        _a.sent();
+                        return [2 /*return*/];
+                }
+            });
         });
-    }
-    async initializeDynamicBuffer() {
-        if (!this.descriptor)
-            throw new Error('Descriptor is not loaded');
-        if (!this.placeholderContext)
-            throw new Error('PlaceholderContext is not initialized');
-        let descriptor = this.descriptor;
-        let placeholderContext = this.placeholderContext;
-        let dynamicBuffer = new Float32Array(placeholderContext.resolve(descriptor.memory_layout.dynamic.size));
-        this.dynamicBuffer = dynamicBuffer;
-        let variableMap = this.variableMap || new Map();
-        this.variableMap = variableMap;
-        Object.entries(descriptor.memory_layout.dynamic.allocations)
-            .forEach(([name, allocation]) => {
-            variableMap.set(name, new Float32Array(dynamicBuffer.buffer, placeholderContext.resolve(allocation.offset) * Float32Array.BYTES_PER_ELEMENT, placeholderContext.resolve(allocation.size)));
+    };
+    DescriptorRunnerFallback.prototype.run = function () {
+        return __awaiter(this, void 0, void 0, function () {
+            var variableMap, placeholderContext, executionInfos, startDate, lastDate, i, currentDate, executionInfo, inputs, outputs;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        if (!this.descriptor)
+                            throw new Error('Descriptor is not loaded');
+                        if (!this.placeholderContext)
+                            throw new Error('placeholderContext is not initialized');
+                        if (!this.variableMap)
+                            throw new Error('Variable map is not initialized');
+                        if (!this.staticBuffer)
+                            throw new Error('StaticBuffer map is not initialized');
+                        if (!this.dynamicBuffer)
+                            throw new Error('DynamicBuffer map is not initialized');
+                        variableMap = this.variableMap;
+                        placeholderContext = this.placeholderContext;
+                        executionInfos = this.descriptor.exec_infos
+                            .map(function (executionInfo) { return placeholderContext.resolve(executionInfo); });
+                        startDate = Date.now();
+                        lastDate = Date.now();
+                        i = 0;
+                        _a.label = 1;
+                    case 1:
+                        if (!(i < executionInfos.length)) return [3 /*break*/, 5];
+                        currentDate = Date.now();
+                        if (!(currentDate - lastDate >= 1000)) return [3 /*break*/, 3];
+                        console.log("Processed " + i + "/" + executionInfos.length + " kernels in " + (currentDate - startDate) + " ms");
+                        lastDate = currentDate;
+                        return [4 /*yield*/, wait()];
+                    case 2:
+                        _a.sent();
+                        _a.label = 3;
+                    case 3:
+                        executionInfo = executionInfos[i];
+                        inputs = executionInfo.inputs.map(function (name) { return variableMap.get(name); });
+                        outputs = executionInfo.outputs.map(function (name) { return variableMap.get(name); });
+                        this.kernelObj[executionInfo.entry_func_name](inputs, outputs, executionInfo.call_option);
+                        _a.label = 4;
+                    case 4:
+                        i++;
+                        return [3 /*break*/, 1];
+                    case 5:
+                        console.log("Processed " + executionInfos.length + "/" + executionInfos.length + " kernels in " + (Date.now() - startDate) + " ms");
+                        return [2 /*return*/];
+                }
+            });
         });
-        (await this.getInputViews())
-            .filter(view => view.isDynamic)
-            .forEach(view => {
-            view.buffer = dynamicBuffer.buffer;
-        });
-        (await this.getOutputViews())
-            .filter(view => view.isDynamic)
-            .forEach(view => {
-            view.buffer = dynamicBuffer.buffer;
-        });
-    }
-    async setPlaceholderValue(values) {
-        if (!this.placeholderContext)
-            throw new Error('placeholderContext is not initialized');
-        let placeholderContext = this.placeholderContext;
-        placeholderContext.update(values);
-        if (!placeholderContext.isResolved)
-            return;
-        await this.initializeDynamicBuffer();
-    }
-    async run() {
-        if (!this.descriptor)
-            throw new Error('Descriptor is not loaded');
-        if (!this.placeholderContext)
-            throw new Error('placeholderContext is not initialized');
-        if (!this.variableMap)
-            throw new Error('Variable map is not initialized');
-        if (!this.staticBuffer)
-            throw new Error('StaticBuffer map is not initialized');
-        if (!this.dynamicBuffer)
-            throw new Error('DynamicBuffer map is not initialized');
-        let variableMap = this.variableMap;
-        let placeholderContext = this.placeholderContext;
-        let executionInfos = this.descriptor.exec_infos
-            .map(executionInfo => placeholderContext.resolve(executionInfo));
-        let startDate = Date.now();
-        let lastDate = Date.now();
-        for (let i = 0; i < executionInfos.length; i++) {
-            let currentDate = Date.now();
-            if (currentDate - lastDate >= 1000) {
-                console.log(`Processed ${i}/${executionInfos.length} kernels in ${currentDate - startDate} ms`);
-                lastDate = currentDate;
-                await wait();
-            }
-            let executionInfo = executionInfos[i];
-            let inputs = executionInfo.inputs.map((name) => variableMap.get(name));
-            let outputs = executionInfo.outputs.map((name) => variableMap.get(name));
-            this.kernelObj[executionInfo.entry_func_name](inputs, outputs, executionInfo.call_option);
-        }
-        console.log(`Processed ${executionInfos.length}/${executionInfos.length} kernels in ${Date.now() - startDate} ms`);
-    }
-    getInputViews() {
+    };
+    DescriptorRunnerFallback.prototype.getInputViews = function () {
         if (this.inputs)
             return this.inputs;
         if (!this.descriptor)
             throw new Error('Descriptor is not loaded');
         if (!this.placeholderContext)
             throw new Error('PlaceholderContext is not initialized');
-        let descriptor = this.descriptor;
-        let placeholderContext = this.placeholderContext;
-        this.inputs = descriptor.inputs.map(name => {
-            let allocation = descriptor.memory_layout.static.allocations[name] || descriptor.memory_layout.dynamic.allocations[name];
-            let view = new __WEBPACK_IMPORTED_MODULE_3__symbolic_typed_array_symbolic_float32array__["a" /* default */](null, allocation.offset * __WEBPACK_IMPORTED_MODULE_3__symbolic_typed_array_symbolic_float32array__["a" /* default */].BYTES_PER_ELEMENT, allocation.size, placeholderContext);
+        var descriptor = this.descriptor;
+        var placeholderContext = this.placeholderContext;
+        this.inputs = descriptor.inputs.map(function (name) {
+            var allocation = descriptor.memory_layout.static.allocations[name] || descriptor.memory_layout.dynamic.allocations[name];
+            var view = new symbolic_float32array_1.default(null, allocation.offset * symbolic_float32array_1.default.BYTES_PER_ELEMENT, allocation.size, placeholderContext);
             return view;
         });
         return this.inputs;
-    }
-    getOutputViews() {
+    };
+    DescriptorRunnerFallback.prototype.getOutputViews = function () {
         if (this.outputs)
             return this.outputs;
         if (!this.descriptor)
             throw new Error('Descriptor is not loaded');
         if (!this.placeholderContext)
             throw new Error('PlaceholderContext is not initialized');
-        let descriptor = this.descriptor;
-        let placeholderContext = this.placeholderContext;
-        this.outputs = descriptor.outputs.map(name => {
-            let allocation = descriptor.memory_layout.static.allocations[name] || descriptor.memory_layout.dynamic.allocations[name];
-            let view = new __WEBPACK_IMPORTED_MODULE_3__symbolic_typed_array_symbolic_float32array__["a" /* default */](null, allocation.offset * __WEBPACK_IMPORTED_MODULE_3__symbolic_typed_array_symbolic_float32array__["a" /* default */].BYTES_PER_ELEMENT, allocation.size, placeholderContext);
+        var descriptor = this.descriptor;
+        var placeholderContext = this.placeholderContext;
+        this.outputs = descriptor.outputs.map(function (name) {
+            var allocation = descriptor.memory_layout.static.allocations[name] || descriptor.memory_layout.dynamic.allocations[name];
+            var view = new symbolic_float32array_1.default(null, allocation.offset * symbolic_float32array_1.default.BYTES_PER_ELEMENT, allocation.size, placeholderContext);
             return view;
         });
         return this.outputs;
-    }
-}
-/* harmony export (immutable) */ __webpack_exports__["a"] = DescriptorRunnerFallback;
-
+    };
+    return DescriptorRunnerFallback;
+}(descriptor_runner_1.DescriptorRunner));
+exports.default = DescriptorRunnerFallback;
 
 
 /***/ }),
 /* 23 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
+/***/ (function(module, exports) {
 
-"use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_pako__ = __webpack_require__(24);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_pako___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_pako__);
-/**
- * @module webdnn
- */
-/** Don't Remove This comment block */
+var g;
 
-/**
- * @private
- */
-const pako = __WEBPACK_IMPORTED_MODULE_0_pako__["default"];
-/**
- * @protected
- */
-class WeightDecoderEightbit {
-    async decode(data) {
-        // FIXME: store decoded total size in 'data'
-        // currently, decoding each block and concatenating them at the end are needed.
-        let decoded_arrays = [];
-        let total_dst_length = 0;
-        let data_view = new DataView(data.buffer, data.byteOffset);
-        let src_offset = 0;
-        while (src_offset < data.length) {
-            let dst_offset = data_view.getInt32(src_offset, true);
-            src_offset += 4;
-            let body_size = data_view.getInt32(src_offset, true);
-            src_offset += 4;
-            let scale = data_view.getFloat32(src_offset, true);
-            src_offset += 8;
-            let scaled_table = new Float32Array(256);
-            for (let i = 0; i < 256; i++) {
-                scaled_table[i] = WeightDecoderEightbit.decode_table[i & 0x7F] * scale * (i < 128 ? 1.0 : -1.0);
-            }
-            // do decode
-            let src_data_view = new Uint8Array(data.buffer, data.byteOffset + src_offset, body_size);
-            let decompressed = pako.inflate(src_data_view);
-            let dec_size = decompressed.length;
-            let decoded_array = new Float32Array(dec_size);
-            for (let s = 0; s < dec_size; s++) {
-                decoded_array[s] = scaled_table[decompressed[s]];
-            }
-            decoded_arrays.push(decoded_array);
-            total_dst_length += dec_size;
-            src_offset += body_size;
-        }
-        let dst = new Float32Array(total_dst_length);
-        let dst_offset = 0;
-        for (let i = 0; i < decoded_arrays.length; i++) {
-            dst.set(decoded_arrays[i], dst_offset);
-            dst_offset += decoded_arrays[i].length;
-        }
-        return dst;
-    }
+// This works in non-strict mode
+g = (function() {
+	return this;
+})();
+
+try {
+	// This works if eval is allowed (see CSP)
+	g = g || Function("return this")() || (1,eval)("this");
+} catch(e) {
+	// This works if the window reference is available
+	if(typeof window === "object")
+		g = window;
 }
-/* harmony export (immutable) */ __webpack_exports__["a"] = WeightDecoderEightbit;
 
-WeightDecoderEightbit.decode_table = [0.0, 2.750000021e-06, 7.249999726e-06, 1.875000089e-05, 3.624999954e-05, 5.874999624e-05, 8.624999464e-05,
-    1.437500032e-04, 2.312500001e-04, 3.187500115e-04, 4.062500084e-04, 5.187499919e-04, 6.562499912e-04,
-    7.937499322e-04, 9.312499315e-04, 1.218750025e-03, 1.656249980e-03, 2.093750052e-03, 2.531250007e-03,
-    2.968749963e-03, 3.406249918e-03, 3.843750106e-03, 4.281249829e-03, 4.843750037e-03, 5.531250034e-03,
-    6.218749564e-03, 6.906249560e-03, 7.593749557e-03, 8.281249553e-03, 8.968749084e-03, 9.656248614e-03,
-    1.109374966e-02, 1.328125037e-02, 1.546875015e-02, 1.765624993e-02, 1.984374970e-02, 2.203124948e-02,
-    2.421874925e-02, 2.640625089e-02, 2.859375067e-02, 3.078125045e-02, 3.296874836e-02, 3.515625000e-02,
-    3.734375164e-02, 3.953124955e-02, 4.171875119e-02, 4.390624911e-02, 4.671875015e-02, 5.015625060e-02,
-    5.359374732e-02, 5.703124776e-02, 6.046874821e-02, 6.390624493e-02, 6.734374911e-02, 7.078124583e-02,
-    7.421874255e-02, 7.765624672e-02, 8.109374344e-02, 8.453124017e-02, 8.796874434e-02, 9.140624106e-02,
-    9.484373778e-02, 9.828124195e-02, 1.054687500e-01, 1.164062470e-01, 1.273437440e-01, 1.382812560e-01,
-    1.492187530e-01, 1.601562500e-01, 1.710937470e-01, 1.820312440e-01, 1.929687560e-01, 2.039062530e-01,
-    2.148437500e-01, 2.257812470e-01, 2.367187440e-01, 2.476562560e-01, 2.585937381e-01, 2.695312500e-01,
-    2.804687619e-01, 2.914062440e-01, 3.023437560e-01, 3.132812381e-01, 3.242187500e-01, 3.351562619e-01,
-    3.460937440e-01, 3.570312560e-01, 3.679687381e-01, 3.789062500e-01, 3.898437619e-01, 4.007812440e-01,
-    4.117187560e-01, 4.226562381e-01, 4.335937500e-01, 4.445312619e-01, 4.585937560e-01, 4.757812321e-01,
-    4.929687381e-01, 5.101562142e-01, 5.273437500e-01, 5.445312262e-01, 5.617187023e-01, 5.789062381e-01,
-    5.960937142e-01, 6.132812500e-01, 6.304687262e-01, 6.476562023e-01, 6.648437381e-01, 6.820312142e-01,
-    6.992186904e-01, 7.164062262e-01, 7.335937023e-01, 7.507811785e-01, 7.679687142e-01, 7.851561904e-01,
-    8.023436666e-01, 8.195312023e-01, 8.367186785e-01, 8.539061546e-01, 8.710936904e-01, 8.882811666e-01,
-    9.054686427e-01, 9.226561785e-01, 9.398436546e-01, 9.570311308e-01, 9.742186666e-01, 9.914061427e-01, 1.0,
-];
+// g can still be undefined, but nothing to do about it...
+// We return undefined, instead of nothing here, so it's
+// easier to handle this case. if(!global) { ...}
+
+module.exports = g;
 
 
 /***/ }),
 /* 24 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+/**
+ * @module webdnn
+ */
+/** Don't Remove This comment block */
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : new P(function (resolve) { resolve(result.value); }).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
+var __generator = (this && this.__generator) || function (thisArg, body) {
+    var _ = { label: 0, sent: function() { if (t[0] & 1) throw t[1]; return t[1]; }, trys: [], ops: [] }, f, y, t, g;
+    return g = { next: verb(0), "throw": verb(1), "return": verb(2) }, typeof Symbol === "function" && (g[Symbol.iterator] = function() { return this; }), g;
+    function verb(n) { return function (v) { return step([n, v]); }; }
+    function step(op) {
+        if (f) throw new TypeError("Generator is already executing.");
+        while (_) try {
+            if (f = 1, y && (t = y[op[0] & 2 ? "return" : op[0] ? "throw" : "next"]) && !(t = t.call(y, op[1])).done) return t;
+            if (y = 0, t) op = [0, t.value];
+            switch (op[0]) {
+                case 0: case 1: t = op; break;
+                case 4: _.label++; return { value: op[1], done: false };
+                case 5: _.label++; y = op[1]; op = [0]; continue;
+                case 7: op = _.ops.pop(); _.trys.pop(); continue;
+                default:
+                    if (!(t = _.trys, t = t.length > 0 && t[t.length - 1]) && (op[0] === 6 || op[0] === 2)) { _ = 0; continue; }
+                    if (op[0] === 3 && (!t || (op[1] > t[0] && op[1] < t[3]))) { _.label = op[1]; break; }
+                    if (op[0] === 6 && _.label < t[1]) { _.label = t[1]; t = op; break; }
+                    if (t && _.label < t[2]) { _.label = t[2]; _.ops.push(op); break; }
+                    if (t[2]) _.ops.pop();
+                    _.trys.pop(); continue;
+            }
+            op = body.call(thisArg, _);
+        } catch (e) { op = [6, e]; y = 0; } finally { f = t = 0; }
+        if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
+    }
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+var pako = __webpack_require__(25);
+/**
+ * @protected
+ */
+var WeightDecoderEightbit = /** @class */ (function () {
+    function WeightDecoderEightbit() {
+    }
+    WeightDecoderEightbit.prototype.decode = function (data) {
+        return __awaiter(this, void 0, void 0, function () {
+            var decoded_arrays, total_dst_length, data_view, src_offset, dst_offset_1, body_size, scale, scaled_table, i, src_data_view, decompressed, dec_size, decoded_array, s, dst, dst_offset, i;
+            return __generator(this, function (_a) {
+                decoded_arrays = [];
+                total_dst_length = 0;
+                data_view = new DataView(data.buffer, data.byteOffset);
+                src_offset = 0;
+                while (src_offset < data.length) {
+                    dst_offset_1 = data_view.getInt32(src_offset, true);
+                    src_offset += 4;
+                    body_size = data_view.getInt32(src_offset, true);
+                    src_offset += 4;
+                    scale = data_view.getFloat32(src_offset, true);
+                    src_offset += 8;
+                    scaled_table = new Float32Array(256);
+                    for (i = 0; i < 256; i++) {
+                        scaled_table[i] = WeightDecoderEightbit.decode_table[i & 0x7F] * scale * (i < 128 ? 1.0 : -1.0);
+                    }
+                    src_data_view = new Uint8Array(data.buffer, data.byteOffset + src_offset, body_size);
+                    decompressed = pako.inflate(src_data_view);
+                    dec_size = decompressed.length;
+                    decoded_array = new Float32Array(dec_size);
+                    for (s = 0; s < dec_size; s++) {
+                        decoded_array[s] = scaled_table[decompressed[s]];
+                    }
+                    decoded_arrays.push(decoded_array);
+                    total_dst_length += dec_size;
+                    src_offset += body_size;
+                }
+                dst = new Float32Array(total_dst_length);
+                dst_offset = 0;
+                for (i = 0; i < decoded_arrays.length; i++) {
+                    dst.set(decoded_arrays[i], dst_offset);
+                    dst_offset += decoded_arrays[i].length;
+                }
+                return [2 /*return*/, dst];
+            });
+        });
+    };
+    WeightDecoderEightbit.decode_table = [0.0, 2.750000021e-06, 7.249999726e-06, 1.875000089e-05, 3.624999954e-05, 5.874999624e-05, 8.624999464e-05,
+        1.437500032e-04, 2.312500001e-04, 3.187500115e-04, 4.062500084e-04, 5.187499919e-04, 6.562499912e-04,
+        7.937499322e-04, 9.312499315e-04, 1.218750025e-03, 1.656249980e-03, 2.093750052e-03, 2.531250007e-03,
+        2.968749963e-03, 3.406249918e-03, 3.843750106e-03, 4.281249829e-03, 4.843750037e-03, 5.531250034e-03,
+        6.218749564e-03, 6.906249560e-03, 7.593749557e-03, 8.281249553e-03, 8.968749084e-03, 9.656248614e-03,
+        1.109374966e-02, 1.328125037e-02, 1.546875015e-02, 1.765624993e-02, 1.984374970e-02, 2.203124948e-02,
+        2.421874925e-02, 2.640625089e-02, 2.859375067e-02, 3.078125045e-02, 3.296874836e-02, 3.515625000e-02,
+        3.734375164e-02, 3.953124955e-02, 4.171875119e-02, 4.390624911e-02, 4.671875015e-02, 5.015625060e-02,
+        5.359374732e-02, 5.703124776e-02, 6.046874821e-02, 6.390624493e-02, 6.734374911e-02, 7.078124583e-02,
+        7.421874255e-02, 7.765624672e-02, 8.109374344e-02, 8.453124017e-02, 8.796874434e-02, 9.140624106e-02,
+        9.484373778e-02, 9.828124195e-02, 1.054687500e-01, 1.164062470e-01, 1.273437440e-01, 1.382812560e-01,
+        1.492187530e-01, 1.601562500e-01, 1.710937470e-01, 1.820312440e-01, 1.929687560e-01, 2.039062530e-01,
+        2.148437500e-01, 2.257812470e-01, 2.367187440e-01, 2.476562560e-01, 2.585937381e-01, 2.695312500e-01,
+        2.804687619e-01, 2.914062440e-01, 3.023437560e-01, 3.132812381e-01, 3.242187500e-01, 3.351562619e-01,
+        3.460937440e-01, 3.570312560e-01, 3.679687381e-01, 3.789062500e-01, 3.898437619e-01, 4.007812440e-01,
+        4.117187560e-01, 4.226562381e-01, 4.335937500e-01, 4.445312619e-01, 4.585937560e-01, 4.757812321e-01,
+        4.929687381e-01, 5.101562142e-01, 5.273437500e-01, 5.445312262e-01, 5.617187023e-01, 5.789062381e-01,
+        5.960937142e-01, 6.132812500e-01, 6.304687262e-01, 6.476562023e-01, 6.648437381e-01, 6.820312142e-01,
+        6.992186904e-01, 7.164062262e-01, 7.335937023e-01, 7.507811785e-01, 7.679687142e-01, 7.851561904e-01,
+        8.023436666e-01, 8.195312023e-01, 8.367186785e-01, 8.539061546e-01, 8.710936904e-01, 8.882811666e-01,
+        9.054686427e-01, 9.226561785e-01, 9.398436546e-01, 9.570311308e-01, 9.742186666e-01, 9.914061427e-01, 1.0,
+    ];
+    return WeightDecoderEightbit;
+}());
+exports.default = WeightDecoderEightbit;
+
+
+/***/ }),
+/* 25 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2351,8 +5404,8 @@ WeightDecoderEightbit.decode_table = [0.0, 2.750000021e-06, 7.249999726e-06, 1.8
 
 var assign    = __webpack_require__(0).assign;
 
-var deflate   = __webpack_require__(25);
-var inflate   = __webpack_require__(28);
+var deflate   = __webpack_require__(26);
+var inflate   = __webpack_require__(29);
 var constants = __webpack_require__(13);
 
 var pako = {};
@@ -2363,14 +5416,14 @@ module.exports = pako;
 
 
 /***/ }),
-/* 25 */
+/* 26 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
 
-var zlib_deflate = __webpack_require__(26);
+var zlib_deflate = __webpack_require__(27);
 var utils        = __webpack_require__(0);
 var strings      = __webpack_require__(11);
 var msg          = __webpack_require__(8);
@@ -2770,7 +5823,7 @@ exports.gzip = gzip;
 
 
 /***/ }),
-/* 26 */
+/* 27 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2796,7 +5849,7 @@ exports.gzip = gzip;
 // 3. This notice may not be removed or altered from any source distribution.
 
 var utils   = __webpack_require__(0);
-var trees   = __webpack_require__(27);
+var trees   = __webpack_require__(28);
 var adler32 = __webpack_require__(9);
 var crc32   = __webpack_require__(10);
 var msg     = __webpack_require__(8);
@@ -4651,7 +7704,7 @@ exports.deflateTune = deflateTune;
 
 
 /***/ }),
-/* 27 */
+/* 28 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -5878,20 +8931,20 @@ exports._tr_align = _tr_align;
 
 
 /***/ }),
-/* 28 */
+/* 29 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
 
-var zlib_inflate = __webpack_require__(29);
+var zlib_inflate = __webpack_require__(30);
 var utils        = __webpack_require__(0);
 var strings      = __webpack_require__(11);
 var c            = __webpack_require__(13);
 var msg          = __webpack_require__(8);
 var ZStream      = __webpack_require__(12);
-var GZheader     = __webpack_require__(32);
+var GZheader     = __webpack_require__(33);
 
 var toString = Object.prototype.toString;
 
@@ -6303,7 +9356,7 @@ exports.ungzip  = inflate;
 
 
 /***/ }),
-/* 29 */
+/* 30 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -6331,8 +9384,8 @@ exports.ungzip  = inflate;
 var utils         = __webpack_require__(0);
 var adler32       = __webpack_require__(9);
 var crc32         = __webpack_require__(10);
-var inflate_fast  = __webpack_require__(30);
-var inflate_table = __webpack_require__(31);
+var inflate_fast  = __webpack_require__(31);
+var inflate_table = __webpack_require__(32);
 
 var CODES = 0;
 var LENS = 1;
@@ -7866,7 +10919,7 @@ exports.inflateUndermine = inflateUndermine;
 
 
 /***/ }),
-/* 30 */
+/* 31 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -8218,7 +11271,7 @@ module.exports = function inflate_fast(strm, start) {
 
 
 /***/ }),
-/* 31 */
+/* 32 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -8568,7 +11621,7 @@ module.exports = function inflate_table(type, lens, lens_index, codes, table, ta
 
 
 /***/ }),
-/* 32 */
+/* 33 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -8633,46 +11686,91 @@ module.exports = GZheader;
 
 
 /***/ }),
-/* 33 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
+/* 34 */
+/***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
+
 /**
  * @module webdnn
  */
 /** Don't Remove This comment block */
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : new P(function (resolve) { resolve(result.value); }).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
+var __generator = (this && this.__generator) || function (thisArg, body) {
+    var _ = { label: 0, sent: function() { if (t[0] & 1) throw t[1]; return t[1]; }, trys: [], ops: [] }, f, y, t, g;
+    return g = { next: verb(0), "throw": verb(1), "return": verb(2) }, typeof Symbol === "function" && (g[Symbol.iterator] = function() { return this; }), g;
+    function verb(n) { return function (v) { return step([n, v]); }; }
+    function step(op) {
+        if (f) throw new TypeError("Generator is already executing.");
+        while (_) try {
+            if (f = 1, y && (t = y[op[0] & 2 ? "return" : op[0] ? "throw" : "next"]) && !(t = t.call(y, op[1])).done) return t;
+            if (y = 0, t) op = [0, t.value];
+            switch (op[0]) {
+                case 0: case 1: t = op; break;
+                case 4: _.label++; return { value: op[1], done: false };
+                case 5: _.label++; y = op[1]; op = [0]; continue;
+                case 7: op = _.ops.pop(); _.trys.pop(); continue;
+                default:
+                    if (!(t = _.trys, t = t.length > 0 && t[t.length - 1]) && (op[0] === 6 || op[0] === 2)) { _ = 0; continue; }
+                    if (op[0] === 3 && (!t || (op[1] > t[0] && op[1] < t[3]))) { _.label = op[1]; break; }
+                    if (op[0] === 6 && _.label < t[1]) { _.label = t[1]; t = op; break; }
+                    if (t && _.label < t[2]) { _.label = t[2]; _.ops.push(op); break; }
+                    if (t[2]) _.ops.pop();
+                    _.trys.pop(); continue;
+            }
+            op = body.call(thisArg, _);
+        } catch (e) { op = [6, e]; y = 0; } finally { f = t = 0; }
+        if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
+    }
+};
+Object.defineProperty(exports, "__esModule", { value: true });
 /**
  * @protected
  */
-class WeightDecoderRaw {
-    async decode(data) {
-        return new Float32Array(data.buffer, data.byteOffset, data.byteLength / 4);
+var WeightDecoderRaw = /** @class */ (function () {
+    function WeightDecoderRaw() {
     }
-}
-/* harmony export (immutable) */ __webpack_exports__["a"] = WeightDecoderRaw;
-
+    WeightDecoderRaw.prototype.decode = function (data) {
+        return __awaiter(this, void 0, void 0, function () {
+            return __generator(this, function (_a) {
+                return [2 /*return*/, new Float32Array(data.buffer, data.byteOffset, data.byteLength / 4)];
+            });
+        });
+    };
+    return WeightDecoderRaw;
+}());
+exports.default = WeightDecoderRaw;
 
 
 /***/ }),
-/* 34 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
+/* 35 */
+/***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
+
 /**
  * @module webdnn
  */
 /** Don't Remove This comment block */
+Object.defineProperty(exports, "__esModule", { value: true });
 /**
  * @private
  */
-const NOT_SCHEDULED = -1;
+var NOT_SCHEDULED = -1;
 /**
  * Schedule function which is called too much frequently.
  *
  * @private
  */
-class DispatchScheduler {
-    constructor() {
+var DispatchScheduler = /** @class */ (function () {
+    function DispatchScheduler() {
         this.scheduledCallbackId = NOT_SCHEDULED;
     }
     /**
@@ -8680,47 +11778,50 @@ class DispatchScheduler {
      * function which is registered at last.
      * @param fn scheduled function
      */
-    request(fn) {
+    DispatchScheduler.prototype.request = function (fn) {
+        var _this = this;
         this.fn = fn;
         if (this.scheduledCallbackId == NOT_SCHEDULED) {
-            this.scheduledCallbackId = requestAnimationFrame(() => this.forceDispatch());
+            this.scheduledCallbackId = requestAnimationFrame(function () { return _this.forceDispatch(); });
         }
-    }
+    };
     /**
      * Dispatch scheduled function just now. If no function is scheduled, dispatcher do nothing.
      */
-    forceDispatch() {
+    DispatchScheduler.prototype.forceDispatch = function () {
         if (this.scheduledCallbackId == NOT_SCHEDULED)
             return;
         this.cancel();
         this.fn();
-    }
+    };
     /**
      * Cancel scheduled function. If no function is scheduled, dispatcher do nothing.
      */
-    cancel() {
+    DispatchScheduler.prototype.cancel = function () {
         if (this.scheduledCallbackId == NOT_SCHEDULED)
             return;
         cancelAnimationFrame(this.scheduledCallbackId);
         this.scheduledCallbackId = NOT_SCHEDULED;
-    }
-}
-/* harmony export (immutable) */ __webpack_exports__["a"] = DispatchScheduler;
-
+    };
+    return DispatchScheduler;
+}());
+exports.default = DispatchScheduler;
 
 
 /***/ }),
-/* 35 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
+/* 36 */
+/***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
 /**
  * @protected
  */
 function flatten(arr) {
-    let result = [];
-    for (let i = 0; i < arr.length; i++) {
-        let v = arr[i];
+    var result = [];
+    for (var i = 0; i < arr.length; i++) {
+        var v = arr[i];
         if (v instanceof Array) {
             result.splice(result.length, 0, flatten(v));
         }
@@ -8733,11 +11834,14 @@ function flatten(arr) {
 /**
  * @protected
  */
-class SymbolicTypedArray {
+var SymbolicTypedArray = /** @class */ (function () {
     /**
      * @protected
      */
-    constructor(buffer = null, byteOffset = 0, length, placeholderContext = null) {
+    function SymbolicTypedArray(buffer, byteOffset, length, placeholderContext) {
+        if (buffer === void 0) { buffer = null; }
+        if (byteOffset === void 0) { byteOffset = 0; }
+        if (placeholderContext === void 0) { placeholderContext = null; }
         this.placeholderContext = placeholderContext;
         this._byteOffset = byteOffset;
         this._buffer = buffer;
@@ -8755,60 +11859,84 @@ class SymbolicTypedArray {
             }
         }
     }
-    /**
-     * The ArrayBuffer instance referenced by the array.
-     */
-    get buffer() {
-        if (!this._buffer)
-            this._buffer = new ArrayBuffer(this.byteOffset + this.byteLength);
-        return this._buffer;
-    }
-    /**
-     * The ArrayBuffer instance referenced by the array.
-     */
-    set buffer(buffer) {
-        this._buffer = buffer;
-    }
-    /**
-     * The length in bytes of the array.
-     */
-    get byteLength() {
-        return this.length * this.BYTES_PER_ELEMENT;
-    }
-    /**
-     * The number in this buffer. Actual offset size is `(offset * SIZE_OF_FLOAT)`.
-     */
-    get offset() {
-        return this.byteOffset / this.BYTES_PER_ELEMENT;
-    }
-    /**
-     * @protected
-     */
-    get isDynamic() {
-        return (typeof this._byteOffset !== 'number' || typeof this._length !== 'number');
-    }
-    /**
-     * The number of elements in this buffer. Actual byte size is `(length * SIZE_OF_FLOAT)`.
-     */
-    get length() {
-        if (this.isDynamic) {
-            return this.placeholderContext.resolve(this._length);
-        }
-        else {
-            return this._length;
-        }
-    }
-    /**
-     * The offset in bytes of the array.
-     */
-    get byteOffset() {
-        if (this.isDynamic) {
-            return this.placeholderContext.resolve(this._byteOffset);
-        }
-        else {
-            return this._byteOffset;
-        }
-    }
+    Object.defineProperty(SymbolicTypedArray.prototype, "buffer", {
+        /**
+         * The ArrayBuffer instance referenced by the array.
+         */
+        get: function () {
+            if (!this._buffer)
+                this._buffer = new ArrayBuffer(this.byteOffset + this.byteLength);
+            return this._buffer;
+        },
+        /**
+         * The ArrayBuffer instance referenced by the array.
+         */
+        set: function (buffer) {
+            this._buffer = buffer;
+        },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(SymbolicTypedArray.prototype, "byteLength", {
+        /**
+         * The length in bytes of the array.
+         */
+        get: function () {
+            return this.length * this.BYTES_PER_ELEMENT;
+        },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(SymbolicTypedArray.prototype, "offset", {
+        /**
+         * The number in this buffer. Actual offset size is `(offset * SIZE_OF_FLOAT)`.
+         */
+        get: function () {
+            return this.byteOffset / this.BYTES_PER_ELEMENT;
+        },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(SymbolicTypedArray.prototype, "isDynamic", {
+        /**
+         * @protected
+         */
+        get: function () {
+            return (typeof this._byteOffset !== 'number' || typeof this._length !== 'number');
+        },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(SymbolicTypedArray.prototype, "length", {
+        /**
+         * The number of elements in this buffer. Actual byte size is `(length * SIZE_OF_FLOAT)`.
+         */
+        get: function () {
+            if (this.isDynamic) {
+                return this.placeholderContext.resolve(this._length);
+            }
+            else {
+                return this._length;
+            }
+        },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(SymbolicTypedArray.prototype, "byteOffset", {
+        /**
+         * The offset in bytes of the array.
+         */
+        get: function () {
+            if (this.isDynamic) {
+                return this.placeholderContext.resolve(this._byteOffset);
+            }
+            else {
+                return this._byteOffset;
+            }
+        },
+        enumerable: true,
+        configurable: true
+    });
     /**
      * Returns the this object after copying a section of the array identified by start and end
      * to the same array starting at position target
@@ -8818,10 +11946,10 @@ class SymbolicTypedArray {
      * is treated as length+end.
      * @param end If not specified, length of the this object is used as its default value.
      */
-    copyWithin(target, start, end) {
+    SymbolicTypedArray.prototype.copyWithin = function (target, start, end) {
         this.toActual().copyWithin(target, start, end);
         return this;
-    }
+    };
     /**
      * Returns the this object after filling the section identified by start and end with value
      * @param value value to fill array section with
@@ -8830,163 +11958,221 @@ class SymbolicTypedArray {
      * @param end index to stop filling the array at. If end is negative, it is treated as
      * length+end.
      */
-    fill(value, start, end) {
+    SymbolicTypedArray.prototype.fill = function (value, start, end) {
         this.toActual().fill(value, start, end);
         return this;
-    }
+    };
     /**
      * Returns the index of the first occurrence of a value in an array.
      * @param searchElement The value to locate in the array.
      * @param fromIndex The array index at which to begin the search. If fromIndex is omitted, the
      *  search starts at index 0.
      */
-    indexOf(searchElement, fromIndex) {
+    SymbolicTypedArray.prototype.indexOf = function (searchElement, fromIndex) {
         return this.toActual().indexOf(searchElement, fromIndex);
-    }
+    };
     /**
      * Adds all the elements of an array separated by the specified separator string.
      * @param separator A string used to separate one element of an array from the next in the
      * resulting String. If omitted, the array elements are separated with a comma.
      */
-    join(separator) {
+    SymbolicTypedArray.prototype.join = function (separator) {
         return this.toActual().join(separator);
-    }
+    };
     /**
      * Returns the index of the last occurrence of a value in an array.
      * @param searchElement The value to locate in the array.
      * @param fromIndex The array index at which to begin the search. If fromIndex is omitted, the
      * search starts at index 0.
      */
-    lastIndexOf(searchElement, fromIndex) {
+    SymbolicTypedArray.prototype.lastIndexOf = function (searchElement, fromIndex) {
         return this.toActual().lastIndexOf(searchElement, fromIndex);
-    }
+    };
     /**
      * Sorts an array.
      * @param compareFn The name of the function used to determine the order of the elements. If
      * omitted, the elements are sorted in ascending, ASCII character order.
      */
-    sort(compareFn) {
+    SymbolicTypedArray.prototype.sort = function (compareFn) {
         this.toActual().sort(compareFn);
         return this;
-    }
-    includes(searchElement, fromIndex) {
+    };
+    SymbolicTypedArray.prototype.includes = function (searchElement, fromIndex) {
         return this.toActual().includes(searchElement, fromIndex);
-    }
+    };
     /**
      * Sets a value or an array of values.
      * @param array A typed or untyped array of values to set.
      * @param offset The index in the current array at which the values are to be written.
      */
-    set(array, offset) {
+    SymbolicTypedArray.prototype.set = function (array, offset) {
         return this.toActual().set(flatten(array), offset);
-    }
+    };
     /**
      * Converts a number to a string by using the current locale.
      */
-    toLocaleString() {
+    SymbolicTypedArray.prototype.toLocaleString = function () {
         return this.toActual().toLocaleString();
-    }
+    };
     /**
      * Returns a string representation of an array.
      */
-    toString() {
+    SymbolicTypedArray.prototype.toString = function () {
         return this.toActual().toString();
-    }
+    };
     /** @protected */
-    [Symbol.iterator]() {
+    SymbolicTypedArray.prototype[Symbol.iterator] = function () {
         return this.toActual()[Symbol.iterator]();
-    }
+    };
     /**
      * Returns an iterable of key, value pairs for every entry in the array
      */
-    entries() {
+    SymbolicTypedArray.prototype.entries = function () {
         return this.toActual().entries();
-    }
+    };
     /**
      * Returns an iterable of keys in the array
      */
-    keys() {
+    SymbolicTypedArray.prototype.keys = function () {
         return this.toActual().keys();
-    }
+    };
     /**
      * Returns an iterable of values in the array
      */
-    values() {
+    SymbolicTypedArray.prototype.values = function () {
         return this.toActual().values();
-    }
-}
-/* harmony export (immutable) */ __webpack_exports__["a"] = SymbolicTypedArray;
-
+    };
+    return SymbolicTypedArray;
+}());
+exports.SymbolicTypedArray = SymbolicTypedArray;
 
 
 /***/ }),
-/* 36 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
+/* 37 */
+/***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__decoder_get_weight_decoder__ = __webpack_require__(3);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__fetch__ = __webpack_require__(1);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__placeholder__ = __webpack_require__(4);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__symbolic_typed_array_symbolic_float32array__ = __webpack_require__(5);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__third_localforage_nopromises_min__ = __webpack_require__(6);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__third_localforage_nopromises_min___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_4__third_localforage_nopromises_min__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__descriptor_runner__ = __webpack_require__(7);
+
 /**
  * @module webdnn
  */
 /** Don't Remove This comment block */
-
-
-
-
-
-
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : new P(function (resolve) { resolve(result.value); }).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
+var __generator = (this && this.__generator) || function (thisArg, body) {
+    var _ = { label: 0, sent: function() { if (t[0] & 1) throw t[1]; return t[1]; }, trys: [], ops: [] }, f, y, t, g;
+    return g = { next: verb(0), "throw": verb(1), "return": verb(2) }, typeof Symbol === "function" && (g[Symbol.iterator] = function() { return this; }), g;
+    function verb(n) { return function (v) { return step([n, v]); }; }
+    function step(op) {
+        if (f) throw new TypeError("Generator is already executing.");
+        while (_) try {
+            if (f = 1, y && (t = y[op[0] & 2 ? "return" : op[0] ? "throw" : "next"]) && !(t = t.call(y, op[1])).done) return t;
+            if (y = 0, t) op = [0, t.value];
+            switch (op[0]) {
+                case 0: case 1: t = op; break;
+                case 4: _.label++; return { value: op[1], done: false };
+                case 5: _.label++; y = op[1]; op = [0]; continue;
+                case 7: op = _.ops.pop(); _.trys.pop(); continue;
+                default:
+                    if (!(t = _.trys, t = t.length > 0 && t[t.length - 1]) && (op[0] === 6 || op[0] === 2)) { _ = 0; continue; }
+                    if (op[0] === 3 && (!t || (op[1] > t[0] && op[1] < t[3]))) { _.label = op[1]; break; }
+                    if (op[0] === 6 && _.label < t[1]) { _.label = t[1]; t = op; break; }
+                    if (t && _.label < t[2]) { _.label = t[2]; _.ops.push(op); break; }
+                    if (t[2]) _.ops.pop();
+                    _.trys.pop(); continue;
+            }
+            op = body.call(thisArg, _);
+        } catch (e) { op = [6, e]; y = 0; } finally { f = t = 0; }
+        if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
+    }
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+var localforage = __webpack_require__(3);
+var get_weight_decoder_1 = __webpack_require__(4);
+var fetch_1 = __webpack_require__(1);
+var placeholder_1 = __webpack_require__(5);
+var symbolic_float32array_1 = __webpack_require__(6);
+var descriptor_runner_1 = __webpack_require__(7);
 /**
  * @protected
  */
-class DescriptorRunnerWebassembly extends __WEBPACK_IMPORTED_MODULE_5__descriptor_runner__["a" /* DescriptorRunner */] {
-    constructor() {
-        super();
-        this.backendName = 'webassembly';
-        this.worker_promise_reject_func = null;
-        this.worker_initial_error = null;
+var DescriptorRunnerWebassembly = /** @class */ (function (_super) {
+    __extends(DescriptorRunnerWebassembly, _super);
+    function DescriptorRunnerWebassembly() {
+        var _this = _super.call(this) || this;
+        _this.backendName = 'webassembly';
+        _this.worker_promise_reject_func = null;
+        _this.worker_initial_error = null;
         if (typeof Worker === 'undefined')
             throw new Error('WebWorker is needed for WebAssembly backend');
         if (typeof WebAssembly !== 'object') {
             console.warn('WebAssembly is not supported on this browser, trying to use asm.js code');
         }
+        return _this;
     }
-    static checkAvailability() {
+    DescriptorRunnerWebassembly.checkAvailability = function () {
         return 'Worker' in window;
-    }
-    init() {
+    };
+    DescriptorRunnerWebassembly.prototype.init = function () {
         if (!DescriptorRunnerWebassembly.checkAvailability())
             throw Error('WebAssembly backend is not supported in this browser.');
         //nothing to do
         return Promise.resolve();
-    }
-    async setDescriptorAndParameters(descriptor, parameters) {
-        this.descriptor = descriptor;
-        this.placeholderContext = new __WEBPACK_IMPORTED_MODULE_2__placeholder__["a" /* default */](this.descriptor.placeholders);
-        // for browsers which does not support wasm, try asm.js code
-        let kernel_backend = typeof WebAssembly === 'object' ? 'webassembly' : 'asmjs';
-        let worker_entry_js_path = `${this.directory}/kernels_${kernel_backend}.js`;
-        worker_entry_js_path = Object(__WEBPACK_IMPORTED_MODULE_1__fetch__["d" /* transformUrl */])(worker_entry_js_path);
-        this.worker_entry_js_path = worker_entry_js_path;
-        await this.compile();
-        await this.loadWeights(new Uint8Array(parameters));
-        //assign buffer to input/output buffer view
-        (await this.getInputViews())
-            .filter(view => !view.isDynamic)
-            .forEach(view => {
-            view.buffer = (new Float32Array(view.length)).buffer;
+    };
+    DescriptorRunnerWebassembly.prototype.setDescriptorAndParameters = function (descriptor, parameters) {
+        return __awaiter(this, void 0, void 0, function () {
+            var kernel_backend, worker_entry_js_path;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        this.descriptor = descriptor;
+                        this.placeholderContext = new placeholder_1.default(this.descriptor.placeholders);
+                        kernel_backend = typeof WebAssembly === 'object' ? 'webassembly' : 'asmjs';
+                        worker_entry_js_path = this.directory + "/kernels_" + kernel_backend + ".js";
+                        worker_entry_js_path = fetch_1.transformUrl(worker_entry_js_path);
+                        this.worker_entry_js_path = worker_entry_js_path;
+                        return [4 /*yield*/, this.compile()];
+                    case 1:
+                        _a.sent();
+                        return [4 /*yield*/, this.loadWeights(new Uint8Array(parameters))];
+                    case 2:
+                        _a.sent();
+                        return [4 /*yield*/, this.getInputViews()];
+                    case 3:
+                        //assign buffer to input/output buffer view
+                        (_a.sent())
+                            .filter(function (view) { return !view.isDynamic; })
+                            .forEach(function (view) {
+                            view.buffer = (new Float32Array(view.length)).buffer;
+                        });
+                        return [4 /*yield*/, this.getOutputViews()];
+                    case 4:
+                        (_a.sent())
+                            .filter(function (view) { return !view.isDynamic; })
+                            .forEach(function (view) {
+                            view.buffer = (new Float32Array(view.length)).buffer;
+                        });
+                        return [2 /*return*/];
+                }
+            });
         });
-        (await this.getOutputViews())
-            .filter(view => !view.isDynamic)
-            .forEach(view => {
-            view.buffer = (new Float32Array(view.length)).buffer;
-        });
-    }
+    };
     /**
      * Fetch graph descriptor from specified directory.
      *
@@ -9001,11 +12187,21 @@ class DescriptorRunnerWebassembly extends __WEBPACK_IMPORTED_MODULE_5__descripto
      *
      * @protected
      */
-    async fetchDescriptor(directory) {
-        this.directory = directory;
-        let res = await Object(__WEBPACK_IMPORTED_MODULE_1__fetch__["a" /* default */])(`${directory}/graph_${this.backendName}.json`);
-        return res.json();
-    }
+    DescriptorRunnerWebassembly.prototype.fetchDescriptor = function (directory) {
+        return __awaiter(this, void 0, void 0, function () {
+            var res;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        this.directory = directory;
+                        return [4 /*yield*/, fetch_1.default(directory + "/graph_" + this.backendName + ".json")];
+                    case 1:
+                        res = _a.sent();
+                        return [2 /*return*/, res.json()];
+                }
+            });
+        });
+    };
     /**
      * Fetch parameter files from specified directory.
      *
@@ -9021,77 +12217,127 @@ class DescriptorRunnerWebassembly extends __WEBPACK_IMPORTED_MODULE_5__descripto
      * @param progressCallback callback which is called to notice the loading is progressing.
      * @protected
      */
-    async fetchParameters(directory, progressCallback) {
-        let weight_url = `${directory}/weight_${this.backendName}.bin`;
-        let weight_fetch = await Object(__WEBPACK_IMPORTED_MODULE_1__fetch__["a" /* default */])(weight_url);
-        return Object(__WEBPACK_IMPORTED_MODULE_1__fetch__["b" /* readArrayBufferProgressively */])(weight_fetch, progressCallback);
-    }
+    DescriptorRunnerWebassembly.prototype.fetchParameters = function (directory, progressCallback) {
+        return __awaiter(this, void 0, void 0, function () {
+            var weight_url, weight_fetch;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        weight_url = directory + "/weight_" + this.backendName + ".bin";
+                        return [4 /*yield*/, fetch_1.default(weight_url)];
+                    case 1:
+                        weight_fetch = _a.sent();
+                        return [2 /*return*/, fetch_1.readArrayBufferProgressively(weight_fetch, progressCallback)];
+                }
+            });
+        });
+    };
     /**
      * Load cached descriptor from WebStorage
      * @protected
      */
-    async restoreCachedDescriptor(directory) {
-        this.directory = directory;
-        return __WEBPACK_IMPORTED_MODULE_4__third_localforage_nopromises_min__["getItem"](`${directory}_${this.backendName}_descriptor`).catch(() => null);
-    }
+    DescriptorRunnerWebassembly.prototype.restoreCachedDescriptor = function (directory) {
+        return __awaiter(this, void 0, void 0, function () {
+            return __generator(this, function (_a) {
+                this.directory = directory;
+                return [2 /*return*/, localforage.getItem(directory + "_" + this.backendName + "_descriptor").catch(function () { return null; })];
+            });
+        });
+    };
     /**
      * Load cached descriptor from WebStorage
      * @protected
      */
-    async restoreCachedParameters(directory, progressCallback) {
-        let parameter = await __WEBPACK_IMPORTED_MODULE_4__third_localforage_nopromises_min__["getItem"](`${directory}_${this.backendName}_parameters`).catch(() => null);
-        if (parameter && progressCallback)
-            progressCallback(parameter.byteLength, parameter.byteLength);
-        return parameter;
-    }
+    DescriptorRunnerWebassembly.prototype.restoreCachedParameters = function (directory, progressCallback) {
+        return __awaiter(this, void 0, void 0, function () {
+            var parameter;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, localforage.getItem(directory + "_" + this.backendName + "_parameters").catch(function () { return null; })];
+                    case 1:
+                        parameter = _a.sent();
+                        if (parameter && progressCallback)
+                            progressCallback(parameter.byteLength, parameter.byteLength);
+                        return [2 /*return*/, parameter];
+                }
+            });
+        });
+    };
     /**
      * save cache
      */
-    async saveCache(directory, descriptor, parameters) {
-        await Promise.all([
-            __WEBPACK_IMPORTED_MODULE_4__third_localforage_nopromises_min__["setItem"](`${directory}_${this.backendName}_descriptor`, descriptor),
-            __WEBPACK_IMPORTED_MODULE_4__third_localforage_nopromises_min__["setItem"](`${directory}_${this.backendName}_parameters`, parameters)
-        ]);
-    }
-    ;
-    async setPlaceholderValue(values) {
-        if (!this.placeholderContext)
-            throw new Error('PlaceholderContext is not initialized.');
-        let placeholderContext = this.placeholderContext;
-        placeholderContext.update(values);
-        if (!placeholderContext.isResolved)
-            return;
-        if (!this.descriptor)
-            throw new Error('Descriptor is not loaded');
-        let descriptor = this.descriptor;
-        let unresolvedValueLists = descriptor.unresolved_value_lists;
-        let metaBufferFillList = [];
-        for (let kernel_order = 0; kernel_order < unresolvedValueLists.length; kernel_order++) {
-            let unresolvedValueList = unresolvedValueLists[kernel_order];
-            unresolvedValueList.forEach((offset_placeholder) => {
-                let resolved_value = placeholderContext.resolve(offset_placeholder.placeholder);
-                metaBufferFillList.push(kernel_order, offset_placeholder.offset, resolved_value);
+    DescriptorRunnerWebassembly.prototype.saveCache = function (directory, descriptor, parameters) {
+        return __awaiter(this, void 0, void 0, function () {
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, Promise.all([
+                            localforage.setItem(directory + "_" + this.backendName + "_descriptor", descriptor),
+                            localforage.setItem(directory + "_" + this.backendName + "_parameters", parameters)
+                        ])];
+                    case 1:
+                        _a.sent();
+                        return [2 /*return*/];
+                }
             });
-        }
-        (await this.getInputViews())
-            .filter(view => view.isDynamic)
-            .forEach(view => {
-            view.buffer = (new Float32Array(view.length)).buffer;
         });
-        (await this.getOutputViews())
-            .filter(view => view.isDynamic)
-            .forEach(view => {
-            view.buffer = (new Float32Array(view.length)).buffer;
+    };
+    ;
+    DescriptorRunnerWebassembly.prototype.setPlaceholderValue = function (values) {
+        return __awaiter(this, void 0, void 0, function () {
+            var placeholderContext, descriptor, unresolvedValueLists, metaBufferFillList, _loop_1, kernel_order, dynamicBufferSize;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        if (!this.placeholderContext)
+                            throw new Error('PlaceholderContext is not initialized.');
+                        placeholderContext = this.placeholderContext;
+                        placeholderContext.update(values);
+                        if (!placeholderContext.isResolved)
+                            return [2 /*return*/];
+                        if (!this.descriptor)
+                            throw new Error('Descriptor is not loaded');
+                        descriptor = this.descriptor;
+                        unresolvedValueLists = descriptor.unresolved_value_lists;
+                        metaBufferFillList = [];
+                        _loop_1 = function (kernel_order) {
+                            var unresolvedValueList = unresolvedValueLists[kernel_order];
+                            unresolvedValueList.forEach(function (offset_placeholder) {
+                                var resolved_value = placeholderContext.resolve(offset_placeholder.placeholder);
+                                metaBufferFillList.push(kernel_order, offset_placeholder.offset, resolved_value);
+                            });
+                        };
+                        for (kernel_order = 0; kernel_order < unresolvedValueLists.length; kernel_order++) {
+                            _loop_1(kernel_order);
+                        }
+                        return [4 /*yield*/, this.getInputViews()];
+                    case 1:
+                        (_a.sent())
+                            .filter(function (view) { return view.isDynamic; })
+                            .forEach(function (view) {
+                            view.buffer = (new Float32Array(view.length)).buffer;
+                        });
+                        return [4 /*yield*/, this.getOutputViews()];
+                    case 2:
+                        (_a.sent())
+                            .filter(function (view) { return view.isDynamic; })
+                            .forEach(function (view) {
+                            view.buffer = (new Float32Array(view.length)).buffer;
+                        });
+                        dynamicBufferSize = this.placeholderContext.resolve(this.descriptor.memory_layout.dynamic.size);
+                        return [4 /*yield*/, this.setPlaceholderValueWorker(dynamicBufferSize, new Int32Array(metaBufferFillList))];
+                    case 3:
+                        _a.sent();
+                        return [2 /*return*/];
+                }
+            });
         });
-        let dynamicBufferSize = this.placeholderContext.resolve(this.descriptor.memory_layout.dynamic.size);
-        await this.setPlaceholderValueWorker(dynamicBufferSize, new Int32Array(metaBufferFillList));
-    }
-    setPlaceholderValueWorker(dynamicBufferSize, metaBufferFillArray) {
+    };
+    DescriptorRunnerWebassembly.prototype.setPlaceholderValueWorker = function (dynamicBufferSize, metaBufferFillArray) {
         if (!this.worker)
             throw Error("Worker is not initialized");
-        let worker = this.worker;
-        return new Promise((resolve, reject) => {
-            worker.onmessage = (event) => {
+        var worker = this.worker;
+        return new Promise(function (resolve, reject) {
+            worker.onmessage = function (event) {
                 if (event.data === 0) {
                     resolve();
                 }
@@ -9103,25 +12349,26 @@ class DescriptorRunnerWebassembly extends __WEBPACK_IMPORTED_MODULE_5__descripto
             };
             worker.postMessage({ type: 'set_dynamic_buffer', size: dynamicBufferSize, data: metaBufferFillArray });
         });
-    }
-    compile() {
-        let worker = new Worker(this.worker_entry_js_path);
-        worker.onerror = (event) => {
+    };
+    DescriptorRunnerWebassembly.prototype.compile = function () {
+        var _this = this;
+        var worker = new Worker(this.worker_entry_js_path);
+        worker.onerror = function (event) {
             console.error(event);
             // console.error('Worker Exception: ' + event.message);
-            if (this.worker_promise_reject_func) {
-                this.worker_promise_reject_func(event);
+            if (_this.worker_promise_reject_func) {
+                _this.worker_promise_reject_func(event);
             }
             else {
-                this.worker_initial_error = event;
+                _this.worker_initial_error = event;
             }
         };
-        let promise = new Promise((resolve, reject) => {
+        var promise = new Promise(function (resolve, reject) {
             // occurs when this.worker_entry_js_path is 404
-            if (this.worker_initial_error)
-                return reject(this.worker_initial_error);
-            this.worker_promise_reject_func = reject;
-            worker.onmessage = (event) => {
+            if (_this.worker_initial_error)
+                return reject(_this.worker_initial_error);
+            _this.worker_promise_reject_func = reject;
+            worker.onmessage = function (event) {
                 if (event.data === 0) {
                     resolve();
                 }
@@ -9134,164 +12381,218 @@ class DescriptorRunnerWebassembly extends __WEBPACK_IMPORTED_MODULE_5__descripto
         });
         this.worker = worker;
         return promise;
-    }
-    async loadWeights(weightsData) {
-        if (!this.descriptor)
-            throw new Error('Descriptor is not loaded');
-        if (!this.worker)
-            throw new Error('Worker is not initialized');
-        let decoder = Object(__WEBPACK_IMPORTED_MODULE_0__decoder_get_weight_decoder__["a" /* default */])(this.descriptor.weight_encoding);
-        let weight_data = await decoder.decode(weightsData);
-        let worker = this.worker;
-        let promise = new Promise((resolve, reject) => {
-            this.worker_promise_reject_func = reject;
-            worker.onmessage = (event) => {
-                if (event.data === 0) {
-                    resolve();
+    };
+    DescriptorRunnerWebassembly.prototype.loadWeights = function (weightsData) {
+        return __awaiter(this, void 0, void 0, function () {
+            var _this = this;
+            var decoder, weight_data, worker, promise;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        if (!this.descriptor)
+                            throw new Error('Descriptor is not loaded');
+                        if (!this.worker)
+                            throw new Error('Worker is not initialized');
+                        decoder = get_weight_decoder_1.default(this.descriptor.weight_encoding);
+                        return [4 /*yield*/, decoder.decode(weightsData)];
+                    case 1:
+                        weight_data = _a.sent();
+                        worker = this.worker;
+                        promise = new Promise(function (resolve, reject) {
+                            _this.worker_promise_reject_func = reject;
+                            worker.onmessage = function (event) {
+                                if (event.data === 0) {
+                                    resolve();
+                                }
+                                else {
+                                    console.log(event.data);
+                                    worker.terminate();
+                                    reject(new Error(event.data));
+                                }
+                            };
+                            worker.postMessage({ type: 'weight', data: weight_data }, [weight_data.buffer]);
+                        });
+                        return [2 /*return*/, promise];
                 }
-                else {
-                    console.log(event.data);
-                    worker.terminate();
-                    reject(new Error(event.data));
-                }
-            };
-            worker.postMessage({ type: 'weight', data: weight_data }, [weight_data.buffer]);
+            });
         });
-        return promise;
-    }
-    getInputViews() {
+    };
+    DescriptorRunnerWebassembly.prototype.getInputViews = function () {
         if (this.inputs)
             return this.inputs;
         if (!this.descriptor)
             throw new Error('Descriptor is not loaded');
         if (!this.placeholderContext)
             throw new Error('PlaceholderContext is not initialized');
-        let descriptor = this.descriptor;
-        let placeholderContext = this.placeholderContext;
-        this.inputs = descriptor.inputs.map(name => {
-            let allocation = descriptor.memory_layout.static.allocations[name] || descriptor.memory_layout.dynamic.allocations[name];
-            let view = new __WEBPACK_IMPORTED_MODULE_3__symbolic_typed_array_symbolic_float32array__["a" /* default */](null, 0, allocation.size, placeholderContext);
+        var descriptor = this.descriptor;
+        var placeholderContext = this.placeholderContext;
+        this.inputs = descriptor.inputs.map(function (name) {
+            var allocation = descriptor.memory_layout.static.allocations[name] || descriptor.memory_layout.dynamic.allocations[name];
+            var view = new symbolic_float32array_1.default(null, 0, allocation.size, placeholderContext);
             return view;
         });
         return this.inputs;
-    }
-    getOutputViews() {
+    };
+    DescriptorRunnerWebassembly.prototype.getOutputViews = function () {
         if (this.outputs)
             return this.outputs;
         if (!this.descriptor)
             throw new Error('Descriptor is not loaded');
         if (!this.placeholderContext)
             throw new Error('PlaceholderContext is not initialized');
-        let descriptor = this.descriptor;
-        let placeholderContext = this.placeholderContext;
-        this.outputs = descriptor.outputs.map(name => {
-            let allocation = descriptor.memory_layout.static.allocations[name] || descriptor.memory_layout.dynamic.allocations[name];
-            let view = new __WEBPACK_IMPORTED_MODULE_3__symbolic_typed_array_symbolic_float32array__["a" /* default */](null, 0, allocation.size, placeholderContext);
+        var descriptor = this.descriptor;
+        var placeholderContext = this.placeholderContext;
+        this.outputs = descriptor.outputs.map(function (name) {
+            var allocation = descriptor.memory_layout.static.allocations[name] || descriptor.memory_layout.dynamic.allocations[name];
+            var view = new symbolic_float32array_1.default(null, 0, allocation.size, placeholderContext);
             return view;
         });
         return this.outputs;
-    }
-    async run() {
-        // if (this._running) throw new Error('Calling another run() while running.');
-        if (!this.descriptor)
-            throw new Error('Descriptor is not loaded');
-        if (!this.worker)
-            throw new Error('Worker is not initialized');
-        if (!this.placeholderContext.isResolved)
-            throw new Error('Not all placeholder is resolved');
-        let placeholderContext = this.placeholderContext;
-        let descriptor = this.descriptor;
-        let worker = this.worker;
-        let promise = new Promise((resolve, reject) => {
-            // TODO: better way not to generate function on every run
-            this.worker_promise_reject_func = reject;
-            worker.onmessage = (event) => {
-                if (Array.isArray(event.data)) {
-                    for (let i = 0; i < event.data.length; i++) {
-                        this.outputs[i].set(event.data[i]);
+    };
+    DescriptorRunnerWebassembly.prototype.run = function () {
+        return __awaiter(this, void 0, void 0, function () {
+            var _this = this;
+            var placeholderContext, descriptor, worker, promise;
+            return __generator(this, function (_a) {
+                // if (this._running) throw new Error('Calling another run() while running.');
+                if (!this.descriptor)
+                    throw new Error('Descriptor is not loaded');
+                if (!this.worker)
+                    throw new Error('Worker is not initialized');
+                if (!this.placeholderContext.isResolved)
+                    throw new Error('Not all placeholder is resolved');
+                placeholderContext = this.placeholderContext;
+                descriptor = this.descriptor;
+                worker = this.worker;
+                promise = new Promise(function (resolve, reject) {
+                    // TODO: better way not to generate function on every run
+                    _this.worker_promise_reject_func = reject;
+                    worker.onmessage = function (event) {
+                        if (Array.isArray(event.data)) {
+                            for (var i = 0; i < event.data.length; i++) {
+                                _this.outputs[i].set(event.data[i]);
+                            }
+                            resolve();
+                        }
+                        else {
+                            console.log(event.data);
+                            worker.terminate();
+                            reject(new Error(event.data));
+                        }
+                    };
+                    var allocations = [descriptor.memory_layout.static.allocations, descriptor.memory_layout.dynamic.allocations];
+                    var inputs = [];
+                    for (var i = 0; i < descriptor.inputs.length; i++) {
+                        for (var allocation_space = 0; allocation_space < 2; allocation_space++) {
+                            var var_alloc = allocations[allocation_space][descriptor.inputs[i]];
+                            if (var_alloc) {
+                                var symAb = _this.inputs[i];
+                                inputs.push({
+                                    space: allocation_space,
+                                    offset: placeholderContext.resolve(var_alloc.offset),
+                                    size: symAb.length,
+                                    data: symAb.toActual()
+                                });
+                                break;
+                            }
+                        }
                     }
-                    resolve();
-                }
-                else {
-                    console.log(event.data);
-                    worker.terminate();
-                    reject(new Error(event.data));
-                }
-            };
-            let allocations = [descriptor.memory_layout.static.allocations, descriptor.memory_layout.dynamic.allocations];
-            let inputs = [];
-            for (let i = 0; i < descriptor.inputs.length; i++) {
-                for (let allocation_space = 0; allocation_space < 2; allocation_space++) {
-                    let var_alloc = allocations[allocation_space][descriptor.inputs[i]];
-                    if (var_alloc) {
-                        let symAb = this.inputs[i];
-                        inputs.push({
-                            space: allocation_space,
-                            offset: placeholderContext.resolve(var_alloc.offset),
-                            size: symAb.length,
-                            data: symAb.toActual()
-                        });
-                        break;
+                    var outputs = [];
+                    for (var i = 0; i < descriptor.outputs.length; i++) {
+                        for (var allocation_space = 0; allocation_space < 2; allocation_space++) {
+                            var var_alloc = allocations[allocation_space][descriptor.outputs[i]];
+                            if (var_alloc) {
+                                var symAb = _this.outputs[i];
+                                outputs.push({
+                                    space: allocation_space,
+                                    offset: placeholderContext.resolve(var_alloc.offset),
+                                    size: symAb.length
+                                });
+                                break;
+                            }
+                        }
                     }
-                }
-            }
-            let outputs = [];
-            for (let i = 0; i < descriptor.outputs.length; i++) {
-                for (let allocation_space = 0; allocation_space < 2; allocation_space++) {
-                    let var_alloc = allocations[allocation_space][descriptor.outputs[i]];
-                    if (var_alloc) {
-                        let symAb = this.outputs[i];
-                        outputs.push({
-                            space: allocation_space,
-                            offset: placeholderContext.resolve(var_alloc.offset),
-                            size: symAb.length
-                        });
-                        break;
-                    }
-                }
-            }
-            worker.postMessage({ type: 'run', inputs: inputs, outputs: outputs });
+                    worker.postMessage({ type: 'run', inputs: inputs, outputs: outputs });
+                });
+                return [2 /*return*/, promise];
+            });
         });
-        return promise;
-    }
-}
-/* harmony export (immutable) */ __webpack_exports__["a"] = DescriptorRunnerWebassembly;
-
+    };
+    return DescriptorRunnerWebassembly;
+}(descriptor_runner_1.DescriptorRunner));
+exports.default = DescriptorRunnerWebassembly;
 
 
 /***/ }),
-/* 37 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
+/* 38 */
+/***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__buffer_buffer_webgl__ = __webpack_require__(38);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__decoder_get_weight_decoder__ = __webpack_require__(3);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__fetch__ = __webpack_require__(1);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__placeholder__ = __webpack_require__(4);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__symbolic_typed_array_symbolic_float32array__ = __webpack_require__(5);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__third_localforage_nopromises_min__ = __webpack_require__(6);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__third_localforage_nopromises_min___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_5__third_localforage_nopromises_min__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__webdnn__ = __webpack_require__(2);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__webgl_handler__ = __webpack_require__(14);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_8__descriptor_runner__ = __webpack_require__(7);
+
 /**
  * @module webdnn
  */
 /** Don't Remove This comment block */
-
-
-
-
-
-
-
-
-
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : new P(function (resolve) { resolve(result.value); }).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
+var __generator = (this && this.__generator) || function (thisArg, body) {
+    var _ = { label: 0, sent: function() { if (t[0] & 1) throw t[1]; return t[1]; }, trys: [], ops: [] }, f, y, t, g;
+    return g = { next: verb(0), "throw": verb(1), "return": verb(2) }, typeof Symbol === "function" && (g[Symbol.iterator] = function() { return this; }), g;
+    function verb(n) { return function (v) { return step([n, v]); }; }
+    function step(op) {
+        if (f) throw new TypeError("Generator is already executing.");
+        while (_) try {
+            if (f = 1, y && (t = y[op[0] & 2 ? "return" : op[0] ? "throw" : "next"]) && !(t = t.call(y, op[1])).done) return t;
+            if (y = 0, t) op = [0, t.value];
+            switch (op[0]) {
+                case 0: case 1: t = op; break;
+                case 4: _.label++; return { value: op[1], done: false };
+                case 5: _.label++; y = op[1]; op = [0]; continue;
+                case 7: op = _.ops.pop(); _.trys.pop(); continue;
+                default:
+                    if (!(t = _.trys, t = t.length > 0 && t[t.length - 1]) && (op[0] === 6 || op[0] === 2)) { _ = 0; continue; }
+                    if (op[0] === 3 && (!t || (op[1] > t[0] && op[1] < t[3]))) { _.label = op[1]; break; }
+                    if (op[0] === 6 && _.label < t[1]) { _.label = t[1]; t = op; break; }
+                    if (t && _.label < t[2]) { _.label = t[2]; _.ops.push(op); break; }
+                    if (t[2]) _.ops.pop();
+                    _.trys.pop(); continue;
+            }
+            op = body.call(thisArg, _);
+        } catch (e) { op = [6, e]; y = 0; } finally { f = t = 0; }
+        if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
+    }
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+var localforage = __webpack_require__(3);
+var buffer_webgl_1 = __webpack_require__(39);
+var get_weight_decoder_1 = __webpack_require__(4);
+var fetch_1 = __webpack_require__(1);
+var placeholder_1 = __webpack_require__(5);
+var symbolic_float32array_1 = __webpack_require__(6);
+var webdnn_1 = __webpack_require__(2);
+var webgl_handler_1 = __webpack_require__(14);
+var descriptor_runner_1 = __webpack_require__(7);
 // [x y u v] * [upper-left, lower-left, upper-right, lower-right]
 /**
  * @protected
  */
-const vertexArray = new Float32Array([
+var vertexArray = new Float32Array([
     -1, +1,
     -1, -1,
     +1, +1,
@@ -9300,206 +12601,321 @@ const vertexArray = new Float32Array([
 /**
  * @protected
  */
-class DescriptorRunnerWebGL extends __WEBPACK_IMPORTED_MODULE_8__descriptor_runner__["a" /* DescriptorRunner */] {
-    constructor() {
-        super(...arguments);
-        this.backendName = 'webgl';
+var DescriptorRunnerWebGL = /** @class */ (function (_super) {
+    __extends(DescriptorRunnerWebGL, _super);
+    function DescriptorRunnerWebGL() {
+        var _this = _super !== null && _super.apply(this, arguments) || this;
+        _this.backendName = 'webgl';
+        return _this;
     }
-    static checkAvailability() {
-        return __WEBPACK_IMPORTED_MODULE_7__webgl_handler__["a" /* default */].checkAvailability();
-    }
-    async init() {
-        if (!DescriptorRunnerWebGL.checkAvailability())
-            throw Error('WebGL backend is not supported in this browser.');
-        this.handler = __WEBPACK_IMPORTED_MODULE_7__webgl_handler__["a" /* default */].getInstance();
-        let vertexBuffer = this.handler.createArrayBuffer(vertexArray);
-        this.handler.bindArrayBuffer(vertexBuffer);
-        this.buffers = new Map();
-    }
-    async fetchDescriptor(directory) {
-        let res = await Object(__WEBPACK_IMPORTED_MODULE_2__fetch__["a" /* default */])(`${directory}/graph_${this.backendName}_${this.handler.MAX_TEXTURE_SIZE}.json`);
-        return res.json();
-    }
-    async fetchParameters(directory, progressCallback) {
-        let res = await Object(__WEBPACK_IMPORTED_MODULE_2__fetch__["a" /* default */])(`${directory}/weight_${this.backendName}_${this.handler.MAX_TEXTURE_SIZE}.bin`);
-        return Object(__WEBPACK_IMPORTED_MODULE_2__fetch__["b" /* readArrayBufferProgressively */])(res, progressCallback);
-    }
+    DescriptorRunnerWebGL.checkAvailability = function () {
+        return webgl_handler_1.default.checkAvailability();
+    };
+    DescriptorRunnerWebGL.prototype.init = function () {
+        return __awaiter(this, void 0, void 0, function () {
+            var vertexBuffer;
+            return __generator(this, function (_a) {
+                if (!DescriptorRunnerWebGL.checkAvailability())
+                    throw Error('WebGL backend is not supported in this browser.');
+                this.handler = webgl_handler_1.default.getInstance();
+                vertexBuffer = this.handler.createArrayBuffer(vertexArray);
+                this.handler.bindArrayBuffer(vertexBuffer);
+                this.buffers = new Map();
+                return [2 /*return*/];
+            });
+        });
+    };
+    DescriptorRunnerWebGL.prototype.fetchDescriptor = function (directory) {
+        return __awaiter(this, void 0, void 0, function () {
+            var res;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, fetch_1.default(directory + "/graph_" + this.backendName + "_" + this.handler.MAX_TEXTURE_SIZE + ".json")];
+                    case 1:
+                        res = _a.sent();
+                        return [2 /*return*/, res.json()];
+                }
+            });
+        });
+    };
+    DescriptorRunnerWebGL.prototype.fetchParameters = function (directory, progressCallback) {
+        return __awaiter(this, void 0, void 0, function () {
+            var res;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, fetch_1.default(directory + "/weight_" + this.backendName + "_" + this.handler.MAX_TEXTURE_SIZE + ".bin")];
+                    case 1:
+                        res = _a.sent();
+                        return [2 /*return*/, fetch_1.readArrayBufferProgressively(res, progressCallback)];
+                }
+            });
+        });
+    };
     /**
      * Load cached descriptor from WebStorage
      * @protected
      */
-    async restoreCachedDescriptor(directory) {
-        return __WEBPACK_IMPORTED_MODULE_5__third_localforage_nopromises_min__["getItem"](`${directory}_${this.backendName}_${this.handler.MAX_TEXTURE_SIZE}_descriptor`).catch(() => null);
-    }
+    DescriptorRunnerWebGL.prototype.restoreCachedDescriptor = function (directory) {
+        return __awaiter(this, void 0, void 0, function () {
+            return __generator(this, function (_a) {
+                return [2 /*return*/, localforage.getItem(directory + "_" + this.backendName + "_" + this.handler.MAX_TEXTURE_SIZE + "_descriptor").catch(function () { return null; })];
+            });
+        });
+    };
     /**
      * Load cached descriptor from WebStorage
      * @protected
      */
-    async restoreCachedParameters(directory, progressCallback) {
-        let parameter = await __WEBPACK_IMPORTED_MODULE_5__third_localforage_nopromises_min__["getItem"](`${directory}_${this.backendName}_${this.handler.MAX_TEXTURE_SIZE}_parameters`).catch(() => null);
-        if (parameter && progressCallback)
-            progressCallback(parameter.byteLength, parameter.byteLength);
-        return parameter;
-    }
+    DescriptorRunnerWebGL.prototype.restoreCachedParameters = function (directory, progressCallback) {
+        return __awaiter(this, void 0, void 0, function () {
+            var parameter;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, localforage.getItem(directory + "_" + this.backendName + "_" + this.handler.MAX_TEXTURE_SIZE + "_parameters").catch(function () { return null; })];
+                    case 1:
+                        parameter = _a.sent();
+                        if (parameter && progressCallback)
+                            progressCallback(parameter.byteLength, parameter.byteLength);
+                        return [2 /*return*/, parameter];
+                }
+            });
+        });
+    };
     /**
      * save cache
      */
-    async saveCache(directory, descriptor, parameters) {
-        await Promise.all([
-            __WEBPACK_IMPORTED_MODULE_5__third_localforage_nopromises_min__["setItem"](`${directory}_${this.backendName}_${this.handler.MAX_TEXTURE_SIZE}_descriptor`, descriptor),
-            __WEBPACK_IMPORTED_MODULE_5__third_localforage_nopromises_min__["setItem"](`${directory}_${this.backendName}_${this.handler.MAX_TEXTURE_SIZE}_parameters`, parameters)
-        ]);
-    }
+    DescriptorRunnerWebGL.prototype.saveCache = function (directory, descriptor, parameters) {
+        return __awaiter(this, void 0, void 0, function () {
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, Promise.all([
+                            localforage.setItem(directory + "_" + this.backendName + "_" + this.handler.MAX_TEXTURE_SIZE + "_descriptor", descriptor),
+                            localforage.setItem(directory + "_" + this.backendName + "_" + this.handler.MAX_TEXTURE_SIZE + "_parameters", parameters)
+                        ])];
+                    case 1:
+                        _a.sent();
+                        return [2 /*return*/];
+                }
+            });
+        });
+    };
     ;
-    async setDescriptorAndParameters(descriptor, parameters) {
-        await this.setDescriptor(descriptor);
-        await this.compile();
-        await this.initializeStaticBuffer(parameters);
-        if (this.placeholderContext && this.placeholderContext.isResolved)
-            await this.initializeDynamicBuffer();
-    }
-    async initializeStaticBuffer(weightRawArray) {
-        if (!this.descriptor)
-            throw new Error('Descriptor is not loaded');
-        let descriptor = this.descriptor;
-        let decoder = Object(__WEBPACK_IMPORTED_MODULE_1__decoder_get_weight_decoder__["a" /* default */])(this.descriptor.weight_encoding);
-        let weight = await decoder.decode(new Uint8Array(weightRawArray));
-        let buffers = this.buffers;
-        let mapping = descriptor.memory_layout.mapping;
-        Object.entries(descriptor.memory_layout.static.allocations)
-            .forEach(([name, { width, height, size, channel_mode }]) => {
-            buffers.set(name, new __WEBPACK_IMPORTED_MODULE_0__buffer_buffer_webgl__["a" /* default */](size * Float32Array.BYTES_PER_ELEMENT, width, height, name, null, channel_mode));
+    DescriptorRunnerWebGL.prototype.setDescriptorAndParameters = function (descriptor, parameters) {
+        return __awaiter(this, void 0, void 0, function () {
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, this.setDescriptor(descriptor)];
+                    case 1:
+                        _a.sent();
+                        return [4 /*yield*/, this.compile()];
+                    case 2:
+                        _a.sent();
+                        return [4 /*yield*/, this.initializeStaticBuffer(parameters)];
+                    case 3:
+                        _a.sent();
+                        if (!(this.placeholderContext && this.placeholderContext.isResolved)) return [3 /*break*/, 5];
+                        return [4 /*yield*/, this.initializeDynamicBuffer()];
+                    case 4:
+                        _a.sent();
+                        _a.label = 5;
+                    case 5: return [2 /*return*/];
+                }
+            });
         });
-        Object.entries(descriptor.constants_map)
-            .forEach(([name, { size, byte_offset }]) => {
-            buffers.get(name).array.set(new Float32Array(weight.buffer, byte_offset, size));
+    };
+    DescriptorRunnerWebGL.prototype.initializeStaticBuffer = function (weightRawArray) {
+        return __awaiter(this, void 0, void 0, function () {
+            var descriptor, decoder, weight, buffers, mapping;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        if (!this.descriptor)
+                            throw new Error('Descriptor is not loaded');
+                        descriptor = this.descriptor;
+                        decoder = get_weight_decoder_1.default(this.descriptor.weight_encoding);
+                        return [4 /*yield*/, decoder.decode(new Uint8Array(weightRawArray))];
+                    case 1:
+                        weight = _a.sent();
+                        buffers = this.buffers;
+                        mapping = descriptor.memory_layout.mapping;
+                        Object.entries(descriptor.memory_layout.static.allocations)
+                            .forEach(function (_a) {
+                            var name = _a[0], _b = _a[1], width = _b.width, height = _b.height, size = _b.size, channel_mode = _b.channel_mode;
+                            buffers.set(name, new buffer_webgl_1.default(size * Float32Array.BYTES_PER_ELEMENT, width, height, name, null, channel_mode));
+                        });
+                        Object.entries(descriptor.constants_map)
+                            .forEach(function (_a) {
+                            var name = _a[0], _b = _a[1], size = _b.size, byte_offset = _b.byte_offset;
+                            buffers.get(name).array.set(new Float32Array(weight.buffer, byte_offset, size));
+                        });
+                        return [4 /*yield*/, this.getInputViews()];
+                    case 2:
+                        (_a.sent())
+                            .filter(function (view) { return !view.isDynamic; })
+                            .forEach(function (view) {
+                            view.buffer = buffers.get(mapping[view.name]).getWriteView(0, view.length, Float32Array).buffer;
+                        });
+                        return [4 /*yield*/, this.getOutputViews()];
+                    case 3:
+                        (_a.sent())
+                            .filter(function (view) { return !view.isDynamic; })
+                            .forEach(function (view) {
+                            view.buffer = buffers.get(mapping[view.name]).getReadView(0, view.length, Float32Array).buffer;
+                        });
+                        return [2 /*return*/];
+                }
+            });
         });
-        (await this.getInputViews())
-            .filter(view => !view.isDynamic)
-            .forEach(view => {
-            view.buffer = buffers.get(mapping[view.name]).getWriteView(0, view.length, Float32Array).buffer;
+    };
+    DescriptorRunnerWebGL.prototype.initializeDynamicBuffer = function () {
+        return __awaiter(this, void 0, void 0, function () {
+            var descriptor, placeholderContext, buffers, mapping;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        if (!this.descriptor)
+                            throw Error("GraphDescriptor is not loaded.");
+                        if (!this.placeholderContext)
+                            throw Error("PlaceholderContext is not initialized.");
+                        descriptor = this.descriptor;
+                        placeholderContext = this.placeholderContext;
+                        buffers = this.buffers;
+                        mapping = descriptor.memory_layout.mapping;
+                        Object.entries(descriptor.memory_layout.dynamic.allocations)
+                            .forEach(function (_a) {
+                            var name = _a[0], _b = _a[1], width = _b.width, height = _b.height, size = _b.size, channel_mode = _b.channel_mode;
+                            buffers.set(name, new buffer_webgl_1.default(placeholderContext.resolve(size) * Float32Array.BYTES_PER_ELEMENT, placeholderContext.resolve(width), placeholderContext.resolve(height), name, null, channel_mode));
+                        });
+                        return [4 /*yield*/, this.getInputViews()];
+                    case 1:
+                        (_a.sent())
+                            .filter(function (view) { return view.isDynamic; })
+                            .forEach(function (view) {
+                            view.buffer = buffers.get(mapping[view.name]).getWriteView(0, placeholderContext.resolve(view.length), Float32Array).buffer;
+                        });
+                        return [4 /*yield*/, this.getOutputViews()];
+                    case 2:
+                        (_a.sent())
+                            .filter(function (view) { return view.isDynamic; })
+                            .forEach(function (view) {
+                            view.buffer = buffers.get(mapping[view.name]).getReadView(0, placeholderContext.resolve(view.length), Float32Array).buffer;
+                        });
+                        this.buildPipeline();
+                        return [2 /*return*/];
+                }
+            });
         });
-        (await this.getOutputViews())
-            .filter(view => !view.isDynamic)
-            .forEach(view => {
-            view.buffer = buffers.get(mapping[view.name]).getReadView(0, view.length, Float32Array).buffer;
+    };
+    DescriptorRunnerWebGL.prototype.setDescriptor = function (descriptor) {
+        return __awaiter(this, void 0, void 0, function () {
+            return __generator(this, function (_a) {
+                this.descriptor = descriptor;
+                //reset all datum depend on old descriptor
+                this.placeholderContext = new placeholder_1.default(descriptor.placeholders);
+                return [2 /*return*/];
+            });
         });
-    }
-    async initializeDynamicBuffer() {
-        if (!this.descriptor)
-            throw Error("GraphDescriptor is not loaded.");
-        if (!this.placeholderContext)
-            throw Error("PlaceholderContext is not initialized.");
-        let descriptor = this.descriptor;
-        let placeholderContext = this.placeholderContext;
-        let buffers = this.buffers;
-        let mapping = descriptor.memory_layout.mapping;
-        Object.entries(descriptor.memory_layout.dynamic.allocations)
-            .forEach(([name, { width, height, size, channel_mode }]) => {
-            buffers.set(name, new __WEBPACK_IMPORTED_MODULE_0__buffer_buffer_webgl__["a" /* default */](placeholderContext.resolve(size) * Float32Array.BYTES_PER_ELEMENT, placeholderContext.resolve(width), placeholderContext.resolve(height), name, null, channel_mode));
+    };
+    DescriptorRunnerWebGL.prototype.compile = function () {
+        return __awaiter(this, void 0, void 0, function () {
+            var _this = this;
+            var descriptor;
+            return __generator(this, function (_a) {
+                if (!this.descriptor)
+                    throw new Error('Descriptor is not loaded');
+                descriptor = this.descriptor;
+                this.programs = new Map();
+                this.vertexShader = this.handler.createVertexShader("\n            precision highp float;\n            attribute vec2 _xy;\n            void main() { \n              gl_Position = vec4(_xy, 0, 1); \n            }\n        ");
+                Object.keys(descriptor.shader_sources)
+                    .forEach(function (name) {
+                    var fragmentShader = _this.handler.createFragmentShader(descriptor.shader_sources[name]);
+                    var program = _this.handler.createProgram(_this.vertexShader, fragmentShader);
+                    _this.programs.set(name, program);
+                });
+                return [2 /*return*/];
+            });
         });
-        (await this.getInputViews())
-            .filter(view => view.isDynamic)
-            .forEach(view => {
-            view.buffer = buffers.get(mapping[view.name]).getWriteView(0, placeholderContext.resolve(view.length), Float32Array).buffer;
+    };
+    DescriptorRunnerWebGL.prototype.setPlaceholderValue = function (values) {
+        return __awaiter(this, void 0, void 0, function () {
+            var placeholderContext;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        if (!this.placeholderContext)
+                            throw new Error('PlaceholderContext is not initialized.');
+                        placeholderContext = this.placeholderContext;
+                        placeholderContext.update(values);
+                        if (!placeholderContext.isResolved)
+                            return [2 /*return*/];
+                        if (!this.descriptor)
+                            throw new Error('Descriptor is not loaded');
+                        return [4 /*yield*/, this.initializeDynamicBuffer()];
+                    case 1:
+                        _a.sent();
+                        // resolve placeholders in execution info
+                        if (Object.keys(this.descriptor.placeholders).length > 0)
+                            throw Error('Currently, WebGL backend doesn\'t support Placeholder feature.');
+                        return [2 /*return*/];
+                }
+            });
         });
-        (await this.getOutputViews())
-            .filter(view => view.isDynamic)
-            .forEach(view => {
-            view.buffer = buffers.get(mapping[view.name]).getReadView(0, placeholderContext.resolve(view.length), Float32Array).buffer;
-        });
-        this.buildPipeline();
-    }
-    async setDescriptor(descriptor) {
-        this.descriptor = descriptor;
-        //reset all datum depend on old descriptor
-        this.placeholderContext = new __WEBPACK_IMPORTED_MODULE_3__placeholder__["a" /* default */](descriptor.placeholders);
-    }
-    async compile() {
-        if (!this.descriptor)
-            throw new Error('Descriptor is not loaded');
-        let descriptor = this.descriptor;
-        this.programs = new Map();
-        this.vertexShader = this.handler.createVertexShader(`
-            precision highp float;
-            attribute vec2 _xy;
-            void main() { 
-              gl_Position = vec4(_xy, 0, 1); 
-            }
-        `);
-        Object.keys(descriptor.shader_sources)
-            .forEach(name => {
-            let fragmentShader = this.handler.createFragmentShader(descriptor.shader_sources[name]);
-            let program = this.handler.createProgram(this.vertexShader, fragmentShader);
-            this.programs.set(name, program);
-        });
-    }
-    async setPlaceholderValue(values) {
-        if (!this.placeholderContext)
-            throw new Error('PlaceholderContext is not initialized.');
-        let placeholderContext = this.placeholderContext;
-        placeholderContext.update(values);
-        if (!placeholderContext.isResolved)
-            return;
-        if (!this.descriptor)
-            throw new Error('Descriptor is not loaded');
-        await this.initializeDynamicBuffer();
-        // resolve placeholders in execution info
-        if (Object.keys(this.descriptor.placeholders).length > 0)
-            throw Error('Currently, WebGL backend doesn\'t support Placeholder feature.');
-    }
-    getInputViews() {
+    };
+    DescriptorRunnerWebGL.prototype.getInputViews = function () {
+        var _this = this;
         if (this.inputs)
             return this.inputs;
         if (!this.descriptor)
             throw new Error('Descriptor is not loaded');
         if (!this.placeholderContext)
             throw new Error('PlaceholderContext is not initialized');
-        let descriptor = this.descriptor;
-        let placeholderContext = this.placeholderContext;
-        let mapping = this.descriptor.memory_layout.mapping;
-        this.inputs = descriptor.inputs.map(name => {
-            let view = new __WEBPACK_IMPORTED_MODULE_4__symbolic_typed_array_symbolic_float32array__["a" /* default */](null, 0, this.buffers.get(mapping[name]).length, placeholderContext);
+        var descriptor = this.descriptor;
+        var placeholderContext = this.placeholderContext;
+        var mapping = this.descriptor.memory_layout.mapping;
+        this.inputs = descriptor.inputs.map(function (name) {
+            var view = new symbolic_float32array_1.default(null, 0, _this.buffers.get(mapping[name]).length, placeholderContext);
             view.name = name;
             return view;
         });
         return this.inputs;
-    }
-    getOutputViews() {
+    };
+    DescriptorRunnerWebGL.prototype.getOutputViews = function () {
+        var _this = this;
         if (this.outputs)
             return this.outputs;
         if (!this.descriptor)
             throw new Error('Descriptor is not loaded');
         if (!this.placeholderContext)
             throw new Error('PlaceholderContext is not initialized');
-        let descriptor = this.descriptor;
-        let placeholderContext = this.placeholderContext;
-        let mapping = this.descriptor.memory_layout.mapping;
-        this.outputs = descriptor.outputs.map(name => {
-            let view = new __WEBPACK_IMPORTED_MODULE_4__symbolic_typed_array_symbolic_float32array__["a" /* default */](null, 0, this.buffers.get(mapping[name]).length, placeholderContext);
+        var descriptor = this.descriptor;
+        var placeholderContext = this.placeholderContext;
+        var mapping = this.descriptor.memory_layout.mapping;
+        this.outputs = descriptor.outputs.map(function (name) {
+            var view = new symbolic_float32array_1.default(null, 0, _this.buffers.get(mapping[name]).length, placeholderContext);
             view.name = name;
             return view;
         });
         return this.outputs;
-    }
-    buildPipeline() {
+    };
+    DescriptorRunnerWebGL.prototype.buildPipeline = function () {
+        var _this = this;
         if (!this.descriptor)
             throw new Error('Descriptor is not loaded');
         if (!this.placeholderContext)
             throw new Error('PlaceholderContext is not initialized');
         if (!this.placeholderContext.isResolved)
-            throw new Error(`Not all placeholders are resolved: ${this.placeholderContext}`);
-        let gl = this.handler.gl;
-        let buffers = this.buffers;
-        let mapping = this.descriptor.memory_layout.mapping;
-        let referenceCount = new Map();
+            throw new Error("Not all placeholders are resolved: " + this.placeholderContext);
+        var gl = this.handler.gl;
+        var buffers = this.buffers;
+        var mapping = this.descriptor.memory_layout.mapping;
+        var referenceCount = new Map();
         this.runtimeInfo = {
-            inputs: this.getInputViews().map(view => buffers.get(mapping[view.name])),
-            outputs: this.getOutputViews().map(view => buffers.get(mapping[view.name])),
-            programs: this.descriptor.exec_infos.map(execInfo => {
+            inputs: this.getInputViews().map(function (view) { return buffers.get(mapping[view.name]); }),
+            outputs: this.getOutputViews().map(function (view) { return buffers.get(mapping[view.name]); }),
+            programs: this.descriptor.exec_infos.map(function (execInfo) {
                 // inputs
-                let inputs = execInfo.inputs.map(input => {
-                    let buffer = buffers.get(mapping[input.variable_name]);
+                var inputs = execInfo.inputs.map(function (input) {
+                    var buffer = buffers.get(mapping[input.variable_name]);
                     if (!referenceCount.has(buffer))
                         referenceCount.set(buffer, 0);
                     referenceCount.set(buffer, referenceCount.get(buffer) + 1);
@@ -9509,13 +12925,13 @@ class DescriptorRunnerWebGL extends __WEBPACK_IMPORTED_MODULE_8__descriptor_runn
                     };
                 });
                 //output
-                let output = buffers.get(mapping[execInfo.output]);
+                var output = buffers.get(mapping[execInfo.output]);
                 // shader
-                let program = this.programs.get(execInfo.shader_name);
-                this.handler.useProgram(program);
+                var program = _this.programs.get(execInfo.shader_name);
+                _this.handler.useProgram(program);
                 // uniforms
-                let uniforms = Object.keys(execInfo.uniforms).map(name => {
-                    let { type, value } = execInfo.uniforms[name];
+                var uniforms = Object.keys(execInfo.uniforms).map(function (name) {
+                    var _a = execInfo.uniforms[name], type = _a.type, value = _a.value;
                     switch (type) {
                         case 'int':
                             return {
@@ -9563,15 +12979,15 @@ class DescriptorRunnerWebGL extends __WEBPACK_IMPORTED_MODULE_8__descriptor_runn
                                 args: [gl.getUniformLocation(program, name), value]
                             };
                         default:
-                            throw TypeError(`Incompatible type for uniform parameter: ${type}`);
+                            throw TypeError("Incompatible type for uniform parameter: " + type);
                     }
                 });
                 // attributes
-                let xyAttribLoc = gl.getAttribLocation(program, '_xy');
+                var xyAttribLoc = gl.getAttribLocation(program, '_xy');
                 // run
                 return {
                     program: program,
-                    frameBuffer: this.handler.createFrameBuffer(),
+                    frameBuffer: _this.handler.createFrameBuffer(),
                     name: execInfo.shader_name,
                     width: output.textureWidth,
                     height: output.textureHeight,
@@ -9583,165 +12999,300 @@ class DescriptorRunnerWebGL extends __WEBPACK_IMPORTED_MODULE_8__descriptor_runn
                 };
             })
         };
-        for (let runtimeProgramInfo of this.runtimeInfo.programs) {
-            runtimeProgramInfo.inputs.forEach(({ buffer }) => {
-                let count = referenceCount.get(buffer) - 1;
+        var _loop_1 = function (runtimeProgramInfo) {
+            runtimeProgramInfo.inputs.forEach(function (_a) {
+                var buffer = _a.buffer;
+                var count = referenceCount.get(buffer) - 1;
                 if (count == 0) {
                     runtimeProgramInfo.disposable.push(buffer);
                 }
                 referenceCount.set(buffer, count);
             });
+        };
+        for (var _i = 0, _a = this.runtimeInfo.programs; _i < _a.length; _i++) {
+            var runtimeProgramInfo = _a[_i];
+            _loop_1(runtimeProgramInfo);
         }
-    }
-    async run() {
-        // if (this._running) throw new Error('Calling another run() while running.');
-        if (!this.descriptor)
-            throw new Error('Descriptor is not loaded');
-        if (!this.placeholderContext)
-            throw new Error('PlaceholderContext is not initialized');
-        if (!this.placeholderContext.isResolved)
-            throw new Error(`Not all placeholders are resolved: ${this.placeholderContext}`);
-        let gl = this.handler.gl;
-        let runtimeInfo = this.runtimeInfo;
-        if (this.runtimeInfo.programs.length > 0) {
-            for (let buffer of runtimeInfo.inputs)
-                await buffer.syncWriteViews();
-            if (Object(__WEBPACK_IMPORTED_MODULE_6__webdnn__["getConfiguration"])('DEBUG', false)) {
-                let records = [];
-                let totalElapsedTime = 0;
-                for (let runtimeProgramInfo of runtimeInfo.programs) {
-                    let start = performance.now();
-                    this.handler.bindFrameBuffer(runtimeProgramInfo.frameBuffer, runtimeProgramInfo.width, runtimeProgramInfo.height);
-                    // inputs
-                    for (let { buffer, uniformIndex } of runtimeProgramInfo.inputs)
-                        await buffer.bindToReadTexture(uniformIndex);
-                    // output
-                    runtimeProgramInfo.output.bindToDrawTexture();
-                    // shader
-                    this.handler.useProgram(runtimeProgramInfo.program);
-                    // uniforms
-                    for (let uniform of runtimeProgramInfo.uniforms)
-                        uniform.func.apply(gl, uniform.args);
-                    // attribute
-                    gl.vertexAttribPointer(runtimeProgramInfo.xyAttribLoc, 2, gl.FLOAT, true, 8, 0);
-                    gl.enableVertexAttribArray(runtimeProgramInfo.xyAttribLoc);
-                    // run
-                    gl.drawArrays(gl.TRIANGLE_STRIP, 0, vertexArray.length / 2);
-                    await this.handler.waitForComplete();
-                    let elapsedTime = performance.now() - start;
-                    totalElapsedTime += elapsedTime;
-                    let xs = [];
-                    for (let { buffer } of runtimeProgramInfo.inputs) {
+    };
+    DescriptorRunnerWebGL.prototype.run = function () {
+        return __awaiter(this, void 0, void 0, function () {
+            var gl, runtimeInfo, _i, _a, buffer, records, totalElapsedTime_1, _b, _c, runtimeProgramInfo, start, _d, _e, _f, buffer, uniformIndex, _g, _h, uniform, elapsedTime, xs, _j, _k, buffer, y, summary, _l, _m, runtimeProgramInfo, _o, _p, _q, buffer, uniformIndex, _r, _s, uniform, _t, _u, buffer, _v, _w, buffer;
+            return __generator(this, function (_x) {
+                switch (_x.label) {
+                    case 0:
+                        // if (this._running) throw new Error('Calling another run() while running.');
+                        if (!this.descriptor)
+                            throw new Error('Descriptor is not loaded');
+                        if (!this.placeholderContext)
+                            throw new Error('PlaceholderContext is not initialized');
+                        if (!this.placeholderContext.isResolved)
+                            throw new Error("Not all placeholders are resolved: " + this.placeholderContext);
+                        gl = this.handler.gl;
+                        runtimeInfo = this.runtimeInfo;
+                        if (!(this.runtimeInfo.programs.length > 0)) return [3 /*break*/, 29];
+                        _i = 0, _a = runtimeInfo.inputs;
+                        _x.label = 1;
+                    case 1:
+                        if (!(_i < _a.length)) return [3 /*break*/, 4];
+                        buffer = _a[_i];
+                        return [4 /*yield*/, buffer.syncWriteViews()];
+                    case 2:
+                        _x.sent();
+                        _x.label = 3;
+                    case 3:
+                        _i++;
+                        return [3 /*break*/, 1];
+                    case 4:
+                        if (!webdnn_1.getConfiguration('DEBUG', false)) return [3 /*break*/, 18];
+                        records = [];
+                        totalElapsedTime_1 = 0;
+                        _b = 0, _c = runtimeInfo.programs;
+                        _x.label = 5;
+                    case 5:
+                        if (!(_b < _c.length)) return [3 /*break*/, 17];
+                        runtimeProgramInfo = _c[_b];
+                        start = performance.now();
+                        this.handler.bindFrameBuffer(runtimeProgramInfo.frameBuffer, runtimeProgramInfo.width, runtimeProgramInfo.height);
+                        _d = 0, _e = runtimeProgramInfo.inputs;
+                        _x.label = 6;
+                    case 6:
+                        if (!(_d < _e.length)) return [3 /*break*/, 9];
+                        _f = _e[_d], buffer = _f.buffer, uniformIndex = _f.uniformIndex;
+                        return [4 /*yield*/, buffer.bindToReadTexture(uniformIndex)];
+                    case 7:
+                        _x.sent();
+                        _x.label = 8;
+                    case 8:
+                        _d++;
+                        return [3 /*break*/, 6];
+                    case 9:
+                        // output
+                        runtimeProgramInfo.output.bindToDrawTexture();
+                        // shader
+                        this.handler.useProgram(runtimeProgramInfo.program);
+                        // uniforms
+                        for (_g = 0, _h = runtimeProgramInfo.uniforms; _g < _h.length; _g++) {
+                            uniform = _h[_g];
+                            uniform.func.apply(gl, uniform.args);
+                        }
+                        // attribute
+                        gl.vertexAttribPointer(runtimeProgramInfo.xyAttribLoc, 2, gl.FLOAT, true, 8, 0);
+                        gl.enableVertexAttribArray(runtimeProgramInfo.xyAttribLoc);
+                        // run
+                        gl.drawArrays(gl.TRIANGLE_STRIP, 0, vertexArray.length / 2);
+                        return [4 /*yield*/, this.handler.waitForComplete()];
+                    case 10:
+                        _x.sent();
+                        elapsedTime = performance.now() - start;
+                        totalElapsedTime_1 += elapsedTime;
+                        xs = [];
+                        _j = 0, _k = runtimeProgramInfo.inputs;
+                        _x.label = 11;
+                    case 11:
+                        if (!(_j < _k.length)) return [3 /*break*/, 14];
+                        buffer = _k[_j].buffer;
                         buffer.unbindFromReadTexture();
-                        await buffer.syncReadViews();
+                        return [4 /*yield*/, buffer.syncReadViews()];
+                    case 12:
+                        _x.sent();
                         xs.push(buffer.array.slice());
-                    }
-                    runtimeProgramInfo.output.unbindFromDrawTexture();
-                    await runtimeProgramInfo.output.syncReadViews();
-                    let y = runtimeProgramInfo.output.array.slice();
-                    records.push({
-                        'Kernel': runtimeProgramInfo.name,
-                        'Elapsed time [ms]': elapsedTime,
-                        'xs': xs,
-                        'y': y
-                    });
+                        _x.label = 13;
+                    case 13:
+                        _j++;
+                        return [3 /*break*/, 11];
+                    case 14:
+                        runtimeProgramInfo.output.unbindFromDrawTexture();
+                        return [4 /*yield*/, runtimeProgramInfo.output.syncReadViews()];
+                    case 15:
+                        _x.sent();
+                        y = runtimeProgramInfo.output.array.slice();
+                        records.push({
+                            'Kernel': runtimeProgramInfo.name,
+                            'Elapsed time [ms]': elapsedTime,
+                            'xs': xs,
+                            'y': y
+                        });
+                        _x.label = 16;
+                    case 16:
+                        _b++;
+                        return [3 /*break*/, 5];
+                    case 17:
+                        summary = Array.from(Object.values(records.reduce(function (summary, record) {
+                            if (!(record['Kernel'] in summary)) {
+                                summary[record['Kernel']] = {
+                                    'Kernel': record['Kernel'],
+                                    'Count': 0,
+                                    'Elapsed time [ms]': 0,
+                                };
+                            }
+                            summary[record['Kernel']]['Count']++;
+                            summary[record['Kernel']]['Elapsed time [ms]'] += record['Elapsed time [ms]'];
+                            return summary;
+                        }, {})));
+                        summary.forEach(function (record) { return record['Ratio [%]'] = (record['Elapsed time [ms]'] / totalElapsedTime_1).toFixed(2); });
+                        console.table(records);
+                        console.table(summary);
+                        return [3 /*break*/, 25];
+                    case 18:
+                        _l = 0, _m = runtimeInfo.programs;
+                        _x.label = 19;
+                    case 19:
+                        if (!(_l < _m.length)) return [3 /*break*/, 25];
+                        runtimeProgramInfo = _m[_l];
+                        this.handler.bindFrameBuffer(runtimeProgramInfo.frameBuffer, runtimeProgramInfo.width, runtimeProgramInfo.height);
+                        _o = 0, _p = runtimeProgramInfo.inputs;
+                        _x.label = 20;
+                    case 20:
+                        if (!(_o < _p.length)) return [3 /*break*/, 23];
+                        _q = _p[_o], buffer = _q.buffer, uniformIndex = _q.uniformIndex;
+                        return [4 /*yield*/, buffer.bindToReadTexture(uniformIndex)];
+                    case 21:
+                        _x.sent();
+                        _x.label = 22;
+                    case 22:
+                        _o++;
+                        return [3 /*break*/, 20];
+                    case 23:
+                        // output
+                        runtimeProgramInfo.output.bindToDrawTexture();
+                        // shader
+                        this.handler.useProgram(runtimeProgramInfo.program);
+                        // uniforms
+                        for (_r = 0, _s = runtimeProgramInfo.uniforms; _r < _s.length; _r++) {
+                            uniform = _s[_r];
+                            uniform.func.apply(gl, uniform.args);
+                        }
+                        // attribute
+                        gl.vertexAttribPointer(runtimeProgramInfo.xyAttribLoc, 2, gl.FLOAT, true, 8, 0);
+                        gl.enableVertexAttribArray(runtimeProgramInfo.xyAttribLoc);
+                        // run
+                        gl.drawArrays(gl.TRIANGLE_STRIP, 0, vertexArray.length / 2);
+                        // release buffers and binding
+                        // for (let buffer of runtimeProgramInfo.disposable) buffer.releaseGPUMemory();
+                        for (_t = 0, _u = runtimeProgramInfo.inputs; _t < _u.length; _t++) {
+                            buffer = _u[_t].buffer;
+                            buffer.unbindFromReadTexture();
+                        }
+                        runtimeProgramInfo.output.unbindFromDrawTexture();
+                        _x.label = 24;
+                    case 24:
+                        _l++;
+                        return [3 /*break*/, 19];
+                    case 25:
+                        _v = 0, _w = runtimeInfo.outputs;
+                        _x.label = 26;
+                    case 26:
+                        if (!(_v < _w.length)) return [3 /*break*/, 29];
+                        buffer = _w[_v];
+                        return [4 /*yield*/, buffer.syncReadViews()];
+                    case 27:
+                        _x.sent();
+                        _x.label = 28;
+                    case 28:
+                        _v++;
+                        return [3 /*break*/, 26];
+                    case 29: return [2 /*return*/];
                 }
-                let summary = Array.from(Object.values(records.reduce((summary, record) => {
-                    if (!(record['Kernel'] in summary)) {
-                        summary[record['Kernel']] = {
-                            'Kernel': record['Kernel'],
-                            'Count': 0,
-                            'Elapsed time [ms]': 0,
-                        };
-                    }
-                    summary[record['Kernel']]['Count']++;
-                    summary[record['Kernel']]['Elapsed time [ms]'] += record['Elapsed time [ms]'];
-                    return summary;
-                }, {})));
-                summary.forEach(record => record['Ratio [%]'] = (record['Elapsed time [ms]'] / totalElapsedTime).toFixed(2));
-                console.table(records);
-                console.table(summary);
-            }
-            else {
-                for (let runtimeProgramInfo of runtimeInfo.programs) {
-                    this.handler.bindFrameBuffer(runtimeProgramInfo.frameBuffer, runtimeProgramInfo.width, runtimeProgramInfo.height);
-                    // inputs
-                    for (let { buffer, uniformIndex } of runtimeProgramInfo.inputs)
-                        await buffer.bindToReadTexture(uniformIndex);
-                    // output
-                    runtimeProgramInfo.output.bindToDrawTexture();
-                    // shader
-                    this.handler.useProgram(runtimeProgramInfo.program);
-                    // uniforms
-                    for (let uniform of runtimeProgramInfo.uniforms)
-                        uniform.func.apply(gl, uniform.args);
-                    // attribute
-                    gl.vertexAttribPointer(runtimeProgramInfo.xyAttribLoc, 2, gl.FLOAT, true, 8, 0);
-                    gl.enableVertexAttribArray(runtimeProgramInfo.xyAttribLoc);
-                    // run
-                    gl.drawArrays(gl.TRIANGLE_STRIP, 0, vertexArray.length / 2);
-                    // release buffers and binding
-                    // for (let buffer of runtimeProgramInfo.disposable) buffer.releaseGPUMemory();
-                    for (let { buffer } of runtimeProgramInfo.inputs)
-                        buffer.unbindFromReadTexture();
-                    runtimeProgramInfo.output.unbindFromDrawTexture();
-                }
-            }
-            for (let buffer of runtimeInfo.outputs)
-                await buffer.syncReadViews();
-        }
-    }
-}
-/* harmony export (immutable) */ __webpack_exports__["a"] = DescriptorRunnerWebGL;
-
+            });
+        });
+    };
+    return DescriptorRunnerWebGL;
+}(descriptor_runner_1.DescriptorRunner));
+exports.default = DescriptorRunnerWebGL;
 
 
 /***/ }),
-/* 38 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
+/* 39 */
+/***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__webgl_handler__ = __webpack_require__(14);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__buffer__ = __webpack_require__(15);
+
 /**
  * @module webdnn
  */
 /** Don't Remove This comment block */
-
-
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : new P(function (resolve) { resolve(result.value); }).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
+var __generator = (this && this.__generator) || function (thisArg, body) {
+    var _ = { label: 0, sent: function() { if (t[0] & 1) throw t[1]; return t[1]; }, trys: [], ops: [] }, f, y, t, g;
+    return g = { next: verb(0), "throw": verb(1), "return": verb(2) }, typeof Symbol === "function" && (g[Symbol.iterator] = function() { return this; }), g;
+    function verb(n) { return function (v) { return step([n, v]); }; }
+    function step(op) {
+        if (f) throw new TypeError("Generator is already executing.");
+        while (_) try {
+            if (f = 1, y && (t = y[op[0] & 2 ? "return" : op[0] ? "throw" : "next"]) && !(t = t.call(y, op[1])).done) return t;
+            if (y = 0, t) op = [0, t.value];
+            switch (op[0]) {
+                case 0: case 1: t = op; break;
+                case 4: _.label++; return { value: op[1], done: false };
+                case 5: _.label++; y = op[1]; op = [0]; continue;
+                case 7: op = _.ops.pop(); _.trys.pop(); continue;
+                default:
+                    if (!(t = _.trys, t = t.length > 0 && t[t.length - 1]) && (op[0] === 6 || op[0] === 2)) { _ = 0; continue; }
+                    if (op[0] === 3 && (!t || (op[1] > t[0] && op[1] < t[3]))) { _.label = op[1]; break; }
+                    if (op[0] === 6 && _.label < t[1]) { _.label = t[1]; t = op; break; }
+                    if (t && _.label < t[2]) { _.label = t[2]; _.ops.push(op); break; }
+                    if (t[2]) _.ops.pop();
+                    _.trys.pop(); continue;
+            }
+            op = body.call(thisArg, _);
+        } catch (e) { op = [6, e]; y = 0; } finally { f = t = 0; }
+        if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
+    }
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+var webgl_handler_1 = __webpack_require__(14);
+var buffer_1 = __webpack_require__(15);
 /**
  * @protected
  */
-class BufferWebGL extends __WEBPACK_IMPORTED_MODULE_1__buffer__["a" /* Buffer */] {
-    constructor(byteLength, textureWidth, textureHeight, name, array, channelMode) {
-        super(byteLength, 'webgl');
-        this._texture = null;
-        this.readTextureUnitIndices = [];
-        this.isBoundToDrawFrameBuffer = false;
-        this.handler = __WEBPACK_IMPORTED_MODULE_0__webgl_handler__["a" /* default */].getInstance();
-        this.name = name;
-        this.channelMode = channelMode;
+var BufferWebGL = /** @class */ (function (_super) {
+    __extends(BufferWebGL, _super);
+    function BufferWebGL(byteLength, textureWidth, textureHeight, name, array, channelMode) {
+        var _this = _super.call(this, byteLength, 'webgl') || this;
+        _this._texture = null;
+        _this.readTextureUnitIndices = [];
+        _this.isBoundToDrawFrameBuffer = false;
+        _this.handler = webgl_handler_1.default.getInstance();
+        _this.name = name;
+        _this.channelMode = channelMode;
         switch (channelMode) {
             case 'RGBA':
-                this.elementsPerPixel = 4;
+                _this.elementsPerPixel = 4;
                 break;
             case 'R':
-                this.elementsPerPixel = 1;
+                _this.elementsPerPixel = 1;
                 break;
             default:
                 throw Error('Unknown channel mode');
         }
-        if (Object(__WEBPACK_IMPORTED_MODULE_0__webgl_handler__["b" /* isWebGL2 */])(this.handler.gl)) {
+        if (webgl_handler_1.isWebGL2(_this.handler.gl)) {
             switch (channelMode) {
                 case 'RGBA':
-                    this.textureFormat = this.handler.gl.RGBA;
-                    this.textureInternalFormat = this.handler.gl.RGBA32F;
-                    this.pixelStride = 4;
+                    _this.textureFormat = _this.handler.gl.RGBA;
+                    _this.textureInternalFormat = _this.handler.gl.RGBA32F;
+                    _this.pixelStride = 4;
                     break;
                 case 'R':
-                    this.textureFormat = this.handler.gl.RED;
-                    this.textureInternalFormat = this.handler.gl.R32F;
-                    this.pixelStride = 1;
+                    _this.textureFormat = _this.handler.gl.RED;
+                    _this.textureInternalFormat = _this.handler.gl.R32F;
+                    _this.pixelStride = 1;
                     break;
                 default:
                     throw Error('Unknown channel mode');
@@ -9750,32 +13301,51 @@ class BufferWebGL extends __WEBPACK_IMPORTED_MODULE_1__buffer__["a" /* Buffer */
         else {
             // In WebGL1, always RGBA channel mode is specified. If R channel mode is specified in graph descriptor,
             // other 3 channels are not used.
-            this.textureFormat = this.handler.gl.RGBA;
-            this.textureInternalFormat = this.handler.gl.RGBA;
-            this.pixelStride = 4;
+            _this.textureFormat = _this.handler.gl.RGBA;
+            _this.textureInternalFormat = _this.handler.gl.RGBA;
+            _this.pixelStride = 4;
         }
-        if (this.pixelStride < this.elementsPerPixel)
+        if (_this.pixelStride < _this.elementsPerPixel)
             throw Error('elementsPerPixel must be smaller than pixelStride');
-        this.array = array || new Float32Array(this.length);
-        this.textureWidth = textureWidth;
-        this.textureHeight = textureHeight;
+        _this.array = array || new Float32Array(_this.length);
+        _this.textureWidth = textureWidth;
+        _this.textureHeight = textureHeight;
+        return _this;
     }
-    get texture() {
-        return this._texture;
-    }
-    get length() {
-        return this.byteLength / Float32Array.BYTES_PER_ELEMENT;
-    }
+    Object.defineProperty(BufferWebGL.prototype, "texture", {
+        get: function () {
+            return this._texture;
+        },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(BufferWebGL.prototype, "length", {
+        get: function () {
+            return this.byteLength / Float32Array.BYTES_PER_ELEMENT;
+        },
+        enumerable: true,
+        configurable: true
+    });
     /**
      * Write contents onto specified position synchronously.
      *
      * @param {ArrayBufferView} src contents source buffer
      * @param {number} offset position where contents are written on
      */
-    async write(src, offset) {
-        this.array.set(src, offset);
-        await this.syncWriteViews();
-    }
+    BufferWebGL.prototype.write = function (src, offset) {
+        return __awaiter(this, void 0, void 0, function () {
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        this.array.set(src, offset);
+                        return [4 /*yield*/, this.syncWriteViews()];
+                    case 1:
+                        _a.sent();
+                        return [2 /*return*/];
+                }
+            });
+        });
+    };
     /**
      * Read contents from specified position synchronously.
      *
@@ -9783,226 +13353,315 @@ class BufferWebGL extends __WEBPACK_IMPORTED_MODULE_1__buffer__["a" /* Buffer */
      * @param {number} offset position where contents are read from
      * @param {length} length contents length
      */
-    async read(dst, offset = 0, length) {
-        if (dst !== Float32Array)
-            throw new Error('Currently, only Float32Array is supported for parameter \'dst\'.');
-        await this.syncReadViews();
-        new Float32Array(this.array.buffer, offset * Float32Array.BYTES_PER_ELEMENT, length);
-    }
-    getWriteView(offset, length, type) {
+    BufferWebGL.prototype.read = function (dst, offset, length) {
+        if (offset === void 0) { offset = 0; }
+        return __awaiter(this, void 0, void 0, function () {
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        if (dst !== Float32Array)
+                            throw new Error('Currently, only Float32Array is supported for parameter \'dst\'.');
+                        return [4 /*yield*/, this.syncReadViews()];
+                    case 1:
+                        _a.sent();
+                        new Float32Array(this.array.buffer, offset * Float32Array.BYTES_PER_ELEMENT, length);
+                        return [2 /*return*/];
+                }
+            });
+        });
+    };
+    BufferWebGL.prototype.getWriteView = function (offset, length, type) {
         return new type(this.array.buffer, offset * type.BYTES_PER_ELEMENT, length);
-    }
+    };
     ;
-    getReadView(offset, length, type) {
+    BufferWebGL.prototype.getReadView = function (offset, length, type) {
         return new type(this.array.buffer, offset * type.BYTES_PER_ELEMENT, length);
-    }
+    };
     /**
      * Sync buffered data into memory.
      *
      * @see Buffer#getWriteView
      */
-    async syncWriteViews() {
-        let gl = this.handler.gl;
-        if (!this.texture)
-            this.allocateTexture();
-        let tmp = this.pack(this.array);
-        if (tmp.length != this.textureWidth * this.textureHeight * this.pixelStride) {
-            let tmp2 = new Float32Array(this.textureWidth * this.textureHeight * this.elementsPerPixel);
-            tmp2.set(tmp, 0);
-            tmp = tmp2;
-        }
-        await this.bindToReadTexture(9); //TODO: texture unit 9 is always available?
-        gl.texSubImage2D(gl.TEXTURE_2D, 0, 0, 0, this.textureWidth, this.textureHeight, this.textureFormat, gl.FLOAT, tmp);
-        this.unbindFromReadTexture();
-    }
+    BufferWebGL.prototype.syncWriteViews = function () {
+        return __awaiter(this, void 0, void 0, function () {
+            var gl, tmp, tmp2;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        gl = this.handler.gl;
+                        if (!this.texture)
+                            this.allocateTexture();
+                        tmp = this.pack(this.array);
+                        if (tmp.length != this.textureWidth * this.textureHeight * this.pixelStride) {
+                            tmp2 = new Float32Array(this.textureWidth * this.textureHeight * this.elementsPerPixel);
+                            tmp2.set(tmp, 0);
+                            tmp = tmp2;
+                        }
+                        return [4 /*yield*/, this.bindToReadTexture(9)];
+                    case 1:
+                        _a.sent(); //TODO: texture unit 9 is always available?
+                        gl.texSubImage2D(gl.TEXTURE_2D, 0, 0, 0, this.textureWidth, this.textureHeight, this.textureFormat, gl.FLOAT, tmp);
+                        this.unbindFromReadTexture();
+                        return [2 /*return*/];
+                }
+            });
+        });
+    };
     /**
      * Sync memory data into buffer view.
      *
      * @see Buffer#getReadView
      */
-    async syncReadViews() {
-        let gl = this.handler.gl;
-        // FIXME(Kiikurage): more readable code
-        const ELEMENT_PER_PIXEL = 4;
-        const FORMAT = gl.RGBA;
-        let tmp = new Float32Array(this.textureWidth * this.textureHeight * ELEMENT_PER_PIXEL);
-        this.bindToDrawTexture();
-        gl.readPixels(0, 0, this.textureWidth, this.textureHeight, FORMAT, gl.FLOAT, tmp);
-        this.unbindFromDrawTexture();
-        tmp = this.unpack(tmp);
-        this.array.set(tmp.slice(0, this.length), 0);
-    }
-    async bindToReadTexture(unit) {
-        if (this.isBoundToDrawFrameBuffer)
-            throw Error('This buffer is already registered as draw buffer. ' +
-                'You may forgot to unbind the binding while previous operations.');
-        let gl = this.handler.gl;
-        if (!this.texture) {
-            this.allocateTexture();
-            await this.syncWriteViews();
-        }
-        gl.activeTexture(gl.TEXTURE0 + unit);
-        gl.bindTexture(gl.TEXTURE_2D, this.texture);
-        this.readTextureUnitIndices.push(unit);
-    }
-    unbindFromReadTexture() {
-        let gl = this.handler.gl;
-        for (let unit of this.readTextureUnitIndices) {
+    BufferWebGL.prototype.syncReadViews = function () {
+        return __awaiter(this, void 0, void 0, function () {
+            var gl, ELEMENT_PER_PIXEL, FORMAT, tmp;
+            return __generator(this, function (_a) {
+                gl = this.handler.gl;
+                ELEMENT_PER_PIXEL = 4;
+                FORMAT = gl.RGBA;
+                tmp = new Float32Array(this.textureWidth * this.textureHeight * ELEMENT_PER_PIXEL);
+                this.bindToDrawTexture();
+                gl.readPixels(0, 0, this.textureWidth, this.textureHeight, FORMAT, gl.FLOAT, tmp);
+                this.unbindFromDrawTexture();
+                tmp = this.unpack(tmp);
+                this.array.set(tmp.slice(0, this.length), 0);
+                return [2 /*return*/];
+            });
+        });
+    };
+    BufferWebGL.prototype.bindToReadTexture = function (unit) {
+        return __awaiter(this, void 0, void 0, function () {
+            var gl;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        if (this.isBoundToDrawFrameBuffer)
+                            throw Error('This buffer is already registered as draw buffer. ' +
+                                'You may forgot to unbind the binding while previous operations.');
+                        gl = this.handler.gl;
+                        if (!!this.texture) return [3 /*break*/, 2];
+                        this.allocateTexture();
+                        return [4 /*yield*/, this.syncWriteViews()];
+                    case 1:
+                        _a.sent();
+                        _a.label = 2;
+                    case 2:
+                        gl.activeTexture(gl.TEXTURE0 + unit);
+                        gl.bindTexture(gl.TEXTURE_2D, this.texture);
+                        this.readTextureUnitIndices.push(unit);
+                        return [2 /*return*/];
+                }
+            });
+        });
+    };
+    BufferWebGL.prototype.unbindFromReadTexture = function () {
+        var gl = this.handler.gl;
+        for (var _i = 0, _a = this.readTextureUnitIndices; _i < _a.length; _i++) {
+            var unit = _a[_i];
             gl.activeTexture(gl.TEXTURE0 + unit);
             gl.bindTexture(gl.TEXTURE_2D, null);
         }
         this.readTextureUnitIndices = [];
-    }
-    bindToDrawTexture() {
+    };
+    BufferWebGL.prototype.bindToDrawTexture = function () {
         if (this.readTextureUnitIndices.length > 0)
             throw Error('This buffer is already registered as read buffer. ' +
                 'You cannot bind a texture as both read and draw texture buffer at same time.');
         if (this.isBoundToDrawFrameBuffer)
             throw Error('This buffer is already registered as draw buffer. ' +
                 'You may forgot to unbind the binding while previous operations.');
-        let gl = this.handler.gl;
+        var gl = this.handler.gl;
         if (!this.texture)
             this.allocateTexture();
         gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, this.texture, 0);
         this.isBoundToDrawFrameBuffer = true;
-    }
-    unbindFromDrawTexture() {
+    };
+    BufferWebGL.prototype.unbindFromDrawTexture = function () {
         if (!this.isBoundToDrawFrameBuffer)
             return;
-        let gl = this.handler.gl;
+        var gl = this.handler.gl;
         gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, null, 0);
         this.isBoundToDrawFrameBuffer = false;
-    }
-    pack(array) {
-        let elementStride = this.pixelStride / this.elementsPerPixel;
+    };
+    BufferWebGL.prototype.pack = function (array) {
+        var elementStride = this.pixelStride / this.elementsPerPixel;
         if (elementStride === 1) {
             return new Float32Array(array);
         }
         else {
-            let result = new Float32Array(array.length * elementStride);
-            for (let i = 0; i < array.length; i++)
+            var result = new Float32Array(array.length * elementStride);
+            for (var i = 0; i < array.length; i++)
                 result[i * elementStride] = array[i];
             return result;
         }
-    }
-    unpack(array) {
+    };
+    BufferWebGL.prototype.unpack = function (array) {
         // FIXME(Kiikurage): more readable code
-        const PIXEL_STRIDE = 4;
-        let elementStride = PIXEL_STRIDE / this.elementsPerPixel;
+        var PIXEL_STRIDE = 4;
+        var elementStride = PIXEL_STRIDE / this.elementsPerPixel;
         if (elementStride === 1) {
             return new Float32Array(array);
         }
         else {
-            let result = new Float32Array(array.length / elementStride);
-            for (let i = 0; i < array.length / elementStride; i++)
+            var result = new Float32Array(array.length / elementStride);
+            for (var i = 0; i < array.length / elementStride; i++)
                 result[i] = array[i * elementStride];
             return result;
         }
-    }
-    allocateTexture() {
+    };
+    BufferWebGL.prototype.allocateTexture = function () {
         if (this.texture)
             throw Error('Texture is already allocated.');
         this._texture = this.handler.createTexture(this.textureWidth, this.textureHeight, this.textureInternalFormat, this.textureFormat);
-    }
-}
-/* harmony export (immutable) */ __webpack_exports__["a"] = BufferWebGL;
-
+    };
+    return BufferWebGL;
+}(buffer_1.Buffer));
+exports.default = BufferWebGL;
 
 
 /***/ }),
-/* 39 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
+/* 40 */
+/***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__buffer_buffer_webgpu__ = __webpack_require__(16);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__decoder_get_weight_decoder__ = __webpack_require__(3);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__fetch__ = __webpack_require__(1);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__placeholder__ = __webpack_require__(4);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__symbolic_typed_array_symbolic_float32array__ = __webpack_require__(5);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__third_localforage_nopromises_min__ = __webpack_require__(6);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__third_localforage_nopromises_min___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_5__third_localforage_nopromises_min__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__webdnn__ = __webpack_require__(2);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__webgpu_handler__ = __webpack_require__(17);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_8__descriptor_runner__ = __webpack_require__(7);
+
 /**
  * @module webdnn
  */
 /** Don't Remove This comment block */
-
-
-
-
-
-
-
-
-
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : new P(function (resolve) { resolve(result.value); }).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
+var __generator = (this && this.__generator) || function (thisArg, body) {
+    var _ = { label: 0, sent: function() { if (t[0] & 1) throw t[1]; return t[1]; }, trys: [], ops: [] }, f, y, t, g;
+    return g = { next: verb(0), "throw": verb(1), "return": verb(2) }, typeof Symbol === "function" && (g[Symbol.iterator] = function() { return this; }), g;
+    function verb(n) { return function (v) { return step([n, v]); }; }
+    function step(op) {
+        if (f) throw new TypeError("Generator is already executing.");
+        while (_) try {
+            if (f = 1, y && (t = y[op[0] & 2 ? "return" : op[0] ? "throw" : "next"]) && !(t = t.call(y, op[1])).done) return t;
+            if (y = 0, t) op = [0, t.value];
+            switch (op[0]) {
+                case 0: case 1: t = op; break;
+                case 4: _.label++; return { value: op[1], done: false };
+                case 5: _.label++; y = op[1]; op = [0]; continue;
+                case 7: op = _.ops.pop(); _.trys.pop(); continue;
+                default:
+                    if (!(t = _.trys, t = t.length > 0 && t[t.length - 1]) && (op[0] === 6 || op[0] === 2)) { _ = 0; continue; }
+                    if (op[0] === 3 && (!t || (op[1] > t[0] && op[1] < t[3]))) { _.label = op[1]; break; }
+                    if (op[0] === 6 && _.label < t[1]) { _.label = t[1]; t = op; break; }
+                    if (t && _.label < t[2]) { _.label = t[2]; _.ops.push(op); break; }
+                    if (t[2]) _.ops.pop();
+                    _.trys.pop(); continue;
+            }
+            op = body.call(thisArg, _);
+        } catch (e) { op = [6, e]; y = 0; } finally { f = t = 0; }
+        if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
+    }
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+var localforage = __webpack_require__(3);
+var buffer_webgpu_1 = __webpack_require__(16);
+var get_weight_decoder_1 = __webpack_require__(4);
+var fetch_1 = __webpack_require__(1);
+var placeholder_1 = __webpack_require__(5);
+var symbolic_float32array_1 = __webpack_require__(6);
+var webdnn_1 = __webpack_require__(2);
+var webgpu_handler_1 = __webpack_require__(17);
+var descriptor_runner_1 = __webpack_require__(7);
 /**
  * Check this device is iOS devices or not.
  * @private
  */
-const IS_IOS = navigator.userAgent.includes('iPhone') || navigator.userAgent.includes('iPad');
+var IS_IOS = navigator.userAgent.includes('iPhone') || navigator.userAgent.includes('iPad');
 /**
  * DescriptorRunner for WebGPU
  * @protected
  */
-class DescriptorRunnerWebGPU extends __WEBPACK_IMPORTED_MODULE_8__descriptor_runner__["a" /* DescriptorRunner */] {
-    constructor() {
-        super(...arguments);
+var DescriptorRunnerWebGPU = /** @class */ (function (_super) {
+    __extends(DescriptorRunnerWebGPU, _super);
+    function DescriptorRunnerWebGPU() {
+        var _this = _super !== null && _super.apply(this, arguments) || this;
         /**
          * backend name
          */
-        this.backendName = 'webgpu';
+        _this.backendName = 'webgpu';
+        return _this;
     }
     /**
      * Return `true` if this backend is available in this environment.
      * @returns {boolean}
      */
-    static checkAvailability() {
-        return __WEBPACK_IMPORTED_MODULE_7__webgpu_handler__["a" /* IS_WEBGPU_SUPPORTED */];
-    }
+    DescriptorRunnerWebGPU.checkAvailability = function () {
+        return webgpu_handler_1.IS_WEBGPU_SUPPORTED;
+    };
     /**
      * Initialize descriptor runner asynchronously
      * @returns {Promise<void>} Promise object which is resolved when the initialization finished.
      */
-    async init() {
-        this.webgpuHandler = __WEBPACK_IMPORTED_MODULE_7__webgpu_handler__["b" /* default */].getInstance();
-        await this.checkIncompatibleGPU();
-    }
+    DescriptorRunnerWebGPU.prototype.init = function () {
+        return __awaiter(this, void 0, void 0, function () {
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        this.webgpuHandler = webgpu_handler_1.default.getInstance();
+                        return [4 /*yield*/, this.checkIncompatibleGPU()];
+                    case 1:
+                        _a.sent();
+                        return [2 /*return*/];
+                }
+            });
+        });
+    };
     /**
      * Check whether current GPU is supported or not. If it's not supported, an error is thrown.
      * @returns {Promise<void>}
      */
-    async checkIncompatibleGPU() {
-        /**
-         * It is reported that AMD GPU crashes when performing sgemm (matrix multiplication).
-         * Until this problem is solved, blocking WebGPU backend in the environment is needed.
-         * API in WebGPU does not directly gives hardware information, so trying to determine hardware heuristically.
-         *
-         * Criteria: thread_execution_width == 32 is required
-         * (on AMD FirePro D500, thread_execution_width == 64)
-         *
-         * @see https://github.com/mil-tokyo/webdnn/issues/286
-         */
-        this.webgpuHandler.loadKernel(`
-#include <metal_stdlib>
-using namespace metal;
-        kernel void check_compatibility(
-            device uint *A[[buffer(0)]],
-            uint global_index[[thread_position_in_grid]],
-            uint thread_execution_width[[thread_execution_width]]
-        ){
-            if (global_index == 0) {
-                A[0] = thread_execution_width;
-            }
-        }`, 'basic');
-        let buffer = this.webgpuHandler.createBuffer(new Uint32Array(1));
-        await this.webgpuHandler.executeSinglePipelineState('basic.check_compatibility', { width: 1, height: 1, depth: 1 }, { width: 1, height: 1, depth: 1 }, [buffer], true);
-        let threadExecutionWidth = (new Uint32Array(buffer.contents))[0];
-        if (threadExecutionWidth != 32) {
-            throw new Error(`Sorry, this GPU does not compatible with WebGPU (thread_execution_width == ${threadExecutionWidth}. See checkIncompatibleGPU method of https://github.com/mil-tokyo/webdnn/blob/master/src/descriptor_runner/descriptor_runner/descriptor_runner_webgpu.ts`);
-        }
-    }
+    DescriptorRunnerWebGPU.prototype.checkIncompatibleGPU = function () {
+        return __awaiter(this, void 0, void 0, function () {
+            var buffer, threadExecutionWidth;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        /**
+                         * It is reported that AMD GPU crashes when performing sgemm (matrix multiplication).
+                         * Until this problem is solved, blocking WebGPU backend in the environment is needed.
+                         * API in WebGPU does not directly gives hardware information, so trying to determine hardware heuristically.
+                         *
+                         * Criteria: thread_execution_width == 32 is required
+                         * (on AMD FirePro D500, thread_execution_width == 64)
+                         *
+                         * @see https://github.com/mil-tokyo/webdnn/issues/286
+                         */
+                        this.webgpuHandler.loadKernel("\n#include <metal_stdlib>\nusing namespace metal;\n        kernel void check_compatibility(\n            device uint *A[[buffer(0)]],\n            uint global_index[[thread_position_in_grid]],\n            uint thread_execution_width[[thread_execution_width]]\n        ){\n            if (global_index == 0) {\n                A[0] = thread_execution_width;\n            }\n        }", 'basic');
+                        buffer = this.webgpuHandler.createBuffer(new Uint32Array(1));
+                        return [4 /*yield*/, this.webgpuHandler.executeSinglePipelineState('basic.check_compatibility', { width: 1, height: 1, depth: 1 }, { width: 1, height: 1, depth: 1 }, [buffer], true)];
+                    case 1:
+                        _a.sent();
+                        threadExecutionWidth = (new Uint32Array(buffer.contents))[0];
+                        if (threadExecutionWidth != 32) {
+                            throw new Error("Sorry, this GPU does not compatible with WebGPU (thread_execution_width == " + threadExecutionWidth + ". See checkIncompatibleGPU method of https://github.com/mil-tokyo/webdnn/blob/master/src/descriptor_runner/descriptor_runner/descriptor_runner_webgpu.ts");
+                        }
+                        return [2 /*return*/];
+                }
+            });
+        });
+    };
     /**
      * Fetch graph descriptor from specified directory.
      *
@@ -10017,10 +13676,19 @@ using namespace metal;
      *
      * @protected
      */
-    async fetchDescriptor(directory) {
-        let res = await Object(__WEBPACK_IMPORTED_MODULE_2__fetch__["a" /* default */])(`${directory}/graph_${this.backendName}.json`);
-        return res.json();
-    }
+    DescriptorRunnerWebGPU.prototype.fetchDescriptor = function (directory) {
+        return __awaiter(this, void 0, void 0, function () {
+            var res;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, fetch_1.default(directory + "/graph_" + this.backendName + ".json")];
+                    case 1:
+                        res = _a.sent();
+                        return [2 /*return*/, res.json()];
+                }
+            });
+        });
+    };
     /**
      * Fetch parameter files from specified directory.
      *
@@ -10036,93 +13704,179 @@ using namespace metal;
      * @param progressCallback callback which is called to notice the loading is progressing.
      * @protected
      */
-    async fetchParameters(directory, progressCallback) {
-        let res = await Object(__WEBPACK_IMPORTED_MODULE_2__fetch__["a" /* default */])(`${directory}/weight_${this.backendName}.bin`);
-        return Object(__WEBPACK_IMPORTED_MODULE_2__fetch__["b" /* readArrayBufferProgressively */])(res, progressCallback);
-    }
+    DescriptorRunnerWebGPU.prototype.fetchParameters = function (directory, progressCallback) {
+        return __awaiter(this, void 0, void 0, function () {
+            var res;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, fetch_1.default(directory + "/weight_" + this.backendName + ".bin")];
+                    case 1:
+                        res = _a.sent();
+                        return [2 /*return*/, fetch_1.readArrayBufferProgressively(res, progressCallback)];
+                }
+            });
+        });
+    };
     /**
      * Load cached descriptor from WebStorage
      * @protected
      */
-    async restoreCachedDescriptor(directory) {
-        return __WEBPACK_IMPORTED_MODULE_5__third_localforage_nopromises_min__["getItem"](`${directory}_${this.backendName}_descriptor`).catch(() => null);
-    }
+    DescriptorRunnerWebGPU.prototype.restoreCachedDescriptor = function (directory) {
+        return __awaiter(this, void 0, void 0, function () {
+            return __generator(this, function (_a) {
+                return [2 /*return*/, localforage.getItem(directory + "_" + this.backendName + "_descriptor").catch(function () { return null; })];
+            });
+        });
+    };
     /**
      * Load cached descriptor from WebStorage
      * @protected
      */
-    async restoreCachedParameters(directory, progressCallback) {
-        let parameter = await __WEBPACK_IMPORTED_MODULE_5__third_localforage_nopromises_min__["getItem"](`${directory}_${this.backendName}_parameters`).catch(() => null);
-        if (parameter && progressCallback)
-            progressCallback(parameter.byteLength, parameter.byteLength);
-        return parameter;
-    }
+    DescriptorRunnerWebGPU.prototype.restoreCachedParameters = function (directory, progressCallback) {
+        return __awaiter(this, void 0, void 0, function () {
+            var parameter;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, localforage.getItem(directory + "_" + this.backendName + "_parameters").catch(function () { return null; })];
+                    case 1:
+                        parameter = _a.sent();
+                        if (parameter && progressCallback)
+                            progressCallback(parameter.byteLength, parameter.byteLength);
+                        return [2 /*return*/, parameter];
+                }
+            });
+        });
+    };
     /**
      * save cache
      */
-    async saveCache(directory, descriptor, parameters) {
-        await Promise.all([
-            __WEBPACK_IMPORTED_MODULE_5__third_localforage_nopromises_min__["setItem"](`${directory}_${this.backendName}_descriptor`, descriptor),
-            __WEBPACK_IMPORTED_MODULE_5__third_localforage_nopromises_min__["setItem"](`${directory}_${this.backendName}_parameters`, parameters)
-        ]);
-    }
-    ;
-    async setDescriptorAndParameters(descriptor, parameter) {
-        this.descriptor = descriptor;
-        //reset all datum depend on old descriptor
-        this.staticBuffer = null;
-        this.dynamicBuffer = null;
-        this.metaBuffers = null;
-        this.placeholderContext = new __WEBPACK_IMPORTED_MODULE_3__placeholder__["a" /* default */](descriptor.placeholders);
-        this.executionInfos = descriptor.exec_infos;
-        //compile kernels
-        this.webgpuHandler.loadKernel(this.descriptor.kernel_source, 'descriptor');
-        await this.initializeStaticBuffer(parameter);
-        await this.initializeMetaBuffers();
-        await this.setPlaceholderValue({
-            '__MAX_THREADS_PER_THREADGROUP__': IS_IOS ? 512 : 1024
+    DescriptorRunnerWebGPU.prototype.saveCache = function (directory, descriptor, parameters) {
+        return __awaiter(this, void 0, void 0, function () {
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, Promise.all([
+                            localforage.setItem(directory + "_" + this.backendName + "_descriptor", descriptor),
+                            localforage.setItem(directory + "_" + this.backendName + "_parameters", parameters)
+                        ])];
+                    case 1:
+                        _a.sent();
+                        return [2 /*return*/];
+                }
+            });
         });
-        if (this.placeholderContext && this.placeholderContext.isResolved)
-            await this.initializeDynamicBuffer();
-    }
+    };
+    ;
+    DescriptorRunnerWebGPU.prototype.setDescriptorAndParameters = function (descriptor, parameter) {
+        return __awaiter(this, void 0, void 0, function () {
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        this.descriptor = descriptor;
+                        //reset all datum depend on old descriptor
+                        this.staticBuffer = null;
+                        this.dynamicBuffer = null;
+                        this.metaBuffers = null;
+                        this.placeholderContext = new placeholder_1.default(descriptor.placeholders);
+                        this.executionInfos = descriptor.exec_infos;
+                        //compile kernels
+                        this.webgpuHandler.loadKernel(this.descriptor.kernel_source, 'descriptor');
+                        return [4 /*yield*/, this.initializeStaticBuffer(parameter)];
+                    case 1:
+                        _a.sent();
+                        return [4 /*yield*/, this.initializeMetaBuffers()];
+                    case 2:
+                        _a.sent();
+                        return [4 /*yield*/, this.setPlaceholderValue({
+                                '__MAX_THREADS_PER_THREADGROUP__': IS_IOS ? 512 : 1024
+                            })];
+                    case 3:
+                        _a.sent();
+                        if (!(this.placeholderContext && this.placeholderContext.isResolved)) return [3 /*break*/, 5];
+                        return [4 /*yield*/, this.initializeDynamicBuffer()];
+                    case 4:
+                        _a.sent();
+                        _a.label = 5;
+                    case 5: return [2 /*return*/];
+                }
+            });
+        });
+    };
     /**
      * Initialize static buffers, whose size and position can be determined in compile time.
      *
      * @param {ArrayBuffer} weightRawArray constant weight buffer
      * @returns {Promise<void>}
      */
-    async initializeStaticBuffer(weightRawArray) {
-        if (!this.descriptor)
-            throw Error("GraphDescriptor is not loaded.");
-        let descriptor = this.descriptor;
-        let staticBuffer = new __WEBPACK_IMPORTED_MODULE_0__buffer_buffer_webgpu__["a" /* default */](descriptor.memory_layout.static.size * Float32Array.BYTES_PER_ELEMENT);
-        this.staticBuffer = staticBuffer;
-        let decoder = Object(__WEBPACK_IMPORTED_MODULE_1__decoder_get_weight_decoder__["a" /* default */])(descriptor.weight_encoding);
-        await staticBuffer.write(await decoder.decode(new Uint8Array(weightRawArray)));
-        (await this.getInputViews())
-            .filter(view => !view.isDynamic)
-            .forEach(view => {
-            view.buffer = staticBuffer.bufferView.buffer;
+    DescriptorRunnerWebGPU.prototype.initializeStaticBuffer = function (weightRawArray) {
+        return __awaiter(this, void 0, void 0, function () {
+            var descriptor, staticBuffer, decoder, _a, _b;
+            return __generator(this, function (_c) {
+                switch (_c.label) {
+                    case 0:
+                        if (!this.descriptor)
+                            throw Error("GraphDescriptor is not loaded.");
+                        descriptor = this.descriptor;
+                        staticBuffer = new buffer_webgpu_1.default(descriptor.memory_layout.static.size * Float32Array.BYTES_PER_ELEMENT);
+                        this.staticBuffer = staticBuffer;
+                        decoder = get_weight_decoder_1.default(descriptor.weight_encoding);
+                        _b = (_a = staticBuffer).write;
+                        return [4 /*yield*/, decoder.decode(new Uint8Array(weightRawArray))];
+                    case 1: return [4 /*yield*/, _b.apply(_a, [_c.sent()])];
+                    case 2:
+                        _c.sent();
+                        return [4 /*yield*/, this.getInputViews()];
+                    case 3:
+                        (_c.sent())
+                            .filter(function (view) { return !view.isDynamic; })
+                            .forEach(function (view) {
+                            view.buffer = staticBuffer.bufferView.buffer;
+                        });
+                        return [4 /*yield*/, this.getOutputViews()];
+                    case 4:
+                        (_c.sent())
+                            .filter(function (view) { return !view.isDynamic; })
+                            .forEach(function (view) {
+                            view.buffer = staticBuffer.bufferView.buffer;
+                        });
+                        return [2 /*return*/];
+                }
+            });
         });
-        (await this.getOutputViews())
-            .filter(view => !view.isDynamic)
-            .forEach(view => {
-            view.buffer = staticBuffer.bufferView.buffer;
-        });
-    }
+    };
     /**
      * Initialize meta buffers, which contains metadata shared in each GPU kernel thread (ex. hyper parameters).
      * @returns {Promise<void>}
      */
-    async initializeMetaBuffers() {
-        if (!this.descriptor)
-            throw Error("GraphDescriptor is not loaded.");
-        this.metaBuffers = await Promise.all(this.descriptor.exec_infos.map(async (executionInfo) => {
-            let buffer = new __WEBPACK_IMPORTED_MODULE_0__buffer_buffer_webgpu__["a" /* default */](executionInfo.meta_buffer.length * Int32Array.BYTES_PER_ELEMENT);
-            await buffer.write(new Uint8Array(executionInfo.meta_buffer));
-            return buffer;
-        }));
-    }
+    DescriptorRunnerWebGPU.prototype.initializeMetaBuffers = function () {
+        return __awaiter(this, void 0, void 0, function () {
+            var _this = this;
+            var _a;
+            return __generator(this, function (_b) {
+                switch (_b.label) {
+                    case 0:
+                        if (!this.descriptor)
+                            throw Error("GraphDescriptor is not loaded.");
+                        _a = this;
+                        return [4 /*yield*/, Promise.all(this.descriptor.exec_infos.map(function (executionInfo) { return __awaiter(_this, void 0, void 0, function () {
+                                var buffer;
+                                return __generator(this, function (_a) {
+                                    switch (_a.label) {
+                                        case 0:
+                                            buffer = new buffer_webgpu_1.default(executionInfo.meta_buffer.length * Int32Array.BYTES_PER_ELEMENT);
+                                            return [4 /*yield*/, buffer.write(new Uint8Array(executionInfo.meta_buffer))];
+                                        case 1:
+                                            _a.sent();
+                                            return [2 /*return*/, buffer];
+                                    }
+                                });
+                            }); }))];
+                    case 1:
+                        _a.metaBuffers = _b.sent();
+                        return [2 /*return*/];
+                }
+            });
+        });
+    };
     /**
      * Initialize dynamic buffers, whose size and position cannot be determined without runtime-information such as input image size
      * (if it's dynamic).
@@ -10130,27 +13884,40 @@ using namespace metal;
      *
      * @returns {Promise<void>}
      */
-    async initializeDynamicBuffer() {
-        if (!this.descriptor)
-            throw Error("GraphDescriptor is not loaded.");
-        if (!this.placeholderContext)
-            throw Error("PlaceholderContext is not initialized.");
-        let descriptor = this.descriptor;
-        let placeholderContext = this.placeholderContext;
-        let dynamicBufferSize = placeholderContext.resolve(descriptor.memory_layout.dynamic.size);
-        let dynamicBuffer = new __WEBPACK_IMPORTED_MODULE_0__buffer_buffer_webgpu__["a" /* default */](dynamicBufferSize * Float32Array.BYTES_PER_ELEMENT);
-        this.dynamicBuffer = dynamicBuffer;
-        (await this.getInputViews())
-            .filter(view => view.isDynamic)
-            .forEach(view => {
-            view.buffer = dynamicBuffer.bufferView.buffer;
+    DescriptorRunnerWebGPU.prototype.initializeDynamicBuffer = function () {
+        return __awaiter(this, void 0, void 0, function () {
+            var descriptor, placeholderContext, dynamicBufferSize, dynamicBuffer;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        if (!this.descriptor)
+                            throw Error("GraphDescriptor is not loaded.");
+                        if (!this.placeholderContext)
+                            throw Error("PlaceholderContext is not initialized.");
+                        descriptor = this.descriptor;
+                        placeholderContext = this.placeholderContext;
+                        dynamicBufferSize = placeholderContext.resolve(descriptor.memory_layout.dynamic.size);
+                        dynamicBuffer = new buffer_webgpu_1.default(dynamicBufferSize * Float32Array.BYTES_PER_ELEMENT);
+                        this.dynamicBuffer = dynamicBuffer;
+                        return [4 /*yield*/, this.getInputViews()];
+                    case 1:
+                        (_a.sent())
+                            .filter(function (view) { return view.isDynamic; })
+                            .forEach(function (view) {
+                            view.buffer = dynamicBuffer.bufferView.buffer;
+                        });
+                        return [4 /*yield*/, this.getOutputViews()];
+                    case 2:
+                        (_a.sent())
+                            .filter(function (view) { return view.isDynamic; })
+                            .forEach(function (view) {
+                            view.buffer = dynamicBuffer.bufferView.buffer;
+                        });
+                        return [2 /*return*/];
+                }
+            });
         });
-        (await this.getOutputViews())
-            .filter(view => view.isDynamic)
-            .forEach(view => {
-            view.buffer = dynamicBuffer.bufferView.buffer;
-        });
-    }
+    };
     /**
      * Set actual value into placeholder. If all placeholder is resolved,
      * [[DescriptorRunnerWebGPU#initializeDynamicBuffer|`initializeDynamicBuffer()`]] is automatically called.
@@ -10158,159 +13925,185 @@ using namespace metal;
      * @param values mapping object of placeholder name and value
      * @returns {Promise<void>}
      */
-    async setPlaceholderValue(values) {
-        if (!this.placeholderContext)
-            throw new Error('PlaceholderContext is not initialized.');
-        let placeholderContext = this.placeholderContext;
-        placeholderContext.update(values);
-        if (!placeholderContext.isResolved)
-            return;
-        if (!this.descriptor)
-            throw new Error('Descriptor is not loaded');
-        if (!this.metaBuffers)
-            throw new Error('MetaBuffers are not initialized');
-        let descriptor = this.descriptor;
-        let metaBuffers = this.metaBuffers;
-        await this.initializeDynamicBuffer();
-        // resolve placeholders in execution info
-        this.executionInfos = await Promise.all(descriptor.exec_infos.map(async (executionInfo, i) => {
-            // resolve placeholders in meta buffer
-            let bufferView = new Int32Array(metaBuffers[i].bufferView.buffer);
-            for (let unresolved_value of executionInfo.unresolved_value_list) {
-                bufferView[unresolved_value.offset] = placeholderContext.resolve(unresolved_value.placeholder);
-            }
-            return placeholderContext.resolve(executionInfo);
-        }));
-    }
+    DescriptorRunnerWebGPU.prototype.setPlaceholderValue = function (values) {
+        return __awaiter(this, void 0, void 0, function () {
+            var _this = this;
+            var placeholderContext, descriptor, metaBuffers, _a;
+            return __generator(this, function (_b) {
+                switch (_b.label) {
+                    case 0:
+                        if (!this.placeholderContext)
+                            throw new Error('PlaceholderContext is not initialized.');
+                        placeholderContext = this.placeholderContext;
+                        placeholderContext.update(values);
+                        if (!placeholderContext.isResolved)
+                            return [2 /*return*/];
+                        if (!this.descriptor)
+                            throw new Error('Descriptor is not loaded');
+                        if (!this.metaBuffers)
+                            throw new Error('MetaBuffers are not initialized');
+                        descriptor = this.descriptor;
+                        metaBuffers = this.metaBuffers;
+                        return [4 /*yield*/, this.initializeDynamicBuffer()];
+                    case 1:
+                        _b.sent();
+                        // resolve placeholders in execution info
+                        _a = this;
+                        return [4 /*yield*/, Promise.all(descriptor.exec_infos.map(function (executionInfo, i) { return __awaiter(_this, void 0, void 0, function () {
+                                var bufferView, _i, _a, unresolved_value;
+                                return __generator(this, function (_b) {
+                                    bufferView = new Int32Array(metaBuffers[i].bufferView.buffer);
+                                    for (_i = 0, _a = executionInfo.unresolved_value_list; _i < _a.length; _i++) {
+                                        unresolved_value = _a[_i];
+                                        bufferView[unresolved_value.offset] = placeholderContext.resolve(unresolved_value.placeholder);
+                                    }
+                                    return [2 /*return*/, placeholderContext.resolve(executionInfo)];
+                                });
+                            }); }))];
+                    case 2:
+                        // resolve placeholders in execution info
+                        _a.executionInfos = _b.sent();
+                        return [2 /*return*/];
+                }
+            });
+        });
+    };
     /**
      * Get input [[webdnn.SymbolicFloat32Array|`SymbolicFloat32Array`]] object
      *
      * @returns array of input [[webdnn.SymbolicFloat32Array|`SymbolicFloat32Array`]]
      * @deprecated Use [[webdnn.DescriptorRunner.inputs|`inputs`]] instead
      */
-    getInputViews() {
+    DescriptorRunnerWebGPU.prototype.getInputViews = function () {
         if (this.inputs)
             return this.inputs;
         if (!this.descriptor)
             throw new Error('Descriptor is not loaded');
         if (!this.placeholderContext)
             throw new Error('PlaceholderContext is not initialized');
-        let descriptor = this.descriptor;
-        let placeholderContext = this.placeholderContext;
-        this.inputs = descriptor.inputs.map(name => {
-            let allocation = descriptor.memory_layout.static.allocations[name] || descriptor.memory_layout.dynamic.allocations[name];
-            let view = new __WEBPACK_IMPORTED_MODULE_4__symbolic_typed_array_symbolic_float32array__["a" /* default */](null, allocation.offset * __WEBPACK_IMPORTED_MODULE_4__symbolic_typed_array_symbolic_float32array__["a" /* default */].BYTES_PER_ELEMENT, allocation.size, placeholderContext);
+        var descriptor = this.descriptor;
+        var placeholderContext = this.placeholderContext;
+        this.inputs = descriptor.inputs.map(function (name) {
+            var allocation = descriptor.memory_layout.static.allocations[name] || descriptor.memory_layout.dynamic.allocations[name];
+            var view = new symbolic_float32array_1.default(null, allocation.offset * symbolic_float32array_1.default.BYTES_PER_ELEMENT, allocation.size, placeholderContext);
             return view;
         });
         return this.inputs;
-    }
+    };
     /**
      * Get output [[webdnn.SymbolicFloat32Array|`SymbolicFloat32Array`]] object
      *
      * @returns array of output [[webdnn.SymbolicFloat32Array|`SymbolicFloat32Array`]]
      * @deprecated Use [[webdnn.DescriptorRunner.outputs|`outputs`]] instead
      */
-    getOutputViews() {
+    DescriptorRunnerWebGPU.prototype.getOutputViews = function () {
         if (this.outputs)
             return this.outputs;
         if (!this.descriptor)
             throw new Error('Descriptor is not loaded');
         if (!this.placeholderContext)
             throw new Error('PlaceholderContext is not initialized');
-        let descriptor = this.descriptor;
-        let placeholderContext = this.placeholderContext;
-        this.outputs = descriptor.outputs.map(name => {
-            let allocation = descriptor.memory_layout.static.allocations[name] || descriptor.memory_layout.dynamic.allocations[name];
-            let view = new __WEBPACK_IMPORTED_MODULE_4__symbolic_typed_array_symbolic_float32array__["a" /* default */](null, allocation.offset * __WEBPACK_IMPORTED_MODULE_4__symbolic_typed_array_symbolic_float32array__["a" /* default */].BYTES_PER_ELEMENT, allocation.size, placeholderContext);
+        var descriptor = this.descriptor;
+        var placeholderContext = this.placeholderContext;
+        this.outputs = descriptor.outputs.map(function (name) {
+            var allocation = descriptor.memory_layout.static.allocations[name] || descriptor.memory_layout.dynamic.allocations[name];
+            var view = new symbolic_float32array_1.default(null, allocation.offset * symbolic_float32array_1.default.BYTES_PER_ELEMENT, allocation.size, placeholderContext);
             return view;
         });
         return this.outputs;
-    }
+    };
     /**
      * Run descriptor. You must call [[webdnn.DescriptorRunner.getInputViews|`getInputViews`]] and
      * [[webdnn.DescriptorRunner.getOutputViews|`getOutputViews`]] before calling this function.
      */
-    async run() {
-        if (!this.executionInfos)
-            throw new Error('ExecutionInfos is not loaded');
-        if (!this.staticBuffer)
-            throw new Error('StaticBuffer is not initialized');
-        if (!this.dynamicBuffer)
-            throw new Error('DynamicBuffer is not initialized');
-        if (!this.metaBuffers)
-            throw new Error('MetaBuffer is not initialized');
-        if (!this.placeholderContext)
-            throw new Error('PlaceholderContext is not initialized');
-        if (!this.placeholderContext.isResolved)
-            throw new Error(`Not all placeholders are resolved: ${this.placeholderContext}`);
-        let staticBuffer = this.staticBuffer;
-        let dynamicBuffer = this.dynamicBuffer;
-        let metaBuffers = this.metaBuffers;
-        if (Object(__WEBPACK_IMPORTED_MODULE_6__webdnn__["getConfiguration"])('DEBUG', false)) {
-            let records = [];
-            let totalElapsedTime = 0;
-            for (let i = 0; i < this.executionInfos.length; i++) {
-                let exec_info = this.executionInfos[i];
-                let start = performance.now();
-                await this.webgpuHandler.executeSinglePipelineState('descriptor.' + exec_info.entry_func_name, exec_info.threadgroups_per_grid, exec_info.threads_per_thread_group, [staticBuffer, dynamicBuffer, metaBuffers[i]], true);
-                let elapsedTime = performance.now() - start;
-                records.push({
-                    'Kernel': exec_info.entry_func_name,
-                    'Elapsed time [ms]': elapsedTime
-                });
-                totalElapsedTime += elapsedTime;
-            }
-            let summary = Array.from(Object.values(records.reduce((summary, record) => {
-                if (!(record['Kernel'] in summary)) {
-                    summary[record['Kernel']] = {
-                        'Kernel': record['Kernel'],
-                        'Count': 0,
-                        'Elapsed time [ms]': 0,
-                    };
+    DescriptorRunnerWebGPU.prototype.run = function () {
+        return __awaiter(this, void 0, void 0, function () {
+            var staticBuffer, dynamicBuffer, metaBuffers, records, totalElapsedTime_1, i, exec_info, start, elapsedTime, summary, complete_promise, i, exec_info, is_last;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        if (!this.executionInfos)
+                            throw new Error('ExecutionInfos is not loaded');
+                        if (!this.staticBuffer)
+                            throw new Error('StaticBuffer is not initialized');
+                        if (!this.dynamicBuffer)
+                            throw new Error('DynamicBuffer is not initialized');
+                        if (!this.metaBuffers)
+                            throw new Error('MetaBuffer is not initialized');
+                        if (!this.placeholderContext)
+                            throw new Error('PlaceholderContext is not initialized');
+                        if (!this.placeholderContext.isResolved)
+                            throw new Error("Not all placeholders are resolved: " + this.placeholderContext);
+                        staticBuffer = this.staticBuffer;
+                        dynamicBuffer = this.dynamicBuffer;
+                        metaBuffers = this.metaBuffers;
+                        if (!webdnn_1.getConfiguration('DEBUG', false)) return [3 /*break*/, 5];
+                        records = [];
+                        totalElapsedTime_1 = 0;
+                        i = 0;
+                        _a.label = 1;
+                    case 1:
+                        if (!(i < this.executionInfos.length)) return [3 /*break*/, 4];
+                        exec_info = this.executionInfos[i];
+                        start = performance.now();
+                        return [4 /*yield*/, this.webgpuHandler.executeSinglePipelineState('descriptor.' + exec_info.entry_func_name, exec_info.threadgroups_per_grid, exec_info.threads_per_thread_group, [staticBuffer, dynamicBuffer, metaBuffers[i]], true)];
+                    case 2:
+                        _a.sent();
+                        elapsedTime = performance.now() - start;
+                        records.push({
+                            'Kernel': exec_info.entry_func_name,
+                            'Elapsed time [ms]': elapsedTime
+                        });
+                        totalElapsedTime_1 += elapsedTime;
+                        _a.label = 3;
+                    case 3:
+                        i++;
+                        return [3 /*break*/, 1];
+                    case 4:
+                        summary = Array.from(Object.values(records.reduce(function (summary, record) {
+                            if (!(record['Kernel'] in summary)) {
+                                summary[record['Kernel']] = {
+                                    'Kernel': record['Kernel'],
+                                    'Count': 0,
+                                    'Elapsed time [ms]': 0,
+                                };
+                            }
+                            summary[record['Kernel']]['Count']++;
+                            summary[record['Kernel']]['Elapsed time [ms]'] += record['Elapsed time [ms]'];
+                            return summary;
+                        }, {})));
+                        summary.forEach(function (record) { return record['Ratio [%]'] = (record['Elapsed time [ms]'] / totalElapsedTime_1).toFixed(2); });
+                        console.table(records);
+                        console.table(summary);
+                        return [3 /*break*/, 6];
+                    case 5:
+                        complete_promise = null;
+                        for (i = 0; i < this.executionInfos.length; i++) {
+                            exec_info = this.executionInfos[i];
+                            is_last = i == this.executionInfos.length - 1;
+                            complete_promise = this.webgpuHandler.executeSinglePipelineState('descriptor.' + exec_info.entry_func_name, exec_info.threadgroups_per_grid, exec_info.threads_per_thread_group, [staticBuffer, dynamicBuffer, metaBuffers[i]], is_last);
+                        }
+                        return [2 /*return*/, complete_promise]; //wait to finish final kernel
+                    case 6: return [2 /*return*/];
                 }
-                summary[record['Kernel']]['Count']++;
-                summary[record['Kernel']]['Elapsed time [ms]'] += record['Elapsed time [ms]'];
-                return summary;
-            }, {})));
-            summary.forEach(record => record['Ratio [%]'] = (record['Elapsed time [ms]'] / totalElapsedTime).toFixed(2));
-            console.table(records);
-            console.table(summary);
-        }
-        else {
-            let complete_promise = null;
-            for (let i = 0; i < this.executionInfos.length; i++) {
-                let exec_info = this.executionInfos[i];
-                let is_last = i == this.executionInfos.length - 1;
-                complete_promise = this.webgpuHandler.executeSinglePipelineState('descriptor.' + exec_info.entry_func_name, exec_info.threadgroups_per_grid, exec_info.threads_per_thread_group, [staticBuffer, dynamicBuffer, metaBuffers[i]], is_last);
-            }
-            return complete_promise; //wait to finish final kernel
-        }
-        // this._running = false;
-    }
-}
-/* harmony export (immutable) */ __webpack_exports__["a"] = DescriptorRunnerWebGPU;
-
+            });
+        });
+    };
+    return DescriptorRunnerWebGPU;
+}(descriptor_runner_1.DescriptorRunner));
+exports.default = DescriptorRunnerWebGPU;
 
 
 /***/ }),
-/* 40 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
+/* 41 */
+/***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__image_enums__ = __webpack_require__(18);
-/* harmony namespace reexport (by provided) */ __webpack_require__.d(__webpack_exports__, "Order", function() { return __WEBPACK_IMPORTED_MODULE_0__image_enums__["b"]; });
-/* harmony namespace reexport (by provided) */ __webpack_require__.d(__webpack_exports__, "Color", function() { return __WEBPACK_IMPORTED_MODULE_0__image_enums__["a"]; });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__image_image_array__ = __webpack_require__(41);
-/* harmony namespace reexport (by provided) */ __webpack_require__.d(__webpack_exports__, "getImageArrayFromImageData", function() { return __WEBPACK_IMPORTED_MODULE_1__image_image_array__["d"]; });
-/* harmony namespace reexport (by provided) */ __webpack_require__.d(__webpack_exports__, "getImageArrayFromCanvas", function() { return __WEBPACK_IMPORTED_MODULE_1__image_image_array__["b"]; });
-/* harmony namespace reexport (by provided) */ __webpack_require__.d(__webpack_exports__, "getImageArrayFromDrawable", function() { return __WEBPACK_IMPORTED_MODULE_1__image_image_array__["c"]; });
-/* harmony namespace reexport (by provided) */ __webpack_require__.d(__webpack_exports__, "getImageArray", function() { return __WEBPACK_IMPORTED_MODULE_1__image_image_array__["a"]; });
-/* harmony namespace reexport (by provided) */ __webpack_require__.d(__webpack_exports__, "setImageArrayToCanvas", function() { return __WEBPACK_IMPORTED_MODULE_1__image_image_array__["e"]; });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__image_image_source__ = __webpack_require__(20);
-/* harmony namespace reexport (by provided) */ __webpack_require__.d(__webpack_exports__, "loadImageByUrl", function() { return __WEBPACK_IMPORTED_MODULE_2__image_image_source__["b"]; });
-/* harmony namespace reexport (by provided) */ __webpack_require__.d(__webpack_exports__, "loadImageFromFileInput", function() { return __WEBPACK_IMPORTED_MODULE_2__image_image_source__["c"]; });
-/* harmony namespace reexport (by provided) */ __webpack_require__.d(__webpack_exports__, "loadImageByDialog", function() { return __WEBPACK_IMPORTED_MODULE_2__image_image_source__["a"]; });
+
+function __export(m) {
+    for (var p in m) if (!exports.hasOwnProperty(p)) exports[p] = m[p];
+}
+Object.defineProperty(exports, "__esModule", { value: true });
 /**
  * @module webdnn/image
  * @preferred
@@ -10325,39 +14118,67 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
  */
 /** Don't Remove This comment block */
 // export * from "./image/canvas" // internal API
-
-
+__export(__webpack_require__(18));
+__export(__webpack_require__(42));
 // export * from "./image/image_data" // internal API
-
+__export(__webpack_require__(20));
 
 
 /***/ }),
-/* 41 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
+/* 42 */
+/***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-/* harmony export (immutable) */ __webpack_exports__["d"] = getImageArrayFromImageData;
-/* harmony export (immutable) */ __webpack_exports__["b"] = getImageArrayFromCanvas;
-/* harmony export (immutable) */ __webpack_exports__["c"] = getImageArrayFromDrawable;
-/* harmony export (immutable) */ __webpack_exports__["a"] = getImageArray;
-/* harmony export (immutable) */ __webpack_exports__["e"] = setImageArrayToCanvas;
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__canvas__ = __webpack_require__(19);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__enums__ = __webpack_require__(18);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__image_data__ = __webpack_require__(42);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__image_source__ = __webpack_require__(20);
+
 /**
  * @module webdnn/image
  */
 /** Don't Remove This comment block */
-
-
-
-
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : new P(function (resolve) { resolve(result.value); }).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
+var __generator = (this && this.__generator) || function (thisArg, body) {
+    var _ = { label: 0, sent: function() { if (t[0] & 1) throw t[1]; return t[1]; }, trys: [], ops: [] }, f, y, t, g;
+    return g = { next: verb(0), "throw": verb(1), "return": verb(2) }, typeof Symbol === "function" && (g[Symbol.iterator] = function() { return this; }), g;
+    function verb(n) { return function (v) { return step([n, v]); }; }
+    function step(op) {
+        if (f) throw new TypeError("Generator is already executing.");
+        while (_) try {
+            if (f = 1, y && (t = y[op[0] & 2 ? "return" : op[0] ? "throw" : "next"]) && !(t = t.call(y, op[1])).done) return t;
+            if (y = 0, t) op = [0, t.value];
+            switch (op[0]) {
+                case 0: case 1: t = op; break;
+                case 4: _.label++; return { value: op[1], done: false };
+                case 5: _.label++; y = op[1]; op = [0]; continue;
+                case 7: op = _.ops.pop(); _.trys.pop(); continue;
+                default:
+                    if (!(t = _.trys, t = t.length > 0 && t[t.length - 1]) && (op[0] === 6 || op[0] === 2)) { _ = 0; continue; }
+                    if (op[0] === 3 && (!t || (op[1] > t[0] && op[1] < t[3]))) { _.label = op[1]; break; }
+                    if (op[0] === 6 && _.label < t[1]) { _.label = t[1]; t = op; break; }
+                    if (t && _.label < t[2]) { _.label = t[2]; _.ops.push(op); break; }
+                    if (t[2]) _.ops.pop();
+                    _.trys.pop(); continue;
+            }
+            op = body.call(thisArg, _);
+        } catch (e) { op = [6, e]; y = 0; } finally { f = t = 0; }
+        if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
+    }
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+var canvas_1 = __webpack_require__(19);
+var enums_1 = __webpack_require__(18);
+var image_data_1 = __webpack_require__(43);
+var image_source_1 = __webpack_require__(20);
 /**
  * @protected
  */
 function flatten(arr) {
-    return (arr instanceof Array) ? Array.prototype.concat.apply([], arr.map(arr => flatten(arr))) : arr;
+    return (arr instanceof Array) ? Array.prototype.concat.apply([], arr.map(function (arr) { return flatten(arr); })) : arr;
 }
 /**
  * @protected
@@ -10384,34 +14205,35 @@ function normalizeBiasTuple(arr) {
  * @returns {ArrayBufferView} buffer with specified type
  * @protected
  */
-function getImageArrayFromImageData(imageData, options = {}) {
-    let { type = Float32Array, color = __WEBPACK_IMPORTED_MODULE_1__enums__["a" /* Color */].RGB, order = __WEBPACK_IMPORTED_MODULE_1__enums__["b" /* Order */].HWC, bias = [0, 0, 0], scale = [1, 1, 1] } = options;
-    const bias_n = normalizeBiasTuple(bias);
-    const scale_n = normalizeBiasTuple(scale);
-    const width = imageData.width;
-    const height = imageData.height;
-    let data = imageData.data;
-    let array;
-    let biasR, biasG, biasB;
-    let scaleR, scaleG, scaleB;
+function getImageArrayFromImageData(imageData, options) {
+    if (options === void 0) { options = {}; }
+    var _a = options.type, type = _a === void 0 ? Float32Array : _a, _b = options.color, color = _b === void 0 ? enums_1.Color.RGB : _b, _c = options.order, order = _c === void 0 ? enums_1.Order.HWC : _c, _d = options.bias, bias = _d === void 0 ? [0, 0, 0] : _d, _e = options.scale, scale = _e === void 0 ? [1, 1, 1] : _e;
+    var bias_n = normalizeBiasTuple(bias);
+    var scale_n = normalizeBiasTuple(scale);
+    var width = imageData.width;
+    var height = imageData.height;
+    var data = imageData.data;
+    var array;
+    var biasR, biasG, biasB;
+    var scaleR, scaleG, scaleB;
     switch (color) {
-        case __WEBPACK_IMPORTED_MODULE_1__enums__["a" /* Color */].RGB:
+        case enums_1.Color.RGB:
             array = new type(width * height * 3);
-            [scaleR, scaleG, scaleB] = scale_n;
-            [biasR, biasG, biasB] = bias_n;
+            scaleR = scale_n[0], scaleG = scale_n[1], scaleB = scale_n[2];
+            biasR = bias_n[0], biasG = bias_n[1], biasB = bias_n[2];
             switch (order) {
-                case __WEBPACK_IMPORTED_MODULE_1__enums__["b" /* Order */].HWC:
-                    for (let h = 0; h < height; h++) {
-                        for (let w = 0; w < width; w++) {
+                case enums_1.Order.HWC:
+                    for (var h = 0; h < height; h++) {
+                        for (var w = 0; w < width; w++) {
                             array[(h * width + w) * 3 + 0] = (data[(h * width + w) * 4 + 0] - biasR) / scaleR;
                             array[(h * width + w) * 3 + 1] = (data[(h * width + w) * 4 + 1] - biasG) / scaleG;
                             array[(h * width + w) * 3 + 2] = (data[(h * width + w) * 4 + 2] - biasB) / scaleB;
                         }
                     }
                     break;
-                case __WEBPACK_IMPORTED_MODULE_1__enums__["b" /* Order */].CHW:
-                    for (let h = 0; h < height; h++) {
-                        for (let w = 0; w < width; w++) {
+                case enums_1.Order.CHW:
+                    for (var h = 0; h < height; h++) {
+                        for (var w = 0; w < width; w++) {
                             array[(0 * height + h) * width + w] = (data[(h * width + w) * 4 + 0] - biasR) / scaleR;
                             array[(1 * height + h) * width + w] = (data[(h * width + w) * 4 + 1] - biasG) / scaleG;
                             array[(2 * height + h) * width + w] = (data[(h * width + w) * 4 + 2] - biasB) / scaleB;
@@ -10420,23 +14242,23 @@ function getImageArrayFromImageData(imageData, options = {}) {
                     break;
             }
             break;
-        case __WEBPACK_IMPORTED_MODULE_1__enums__["a" /* Color */].BGR:
+        case enums_1.Color.BGR:
             array = new type(width * height * 3);
-            [biasB, biasG, biasR] = bias_n;
-            [scaleB, scaleG, scaleR] = scale_n;
+            biasB = bias_n[0], biasG = bias_n[1], biasR = bias_n[2];
+            scaleB = scale_n[0], scaleG = scale_n[1], scaleR = scale_n[2];
             switch (order) {
-                case __WEBPACK_IMPORTED_MODULE_1__enums__["b" /* Order */].HWC:
-                    for (let h = 0; h < height; h++) {
-                        for (let w = 0; w < width; w++) {
+                case enums_1.Order.HWC:
+                    for (var h = 0; h < height; h++) {
+                        for (var w = 0; w < width; w++) {
                             array[(h * width + w) * 3 + 0] = (data[(h * width + w) * 4 + 2] - biasR) / scaleR;
                             array[(h * width + w) * 3 + 1] = (data[(h * width + w) * 4 + 1] - biasG) / scaleG;
                             array[(h * width + w) * 3 + 2] = (data[(h * width + w) * 4 + 0] - biasB) / scaleB;
                         }
                     }
                     break;
-                case __WEBPACK_IMPORTED_MODULE_1__enums__["b" /* Order */].CHW:
-                    for (let h = 0; h < height; h++) {
-                        for (let w = 0; w < width; w++) {
+                case enums_1.Order.CHW:
+                    for (var h = 0; h < height; h++) {
+                        for (var w = 0; w < width; w++) {
                             array[(0 * height + h) * width + w] = (data[(h * width + w) * 4 + 2] - biasR) / scaleR;
                             array[(1 * height + h) * width + w] = (data[(h * width + w) * 4 + 1] - biasG) / scaleG;
                             array[(2 * height + h) * width + w] = (data[(h * width + w) * 4 + 0] - biasB) / scaleB;
@@ -10445,44 +14267,48 @@ function getImageArrayFromImageData(imageData, options = {}) {
                     break;
             }
             break;
-        case __WEBPACK_IMPORTED_MODULE_1__enums__["a" /* Color */].GREY:
+        case enums_1.Color.GREY:
             array = new type(width * height);
-            [scaleR, scaleG, scaleB] = scale_n;
-            [biasR, biasG, biasB] = bias_n;
-            for (let h = 0; h < height; h++) {
-                for (let w = 0; w < width; w++) {
-                    let r = data[(h * width + w) * 4 + 0];
-                    let g = data[(h * width + w) * 4 + 1];
-                    let b = data[(h * width + w) * 4 + 2];
+            scaleR = scale_n[0], scaleG = scale_n[1], scaleB = scale_n[2];
+            biasR = bias_n[0], biasG = bias_n[1], biasB = bias_n[2];
+            for (var h = 0; h < height; h++) {
+                for (var w = 0; w < width; w++) {
+                    var r = data[(h * width + w) * 4 + 0];
+                    var g = data[(h * width + w) * 4 + 1];
+                    var b = data[(h * width + w) * 4 + 2];
                     array[h * width + w] = 0.2126 * (r - biasR) / scaleR + 0.7162 * (g - biasG) / scaleG + 0.0722 * (b - biasB) / scaleB;
                 }
             }
             break;
         default:
-            throw Error(`Unknown color format: ${color}`);
+            throw Error("Unknown color format: " + color);
     }
     return array;
 }
+exports.getImageArrayFromImageData = getImageArrayFromImageData;
 /**
  * Get image array from canvas element as `{Float32 or Int32}ArrayBufferView`.
  *
  * @returns {ImageData} buffer with specified type
  * @protected
  */
-function getImageArrayFromCanvas(canvas, options = {}) {
-    let { type = Float32Array, color = __WEBPACK_IMPORTED_MODULE_1__enums__["a" /* Color */].RGB, order = __WEBPACK_IMPORTED_MODULE_1__enums__["b" /* Order */].HWC, srcX = 0, srcY = 0, srcW = canvas.width, srcH = canvas.height, dstX = 0, dstY = 0, bias = [0, 0, 0], scale = [1, 1, 1] } = options;
-    let { dstW = srcW, dstH = srcH } = options;
-    let imageData = Object(__WEBPACK_IMPORTED_MODULE_2__image_data__["a" /* getImageData */])(canvas, { srcX, srcY, srcW, srcH, dstX, dstY, dstW, dstH });
-    return getImageArrayFromImageData(imageData, { type, color, order, bias, scale });
+function getImageArrayFromCanvas(canvas, options) {
+    if (options === void 0) { options = {}; }
+    var _a = options.type, type = _a === void 0 ? Float32Array : _a, _b = options.color, color = _b === void 0 ? enums_1.Color.RGB : _b, _c = options.order, order = _c === void 0 ? enums_1.Order.HWC : _c, _d = options.srcX, srcX = _d === void 0 ? 0 : _d, _e = options.srcY, srcY = _e === void 0 ? 0 : _e, _f = options.srcW, srcW = _f === void 0 ? canvas.width : _f, _g = options.srcH, srcH = _g === void 0 ? canvas.height : _g, _h = options.dstX, dstX = _h === void 0 ? 0 : _h, _j = options.dstY, dstY = _j === void 0 ? 0 : _j, _k = options.bias, bias = _k === void 0 ? [0, 0, 0] : _k, _l = options.scale, scale = _l === void 0 ? [1, 1, 1] : _l;
+    var _m = options.dstW, dstW = _m === void 0 ? srcW : _m, _o = options.dstH, dstH = _o === void 0 ? srcH : _o;
+    var imageData = image_data_1.getImageData(canvas, { srcX: srcX, srcY: srcY, srcW: srcW, srcH: srcH, dstX: dstX, dstY: dstY, dstW: dstW, dstH: dstH });
+    return getImageArrayFromImageData(imageData, { type: type, color: color, order: order, bias: bias, scale: scale });
 }
+exports.getImageArrayFromCanvas = getImageArrayFromCanvas;
 /**
  * Get image array from image element as `{Float32 or Int32}ArrayBufferView`.
  *
  * @returns {ImageData} buffer with specified type
  * @protected
  */
-function getImageArrayFromDrawable(drawable, options = {}) {
-    let srcW, srcH;
+function getImageArrayFromDrawable(drawable, options) {
+    if (options === void 0) { options = {}; }
+    var srcW, srcH;
     if (drawable instanceof HTMLVideoElement) {
         srcW = drawable.videoWidth;
         srcH = drawable.videoHeight;
@@ -10499,14 +14325,15 @@ function getImageArrayFromDrawable(drawable, options = {}) {
     }
     else
         throw TypeError('Failed to execute "getImageDataFromDrawable(drawable, options)": "drawable" must be an instanceof Drawable');
-    let { type = Float32Array, color = __WEBPACK_IMPORTED_MODULE_1__enums__["a" /* Color */].RGB, order = __WEBPACK_IMPORTED_MODULE_1__enums__["b" /* Order */].HWC, srcX = 0, srcY = 0, dstX = 0, dstY = 0, dstW = srcW, dstH = srcH, bias = [0, 0, 0], scale = [1, 1, 1] } = options;
-    let canvas = document.createElement('canvas');
+    var _a = options.type, type = _a === void 0 ? Float32Array : _a, _b = options.color, color = _b === void 0 ? enums_1.Color.RGB : _b, _c = options.order, order = _c === void 0 ? enums_1.Order.HWC : _c, _d = options.srcX, srcX = _d === void 0 ? 0 : _d, _e = options.srcY, srcY = _e === void 0 ? 0 : _e, _f = options.dstX, dstX = _f === void 0 ? 0 : _f, _g = options.dstY, dstY = _g === void 0 ? 0 : _g, _h = options.dstW, dstW = _h === void 0 ? srcW : _h, _j = options.dstH, dstH = _j === void 0 ? srcH : _j, _k = options.bias, bias = _k === void 0 ? [0, 0, 0] : _k, _l = options.scale, scale = _l === void 0 ? [1, 1, 1] : _l;
+    var canvas = document.createElement('canvas');
     canvas.width = dstX + dstW;
     canvas.height = dstY + dstH;
-    let context = Object(__WEBPACK_IMPORTED_MODULE_0__canvas__["a" /* getContext2D */])(canvas);
+    var context = canvas_1.getContext2D(canvas);
     context.drawImage(drawable, srcX, srcY, srcW, srcH, dstX, dstY, dstW, dstH);
-    return getImageArrayFromCanvas(canvas, { type, color, order, bias, scale });
+    return getImageArrayFromCanvas(canvas, { type: type, color: color, order: order, bias: bias, scale: scale });
 }
+exports.getImageArrayFromDrawable = getImageArrayFromDrawable;
 /**
  * Create typed array by packing image data from image source with specified options.
  *
@@ -10570,26 +14397,42 @@ function getImageArrayFromDrawable(drawable, options = {}) {
  * @param options please see above descriptions.
  * @returns Created typed array
  */
-async function getImageArray(image, options = {}) {
-    if (typeof image === 'string') {
-        return getImageArrayFromDrawable(await Object(__WEBPACK_IMPORTED_MODULE_3__image_source__["b" /* loadImageByUrl */])(image), options);
-    }
-    else if (image instanceof HTMLInputElement) {
-        return getImageArrayFromDrawable(await Object(__WEBPACK_IMPORTED_MODULE_3__image_source__["c" /* loadImageFromFileInput */])(image), options);
-    }
-    else if (image instanceof HTMLCanvasElement) {
-        return getImageArrayFromCanvas(image, options);
-    }
-    else if (image instanceof HTMLImageElement || image instanceof HTMLVideoElement) {
-        return getImageArrayFromDrawable(image, options);
-        // FIXME: This feature is not supported for all web browsers.
-        // } else if (image === null) {
-        //     return getImageArrayFromDrawable(await loadImageByDialog(), options);
-    }
-    else
-        throw TypeError('Failed to execute "getImageData(image, options)": "image" must be an instance of string,' +
-            ' HTMLInputElement, HTMLCanvasElement, HTMLImageElement, or HTMLVideoElement object');
+function getImageArray(image, options) {
+    if (options === void 0) { options = {}; }
+    return __awaiter(this, void 0, void 0, function () {
+        var _a, _b;
+        return __generator(this, function (_c) {
+            switch (_c.label) {
+                case 0:
+                    if (!(typeof image === 'string')) return [3 /*break*/, 2];
+                    _a = getImageArrayFromDrawable;
+                    return [4 /*yield*/, image_source_1.loadImageByUrl(image)];
+                case 1: return [2 /*return*/, _a.apply(void 0, [_c.sent(), options])];
+                case 2:
+                    if (!(image instanceof HTMLInputElement)) return [3 /*break*/, 4];
+                    _b = getImageArrayFromDrawable;
+                    return [4 /*yield*/, image_source_1.loadImageFromFileInput(image)];
+                case 3: return [2 /*return*/, _b.apply(void 0, [_c.sent(), options])];
+                case 4:
+                    if (image instanceof HTMLCanvasElement) {
+                        return [2 /*return*/, getImageArrayFromCanvas(image, options)];
+                    }
+                    else if (image instanceof HTMLImageElement || image instanceof HTMLVideoElement) {
+                        return [2 /*return*/, getImageArrayFromDrawable(image, options)];
+                        // FIXME: This feature is not supported for all web browsers.
+                        // } else if (image === null) {
+                        //     return getImageArrayFromDrawable(await loadImageByDialog(), options);
+                    }
+                    else
+                        throw TypeError('Failed to execute "getImageData(image, options)": "image" must be an instance of string,' +
+                            ' HTMLInputElement, HTMLCanvasElement, HTMLImageElement, or HTMLVideoElement object');
+                    _c.label = 5;
+                case 5: return [2 /*return*/];
+            }
+        });
+    });
 }
+exports.getImageArray = getImageArray;
 /**
  * Set image array data into canvas.
  *
@@ -10623,23 +14466,24 @@ async function getImageArray(image, options = {}) {
  * @param options please see above descriptions and descriptions in [[webdnn/image.getImageArray|getImageArray()]].
  *                `srcW` and `srcH` is ignored (overwritten by `imageW` and `imageH`).
  */
-function setImageArrayToCanvas(array, imageW, imageH, canvas, options = {}) {
-    let { color = __WEBPACK_IMPORTED_MODULE_1__enums__["a" /* Color */].RGB, order = __WEBPACK_IMPORTED_MODULE_1__enums__["b" /* Order */].HWC, srcX = 0, srcY = 0, dstX = 0, dstY = 0, dstW = canvas.width, dstH = canvas.height, bias = [0, 0, 0], scale = [1, 1, 1] } = options;
-    const bias_n = normalizeBiasTuple(bias);
-    const scale_n = normalizeBiasTuple(scale);
-    let srcW = imageW, srcH = imageH;
+function setImageArrayToCanvas(array, imageW, imageH, canvas, options) {
+    if (options === void 0) { options = {}; }
+    var _a = options.color, color = _a === void 0 ? enums_1.Color.RGB : _a, _b = options.order, order = _b === void 0 ? enums_1.Order.HWC : _b, _c = options.srcX, srcX = _c === void 0 ? 0 : _c, _d = options.srcY, srcY = _d === void 0 ? 0 : _d, _e = options.dstX, dstX = _e === void 0 ? 0 : _e, _f = options.dstY, dstY = _f === void 0 ? 0 : _f, _g = options.dstW, dstW = _g === void 0 ? canvas.width : _g, _h = options.dstH, dstH = _h === void 0 ? canvas.height : _h, _j = options.bias, bias = _j === void 0 ? [0, 0, 0] : _j, _k = options.scale, scale = _k === void 0 ? [1, 1, 1] : _k;
+    var bias_n = normalizeBiasTuple(bias);
+    var scale_n = normalizeBiasTuple(scale);
+    var srcW = imageW, srcH = imageH;
     array = flatten(array);
-    let data = new Uint8ClampedArray(srcW * srcH * 4);
-    let biasR, biasG, biasB;
-    let scaleR, scaleG, scaleB;
+    var data = new Uint8ClampedArray(srcW * srcH * 4);
+    var biasR, biasG, biasB;
+    var scaleR, scaleG, scaleB;
     switch (color) {
-        case __WEBPACK_IMPORTED_MODULE_1__enums__["a" /* Color */].RGB:
-            [biasR, biasG, biasB] = bias_n;
-            [scaleR, scaleG, scaleB] = scale_n;
+        case enums_1.Color.RGB:
+            biasR = bias_n[0], biasG = bias_n[1], biasB = bias_n[2];
+            scaleR = scale_n[0], scaleG = scale_n[1], scaleB = scale_n[2];
             switch (order) {
-                case __WEBPACK_IMPORTED_MODULE_1__enums__["b" /* Order */].HWC:
-                    for (let h = srcY; h < srcY + srcH; h++) {
-                        for (let w = srcX; w < srcX + srcW; w++) {
+                case enums_1.Order.HWC:
+                    for (var h = srcY; h < srcY + srcH; h++) {
+                        for (var w = srcX; w < srcX + srcW; w++) {
                             data[(h * imageW + w) * 4 + 0] = array[(h * imageW + w) * 3 + 0] * scaleR + biasR;
                             data[(h * imageW + w) * 4 + 1] = array[(h * imageW + w) * 3 + 1] * scaleG + biasG;
                             data[(h * imageW + w) * 4 + 2] = array[(h * imageW + w) * 3 + 2] * scaleB + biasB;
@@ -10647,9 +14491,9 @@ function setImageArrayToCanvas(array, imageW, imageH, canvas, options = {}) {
                         }
                     }
                     break;
-                case __WEBPACK_IMPORTED_MODULE_1__enums__["b" /* Order */].CHW:
-                    for (let h = srcY; h < srcY + srcH; h++) {
-                        for (let w = srcX; w < srcX + srcW; w++) {
+                case enums_1.Order.CHW:
+                    for (var h = srcY; h < srcY + srcH; h++) {
+                        for (var w = srcX; w < srcX + srcW; w++) {
                             data[(h * imageW + w) * 4 + 0] = array[(0 * imageH + h) * imageW + w] * scaleR + biasR;
                             data[(h * imageW + w) * 4 + 1] = array[(1 * imageH + h) * imageW + w] * scaleG + biasG;
                             data[(h * imageW + w) * 4 + 2] = array[(2 * imageH + h) * imageW + w] * scaleB + biasB;
@@ -10659,13 +14503,13 @@ function setImageArrayToCanvas(array, imageW, imageH, canvas, options = {}) {
                     break;
             }
             break;
-        case __WEBPACK_IMPORTED_MODULE_1__enums__["a" /* Color */].BGR:
-            [biasB, biasG, biasR] = bias_n;
-            [scaleB, scaleG, scaleR] = scale_n;
+        case enums_1.Color.BGR:
+            biasB = bias_n[0], biasG = bias_n[1], biasR = bias_n[2];
+            scaleB = scale_n[0], scaleG = scale_n[1], scaleR = scale_n[2];
             switch (order) {
-                case __WEBPACK_IMPORTED_MODULE_1__enums__["b" /* Order */].HWC:
-                    for (let h = srcY; h < srcY + srcH; h++) {
-                        for (let w = srcX; w < srcX + srcW; w++) {
+                case enums_1.Order.HWC:
+                    for (var h = srcY; h < srcY + srcH; h++) {
+                        for (var w = srcX; w < srcX + srcW; w++) {
                             data[(h * imageW + w) * 4 + 0] = array[(h * imageW + w) * 3 + 2] * scaleR + biasR;
                             data[(h * imageW + w) * 4 + 1] = array[(h * imageW + w) * 3 + 1] * scaleG + biasG;
                             data[(h * imageW + w) * 4 + 2] = array[(h * imageW + w) * 3 + 0] * scaleB + biasB;
@@ -10673,9 +14517,9 @@ function setImageArrayToCanvas(array, imageW, imageH, canvas, options = {}) {
                         }
                     }
                     break;
-                case __WEBPACK_IMPORTED_MODULE_1__enums__["b" /* Order */].CHW:
-                    for (let h = srcY; h < srcY + srcH; h++) {
-                        for (let w = srcX; w < srcX + srcW; w++) {
+                case enums_1.Order.CHW:
+                    for (var h = srcY; h < srcY + srcH; h++) {
+                        for (var w = srcX; w < srcX + srcW; w++) {
                             data[(h * imageW + w) * 4 + 0] = array[(2 * imageH + h) * imageW + w] * scaleR + biasR;
                             data[(h * imageW + w) * 4 + 1] = array[(1 * imageH + h) * imageW + w] * scaleG + biasG;
                             data[(h * imageW + w) * 4 + 2] = array[(0 * imageH + h) * imageW + w] * scaleB + biasB;
@@ -10685,9 +14529,9 @@ function setImageArrayToCanvas(array, imageW, imageH, canvas, options = {}) {
                     break;
             }
             break;
-        case __WEBPACK_IMPORTED_MODULE_1__enums__["a" /* Color */].GREY:
-            for (let h = srcY; h < srcY + srcH; h++) {
-                for (let w = srcX; w < srcX + srcW; w++) {
+        case enums_1.Color.GREY:
+            for (var h = srcY; h < srcY + srcH; h++) {
+                for (var w = srcX; w < srcX + srcW; w++) {
                     data[(h * imageW + w) * 4 + 0] =
                         data[(h * imageW + w) * 4 + 1] =
                             data[(h * imageW + w) * 4 + 2] = array[h * imageW + w] * scale[0] + bias[0];
@@ -10696,42 +14540,43 @@ function setImageArrayToCanvas(array, imageW, imageH, canvas, options = {}) {
             }
             break;
     }
-    Object(__WEBPACK_IMPORTED_MODULE_2__image_data__["b" /* setImageDataToCanvas */])(new ImageData(data, srcW, srcH), canvas, { srcX, srcY, srcW, srcH, dstX, dstY, dstW, dstH });
+    image_data_1.setImageDataToCanvas(new ImageData(data, srcW, srcH), canvas, { srcX: srcX, srcY: srcY, srcW: srcW, srcH: srcH, dstX: dstX, dstY: dstY, dstW: dstW, dstH: dstH });
 }
+exports.setImageArrayToCanvas = setImageArrayToCanvas;
 
 
 /***/ }),
-/* 42 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
+/* 43 */
+/***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-/* unused harmony export getImageDataFromCanvas */
-/* unused harmony export getImageDataFromDrawable */
-/* harmony export (immutable) */ __webpack_exports__["a"] = getImageData;
-/* harmony export (immutable) */ __webpack_exports__["b"] = setImageDataToCanvas;
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__canvas__ = __webpack_require__(19);
+
 /**
  * @module webdnn/image
  */
 /** Don't Remove This comment block */
-
+Object.defineProperty(exports, "__esModule", { value: true });
+var canvas_1 = __webpack_require__(19);
 /**
  * @protected
  */
-function getImageDataFromCanvas(canvas, options = {}) {
-    let { srcX = 0, srcY = 0, srcW = canvas.width, srcH = canvas.height, dstX = 0, dstY = 0 } = options;
-    let { dstW = srcW, dstH = srcH } = options;
-    let imageData = Object(__WEBPACK_IMPORTED_MODULE_0__canvas__["a" /* getContext2D */])(canvas).getImageData(srcX, srcY, srcW, srcH);
+function getImageDataFromCanvas(canvas, options) {
+    if (options === void 0) { options = {}; }
+    var _a = options.srcX, srcX = _a === void 0 ? 0 : _a, _b = options.srcY, srcY = _b === void 0 ? 0 : _b, _c = options.srcW, srcW = _c === void 0 ? canvas.width : _c, _d = options.srcH, srcH = _d === void 0 ? canvas.height : _d, _e = options.dstX, dstX = _e === void 0 ? 0 : _e, _f = options.dstY, dstY = _f === void 0 ? 0 : _f;
+    var _g = options.dstW, dstW = _g === void 0 ? srcW : _g, _h = options.dstH, dstH = _h === void 0 ? srcH : _h;
+    var imageData = canvas_1.getContext2D(canvas).getImageData(srcX, srcY, srcW, srcH);
     if (dstX !== 0 || dstY !== 0 || srcW !== dstW || srcH !== dstH) {
-        imageData = cropAndResizeImageData(imageData, { dstX, dstY, dstW, dstH });
+        imageData = cropAndResizeImageData(imageData, { dstX: dstX, dstY: dstY, dstW: dstW, dstH: dstH });
     }
     return imageData;
 }
+exports.getImageDataFromCanvas = getImageDataFromCanvas;
 /**
  * @protected
  */
-function getImageDataFromDrawable(drawable, options = {}) {
-    let srcW, srcH;
+function getImageDataFromDrawable(drawable, options) {
+    if (options === void 0) { options = {}; }
+    var srcW, srcH;
     if (drawable instanceof HTMLVideoElement) {
         srcW = drawable.videoWidth;
         srcH = drawable.videoHeight;
@@ -10742,14 +14587,15 @@ function getImageDataFromDrawable(drawable, options = {}) {
     }
     else
         throw TypeError('Failed to execute "getImageDataFromDrawable(drawable, options)": "drawable" must be an instanceof HTMLVideoElement or HTMLImageElement');
-    let { srcX = 0, srcY = 0, dstX = 0, dstY = 0, dstW = srcW, dstH = srcH } = options;
-    let canvas = document.createElement('canvas');
+    var _a = options.srcX, srcX = _a === void 0 ? 0 : _a, _b = options.srcY, srcY = _b === void 0 ? 0 : _b, _c = options.dstX, dstX = _c === void 0 ? 0 : _c, _d = options.dstY, dstY = _d === void 0 ? 0 : _d, _e = options.dstW, dstW = _e === void 0 ? srcW : _e, _f = options.dstH, dstH = _f === void 0 ? srcH : _f;
+    var canvas = document.createElement('canvas');
     canvas.width = dstX + dstW;
     canvas.height = dstY + dstH;
-    let context = Object(__WEBPACK_IMPORTED_MODULE_0__canvas__["a" /* getContext2D */])(canvas);
+    var context = canvas_1.getContext2D(canvas);
     context.drawImage(drawable, srcX, srcY, srcW, srcH, dstX, dstY, dstW, dstH);
     return context.getImageData(0, 0, dstX + dstW, dstY + dstH);
 }
+exports.getImageDataFromDrawable = getImageDataFromDrawable;
 /**
  * Source rectangle of source image is cropped and then copied into destination rectangle of new image data
  *
@@ -10758,18 +14604,19 @@ function getImageDataFromDrawable(drawable, options = {}) {
  * @returns {ImageData}
  * @protected
  */
-function cropAndResizeImageData(src, options = {}) {
-    let { srcX = 0, srcY = 0, srcW = src.width, srcH = src.height, dstX = 0, dstY = 0 } = options;
-    let { dstW = srcW, dstH = srcH } = options;
-    let canvas1 = document.createElement('canvas');
+function cropAndResizeImageData(src, options) {
+    if (options === void 0) { options = {}; }
+    var _a = options.srcX, srcX = _a === void 0 ? 0 : _a, _b = options.srcY, srcY = _b === void 0 ? 0 : _b, _c = options.srcW, srcW = _c === void 0 ? src.width : _c, _d = options.srcH, srcH = _d === void 0 ? src.height : _d, _e = options.dstX, dstX = _e === void 0 ? 0 : _e, _f = options.dstY, dstY = _f === void 0 ? 0 : _f;
+    var _g = options.dstW, dstW = _g === void 0 ? srcW : _g, _h = options.dstH, dstH = _h === void 0 ? srcH : _h;
+    var canvas1 = document.createElement('canvas');
     canvas1.width = srcW;
     canvas1.height = srcH;
-    let context1 = Object(__WEBPACK_IMPORTED_MODULE_0__canvas__["a" /* getContext2D */])(canvas1);
+    var context1 = canvas_1.getContext2D(canvas1);
     context1.putImageData(src, -srcX, -srcY);
-    let canvas2 = document.createElement('canvas');
+    var canvas2 = document.createElement('canvas');
     canvas2.width = dstX + dstW;
     canvas2.height = dstY + dstH;
-    let context2 = Object(__WEBPACK_IMPORTED_MODULE_0__canvas__["a" /* getContext2D */])(canvas2);
+    var context2 = canvas_1.getContext2D(canvas2);
     context2.drawImage(canvas1, 0, 0, srcW, srcH, dstX, dstY, dstW, dstH);
     return context2.getImageData(0, 0, dstX + dstW, dstY + dstH);
 }
@@ -10787,7 +14634,8 @@ function cropAndResizeImageData(src, options = {}) {
  * @returns {ImageData}
  * @protected
  */
-function getImageData(image, options = {}) {
+function getImageData(image, options) {
+    if (options === void 0) { options = {}; }
     if (image instanceof HTMLCanvasElement) {
         return getImageDataFromCanvas(image, options);
     }
@@ -10797,28 +14645,28 @@ function getImageData(image, options = {}) {
     else
         throw TypeError('Failed to execute "getImageData(image, options)": "image" must be an instance of HTMLCanvasElement, HTMLVideoElement, or HTMLImageElement');
 }
+exports.getImageData = getImageData;
 /**
  * @protected
  */
-function setImageDataToCanvas(imageData, canvas, options = {}) {
-    let { srcX = 0, srcY = 0, srcW = imageData.width, srcH = imageData.height, dstX = 0, dstY = 0 } = options;
-    let { dstW = srcW, dstH = srcH } = options;
+function setImageDataToCanvas(imageData, canvas, options) {
+    if (options === void 0) { options = {}; }
+    var _a = options.srcX, srcX = _a === void 0 ? 0 : _a, _b = options.srcY, srcY = _b === void 0 ? 0 : _b, _c = options.srcW, srcW = _c === void 0 ? imageData.width : _c, _d = options.srcH, srcH = _d === void 0 ? imageData.height : _d, _e = options.dstX, dstX = _e === void 0 ? 0 : _e, _f = options.dstY, dstY = _f === void 0 ? 0 : _f;
+    var _g = options.dstW, dstW = _g === void 0 ? srcW : _g, _h = options.dstH, dstH = _h === void 0 ? srcH : _h;
     if (srcX !== 0 || srcY !== 0 || srcW !== dstW || srcH !== dstH) {
-        imageData = cropAndResizeImageData(imageData, { srcX, srcY, srcW, srcH, dstW, dstH });
+        imageData = cropAndResizeImageData(imageData, { srcX: srcX, srcY: srcY, srcW: srcW, srcH: srcH, dstW: dstW, dstH: dstH });
     }
-    Object(__WEBPACK_IMPORTED_MODULE_0__canvas__["a" /* getContext2D */])(canvas).putImageData(imageData, dstX, dstY);
+    canvas_1.getContext2D(canvas).putImageData(imageData, dstX, dstY);
 }
+exports.setImageDataToCanvas = setImageDataToCanvas;
 
 
 /***/ }),
-/* 43 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
+/* 44 */
+/***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__math_argsort__ = __webpack_require__(44);
-/* harmony namespace reexport (by provided) */ __webpack_require__.d(__webpack_exports__, "argmax", function() { return __WEBPACK_IMPORTED_MODULE_0__math_argsort__["a"]; });
-/* harmony namespace reexport (by provided) */ __webpack_require__.d(__webpack_exports__, "argmin", function() { return __WEBPACK_IMPORTED_MODULE_0__math_argsort__["b"]; });
+
 /**
  * @module webdnn/math
  * @preferred
@@ -10826,19 +14674,23 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
  * Module `WebDNN.Math` provides basic mathematics operations for pre/post-processing.
  */
 /** Don't Remove This comment block */
-
+function __export(m) {
+    for (var p in m) if (!exports.hasOwnProperty(p)) exports[p] = m[p];
+}
+Object.defineProperty(exports, "__esModule", { value: true });
+__export(__webpack_require__(45));
 
 
 /***/ }),
-/* 44 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
+/* 45 */
+/***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-/* harmony export (immutable) */ __webpack_exports__["a"] = argmax;
-/* harmony export (immutable) */ __webpack_exports__["b"] = argmin;
+
 /**
  * @module webdnn/math
  */
+Object.defineProperty(exports, "__esModule", { value: true });
 /** Don't Remove This comment block */
 /**
  * Return indices of the top-K largest elements.
@@ -10848,15 +14700,16 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
  * @param {number} k number of indices
  * @returns {number[]} indices of top-K largest samples
  */
-function argmax(arr, k = 1) {
+function argmax(arr, k) {
     // Top-k Quicksort
+    if (k === void 0) { k = 1; }
     arr = arr.slice();
-    let stack = [[0, arr.length]];
-    let workspace = [];
-    for (let i = 0; i < arr.length; i++)
+    var stack = [[0, arr.length]];
+    var workspace = [];
+    for (var i = 0; i < arr.length; i++)
         workspace[i] = i;
     while (stack.length > 0) {
-        let [from, to] = stack.pop(), pivot = arr[to - 1], left = from, right = to - 2, tmp;
+        var _a = stack.pop(), from = _a[0], to = _a[1], pivot = arr[to - 1], left = from, right = to - 2, tmp = void 0;
         if (from >= to - 1)
             continue;
         while (true) {
@@ -10883,11 +14736,12 @@ function argmax(arr, k = 1) {
         if (left + 1 < k)
             stack.push([left + 1, to]);
     }
-    let result = [];
-    for (let i = 0; i < k; i++)
+    var result = [];
+    for (var i = 0; i < k; i++)
         result.push(workspace[i]);
     return result;
 }
+exports.argmax = argmax;
 /**
  * Return indices of the top-K smallest elements.
  * This implementation is not stable sort.
@@ -10896,15 +14750,16 @@ function argmax(arr, k = 1) {
  * @param {number} k number of indices
  * @returns {number[]} indices of top-K smallest samples
  */
-function argmin(arr, k = 1) {
+function argmin(arr, k) {
     // Top-k Quicksort
+    if (k === void 0) { k = 1; }
     arr = arr.slice();
-    let stack = [[0, arr.length]];
-    let workspace = [];
-    for (let i = 0; i < arr.length; i++)
+    var stack = [[0, arr.length]];
+    var workspace = [];
+    for (var i = 0; i < arr.length; i++)
         workspace[i] = i;
     while (stack.length > 0) {
-        let [from, to] = stack.pop(), pivot = arr[to - 1], left = from, right = to - 2, tmp;
+        var _a = stack.pop(), from = _a[0], to = _a[1], pivot = arr[to - 1], left = from, right = to - 2, tmp = void 0;
         if (from >= to - 1)
             continue;
         while (true) {
@@ -10931,15 +14786,16 @@ function argmin(arr, k = 1) {
         if (left + 1 < k)
             stack.push([left + 1, to]);
     }
-    let result = [];
-    for (let i = 0; i < k; i++)
+    var result = [];
+    for (var i = 0; i < k; i++)
         result.push(workspace[i]);
     return result;
 }
+exports.argmin = argmin;
 
 
 /***/ }),
-/* 45 */
+/* 46 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";

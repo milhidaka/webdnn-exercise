@@ -12,7 +12,7 @@
   "license": "MIT",
   "dependencies": {
     "http-server": "^0.11.1",
-    "webdnn": "git+https://github.com/mil-tokyo/webdnn.git#npm",
+    "webdnn": "^1.2.0",
     "webpack": "^3.10.0"
   }
 }
